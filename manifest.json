@@ -1,0 +1,28 @@
+{
+  "name": "fook — Variable Income OS",
+  "short_name": "fook",
+  "description": "Offline-first variable income budgeting for global freelancers. No cloud, no bank sync, on-device ML.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07090e",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "productivity"],
+  "screenshots": [],
+  "lang": "en",
+  "dir": "ltr"
+}
