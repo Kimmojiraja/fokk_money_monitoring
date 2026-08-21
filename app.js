@@ -248,39 +248,62 @@ class FookApp {
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       this.deferredPrompt = e;
-      const btn = document.getElementById('pwa-install-btn');
-      if (btn) btn.style.display = 'inline-flex';
+      const banner = document.getElementById('native-pwa-banner');
+      if (banner) banner.style.display = 'block';
     });
 
     if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
       const badge = document.getElementById('pWA-installed-badge');
       if (badge) badge.style.display = 'block';
-      const btn = document.getElementById('pwa-install-btn');
-      if (btn) btn.style.display = 'none';
     }
 
-    document.getElementById('pwa-install-btn')?.addEventListener('click', async () => {
+    const openInstallModal = () => {
+      this.closeSidebar();
+      if (this.deferredPrompt) {
+        // Direct browser prompt if available
+        this.deferredPrompt.prompt();
+        this.deferredPrompt.userChoice.then(({ outcome }) => {
+          if (outcome === 'accepted') {
+            this.toast('fook installed to device successfully!', 'green');
+          }
+          this.deferredPrompt = null;
+        });
+      } else {
+        // Open platform guide modal
+        this.openModal('install-modal');
+        // Auto select platform tab
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isAndroid = /Android/.test(navigator.userAgent);
+        const platform = isIOS ? 'ios' : isAndroid ? 'android' : 'desktop';
+        this.switchInstallGuide(platform);
+      }
+    };
+
+    document.getElementById('pwa-install-btn')?.addEventListener('click', openInstallModal);
+    document.getElementById('sidebar-install-btn')?.addEventListener('click', openInstallModal);
+    document.getElementById('pwa-ios-help-btn')?.addEventListener('click', () => {
+      this.openModal('install-modal');
+      this.switchInstallGuide('ios');
+    });
+
+    document.getElementById('modal-native-install-btn')?.addEventListener('click', () => {
       if (this.deferredPrompt) {
         this.deferredPrompt.prompt();
-        const { outcome } = await this.deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          this.toast('fook installed to device successfully!', 'green');
-        }
-        this.deferredPrompt = null;
-      } else {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        if (isIOS) {
-          const iosGuide = document.getElementById('pwa-ios-instructions');
-          if (iosGuide) iosGuide.style.display = iosGuide.style.display === 'none' ? 'block' : 'none';
-        } else {
-          this.toast('To install: click your browser menu (⋮) -> Install App / Add to Home Screen', 'cyan');
-        }
+        this.deferredPrompt.userChoice.then(({ outcome }) => {
+          if (outcome === 'accepted') {
+            this.toast('fook installed successfully!', 'green');
+            this.closeModal('install-modal');
+          }
+          this.deferredPrompt = null;
+        });
       }
     });
 
-    document.getElementById('pwa-ios-help-btn')?.addEventListener('click', () => {
-      const iosGuide = document.getElementById('pwa-ios-instructions');
-      if (iosGuide) iosGuide.style.display = iosGuide.style.display === 'none' ? 'block' : 'none';
+    // Install Guide Tabs
+    document.querySelectorAll('.install-tab-btn[data-platform]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.switchInstallGuide(btn.dataset.platform);
+      });
     });
 
     document.getElementById('copy-share-link-btn')?.addEventListener('click', () => {
@@ -560,6 +583,20 @@ class FookApp {
     if (catSel) {
       catSel.value = (type === 'income') ? 'Freelance' : 'Food & Dining';
     }
+  }
+
+  switchInstallGuide(platform) {
+    document.querySelectorAll('.install-tab-btn').forEach(btn => {
+      const isActive = btn.dataset.platform === platform;
+      btn.classList.toggle('active', isActive);
+      btn.style.background = isActive ? 'var(--bg-elevated)' : 'transparent';
+      btn.style.color = isActive ? 'var(--accent-green)' : 'var(--text-muted)';
+    });
+    document.querySelectorAll('.install-guide-box').forEach(box => {
+      box.style.display = 'none';
+    });
+    const targetBox = document.getElementById(`guide-${platform}`);
+    if (targetBox) targetBox.style.display = 'block';
   }
 
   // ──────────────────────────────────────────

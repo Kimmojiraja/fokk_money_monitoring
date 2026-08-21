@@ -147,9 +147,9 @@
       <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       <span>Money Hacks &amp; Alpha</span>
     </button>
-    <button class="sidebar-nav-item" data-tab="settings">
-      <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      <span>Settings &amp; Preferences</span>
+    <button id="sidebar-install-btn" class="sidebar-nav-item" style="color:var(--accent-green);">
+      <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      <span>Install Web App (PWA)</span>
     </button>
     <button id="sidebar-share-btn" class="sidebar-nav-item" style="color:var(--accent-cyan);">
       <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -894,6 +894,80 @@
 <!-- Toast Root -->
 <div id="toast-root"></div>
 
+
+<!-- ════════════════════════════════════════════════════════════
+     MODAL: APP INSTALLATION (PWA)
+════════════════════════════════════════════════════════════ -->
+<div id="install-modal" class="modal-backdrop">
+  <div class="modal-sheet" style="max-width:480px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--border);">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="width:24px; height:24px; background:var(--accent-green); border-radius:var(--radius-xs); display:flex; align-items:center; justify-content:center; color:#131314; font-family:'JetBrains Mono'; font-weight:900; font-size:10px;">FK</div>
+        <h3 style="font-size:14.5px; font-weight:700; color:var(--text-primary);">Install fook Web Application</h3>
+      </div>
+      <button class="btn btn-ghost btn-icon modal-close-btn" data-modal="install-modal">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- 1-Click Native Trigger (if supported by browser) -->
+    <div id="native-pwa-banner" style="display:none; padding:12px; background:rgba(129, 201, 149, 0.12); border:1px solid rgba(129, 201, 149, 0.3); margin-bottom:12px;">
+      <p style="font-size:12.5px; font-weight:700; color:var(--accent-green); margin-bottom:4px;">1-Click Install Available</p>
+      <p style="font-size:11.5px; color:var(--text-secondary); margin-bottom:8px;">Your browser supports direct web app installation:</p>
+      <button id="modal-native-install-btn" class="btn btn-primary" style="width:100%; justify-content:center; font-size:13px;">
+        Install App to Device Now
+      </button>
+    </div>
+
+    <!-- Platform Selector Tabs -->
+    <div style="display:flex; gap:4px; margin-bottom:10px; background:var(--bg-input); padding:3px; border:1px solid var(--border);">
+      <button class="install-tab-btn active" data-platform="android" style="flex:1; padding:6px; font-size:11px; font-weight:700; border:none; background:var(--bg-elevated); color:var(--accent-green); cursor:pointer;">Android / Chrome</button>
+      <button class="install-tab-btn" data-platform="ios" style="flex:1; padding:6px; font-size:11px; font-weight:700; border:none; background:transparent; color:var(--text-muted); cursor:pointer;">iPhone / iPad</button>
+      <button class="install-tab-btn" data-platform="desktop" style="flex:1; padding:6px; font-size:11px; font-weight:700; border:none; background:transparent; color:var(--text-muted); cursor:pointer;">Desktop / PC</button>
+    </div>
+
+    <!-- Android Guide -->
+    <div id="guide-android" class="install-guide-box" style="display:block; padding:12px; background:var(--bg-input); border:1px solid var(--border); font-size:12px; line-height:1.5;">
+      <p style="font-weight:700; color:var(--text-primary); margin-bottom:6px;">Android (Chrome / Samsung / Edge):</p>
+      <ol style="margin-left:18px; color:var(--text-secondary);" class="space-y-1">
+        <li>Tap the <strong>three dots menu (⋮)</strong> in the top-right of your browser.</li>
+        <li>Select <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong>.</li>
+        <li>Tap <strong>Install</strong>. fook will be placed on your home screen and run standalone with zero browser frame!</li>
+      </ol>
+    </div>
+
+    <!-- iOS Guide -->
+    <div id="guide-ios" class="install-guide-box" style="display:none; padding:12px; background:var(--bg-input); border:1px solid var(--border); font-size:12px; line-height:1.5;">
+      <p style="font-weight:700; color:var(--text-primary); margin-bottom:6px;">iPhone &amp; iPad (Safari):</p>
+      <ol style="margin-left:18px; color:var(--text-secondary);" class="space-y-1">
+        <li>Tap the <strong>Share</strong> icon (<span style="font-family:'JetBrains Mono';">⎋</span>) at the bottom toolbar in Safari.</li>
+        <li>Scroll down the share sheet and tap <strong>"Add to Home Screen"</strong>.</li>
+        <li>Tap <strong>Add</strong> in the top-right corner. It will appear on your iOS home screen!</li>
+      </ol>
+    </div>
+
+    <!-- Desktop Guide -->
+    <div id="guide-desktop" class="install-guide-box" style="display:none; padding:12px; background:var(--bg-input); border:1px solid var(--border); font-size:12px; line-height:1.5;">
+      <p style="font-weight:700; color:var(--text-primary); margin-bottom:6px;">Desktop (Chrome / Edge / Brave):</p>
+      <ol style="margin-left:18px; color:var(--text-secondary);" class="space-y-1">
+        <li>Look at the right side of your <strong>URL address bar</strong>.</li>
+        <li>Click the <strong>Install icon (⊕ or computer with arrow)</strong>.</li>
+        <li>Click <strong>Install</strong> to run fook in a dedicated desktop window.</li>
+      </ol>
+    </div>
+
+    <!-- Offline ZIP / Standalone File Fallback -->
+    <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <p style="font-size:11.5px; font-weight:700; color:var(--text-primary);">Download Offline Backup</p>
+        <p style="font-size:10.5px; color:var(--text-muted);">JSON data backup for offline archiving</p>
+      </div>
+      <button onclick="window.fookApp.exportJSON()" class="btn btn-ghost btn-sm" style="font-size:11px;">
+        Download JSON
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- ════════════════════════════════════════════════════════════
      MODAL: APP SHARE
