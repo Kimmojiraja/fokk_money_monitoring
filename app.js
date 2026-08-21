@@ -641,8 +641,114 @@ class FookApp {
   }
 
   // ──────────────────────────────────────────
-  // PRIVACY MODE
+  // "CAN I AFFORD THIS?" DECISION ENGINE
   // ──────────────────────────────────────────
+  checkCanIAfford() {
+    const itemInput = document.getElementById('afford-item-name');
+    const priceInput = document.getElementById('afford-item-price');
+    const resultBox = document.getElementById('afford-result-box');
+    if (!priceInput || !resultBox) return;
+
+    const price = parseFloat(priceInput.value);
+    const item = (itemInput?.value || '').trim() || 'this item';
+    const hc = this.state.settings.homeCurrency;
+
+    if (!price || isNaN(price) || price <= 0) {
+      this.toast('Please enter a purchase price', 'amber');
+      return;
+    }
+
+    const now = new Date();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const daysLeft = Math.max(1, daysInMonth - now.getDate());
+
+    const monthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2,'0')}`;
+    const thisMonth = this.state.transactions.filter(t => t.date.startsWith(monthPrefix));
+    let actualIncome = 0, actualSpend = 0;
+    thisMonth.forEach(t => {
+      const v = CurrencyEngine.convert(t.amount, t.currency, hc);
+      if (t.type === 'income') actualIncome += v;
+      else actualSpend += v;
+    });
+
+    const histInHome = (this.state.historicalIncome || []).map(h => ({
+      date: h.date,
+      amount: CurrencyEngine.convert(h.amount, h.currency || 'USD', hc)
+    }));
+
+    const forecast = IncomeForecaster.forecastNext3Months(histInHome, 0);
+    const expectedMonthTotal = Math.max(actualIncome, (forecast.projections[0]?.expected || 3000));
+    const safeCalc = IncomeForecaster.calculateAdaptiveSafeCeiling(
+      actualIncome,
+      expectedMonthTotal,
+      this.state.settings.monthlyFixedCommitments,
+      this.state.settings.safeRatePct
+    );
+
+    const currentRemaining = Math.max(0, safeCalc.safeCeiling - actualSpend);
+    const newRemaining = currentRemaining - price;
+    const newDaily = Math.max(0, newRemaining / daysLeft);
+    const currentDaily = Math.max(0, currentRemaining / daysLeft);
+
+    resultBox.style.display = 'block';
+
+    if (newRemaining >= currentRemaining * 0.4 && newDaily >= 15) {
+      resultBox.innerHTML = `
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+          <span class="badge badge-green" style="font-size:11px;">Safe to Buy</span>
+          <span style="font-weight:800; color:var(--accent-green); font-size:13px;">Green Light</span>
+        </div>
+        <p style="color:var(--text-primary); margin-bottom:4px;">
+          Buying <strong>"${item}"</strong> for ${CurrencyEngine.format(price, hc)} will leave you with <strong>${CurrencyEngine.format(newRemaining, hc, 0)}</strong> for the rest of the month.
+        </p>
+        <p style="color:var(--text-muted); font-size:11px;">
+          Your daily spending allowance shifts from <strong>${CurrencyEngine.format(currentDaily, hc, 0)}/day</strong> to <strong>${CurrencyEngine.format(newDaily, hc, 0)}/day</strong> over the next ${daysLeft} days. Zero stress!
+        </p>
+      `;
+    } else if (newRemaining > 0) {
+      resultBox.innerHTML = `
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+          <span class="badge badge-amber" style="font-size:11px;">Proceed with Caution</span>
+          <span style="font-weight:800; color:var(--accent-amber); font-size:13px;">Tight Budget</span>
+        </div>
+        <p style="color:var(--text-primary); margin-bottom:4px;">
+          Buying <strong>"${item}"</strong> will leave only <strong>${CurrencyEngine.format(newRemaining, hc, 0)}</strong> in your monthly cushion.
+        </p>
+        <p style="color:var(--text-muted); font-size:11px;">
+          You will have to tighten daily spending to <strong>${CurrencyEngine.format(newDaily, hc, 0)}/day</strong> for the remaining ${daysLeft} days until your next client invoice.
+        </p>
+      `;
+    } else {
+      const deficit = Math.abs(newRemaining);
+      resultBox.innerHTML = `
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+          <span class="badge badge-rose" style="font-size:11px;">Wait for Next Invoice</span>
+          <span style="font-weight:800; color:var(--accent-rose); font-size:13px;">High Risk</span>
+        </div>
+        <p style="color:var(--text-primary); margin-bottom:4px;">
+          Buying <strong>"${item}"</strong> exceeds your safe cushion by <strong>${CurrencyEngine.format(deficit, hc, 0)}</strong>.
+        </p>
+        <p style="color:var(--text-muted); font-size:11px;">
+          Recommended: Hold off on this purchase until your next milestone payment clears to avoid touching your rent/tax reserves.
+        </p>
+      `;
+    }
+  }
+
+  // ──────────────────────────────────────────
+  // STANDALONE OFFLINE SINGLE-FILE APP DOWNLOAD
+  // ──────────────────────────────────────────
+  downloadOfflineApp() {
+    const htmlContent = document.documentElement.outerHTML;
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `fook_standalone_app.html`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { a.remove(); URL.revokeObjectURL(a.href); }, 200);
+    this.toast('Standalone offline app downloaded! Open anytime in any browser.', 'green');
+  }
   togglePrivacy() {
     this.state.settings.privacyMode = !this.state.settings.privacyMode;
     document.body.classList.toggle('privacy-active', this.state.settings.privacyMode);
@@ -962,9 +1068,22 @@ class FookApp {
     const badge = document.getElementById('hero-pacing-badge');
     const badgeText = document.getElementById('badge-text');
     if (badge && badgeText) {
-      if (remaining < 0) { badge.className = 'badge badge-rose'; badgeText.textContent = 'Ceiling Exceeded'; }
-      else if (pacingPct > 0.85) { badge.className = 'badge badge-amber'; badgeText.textContent = 'High Velocity'; }
-      else { badge.className = 'badge badge-green'; badgeText.textContent = 'Normal Velocity'; }
+      if (remaining < 0) { badge.className = 'badge badge-rose'; badgeText.textContent = 'Budget Exceeded'; }
+      else if (pacingPct > 0.85) { badge.className = 'badge badge-amber'; badgeText.textContent = 'Spending Fast'; }
+      else { badge.className = 'badge badge-green'; badgeText.textContent = 'Safe Pace'; }
+    }
+
+    // Money Coach Conversational Guidance
+    const coachEl = document.getElementById('coach-insight-text');
+    if (coachEl) {
+      const name = this.state.settings.userName || 'Raja';
+      if (remaining < 0) {
+        coachEl.innerHTML = `🚨 <strong>${name}</strong>, you have spent <strong>${CurrencyEngine.format(Math.abs(remaining), hc, 0)}</strong> beyond your safe limit for this month. Hold off on any extra non-essential spending until your next invoice arrives!`;
+      } else if (pacingPct > 0.85) {
+        coachEl.innerHTML = `⚠️ <strong>${name}</strong>, you've used <strong>${Math.round(pacingPct * 100)}%</strong> of your safe budget. To stay fully protected, keep daily spending below <strong>${CurrencyEngine.format(safeDaily, hc, 0)}/day</strong> for the remaining ${daysLeft} days.`;
+      } else {
+        coachEl.innerHTML = `👋 <strong>${name}</strong>, you're in great shape! You have <strong>${CurrencyEngine.format(remaining, hc, 0)}</strong> safe to spend freely this month (around <strong>${CurrencyEngine.format(safeDaily, hc, 0)}/day</strong>) after covering your fixed rent and bills.`;
+      }
     }
 
     // Doom Mode Alert
@@ -981,15 +1100,14 @@ class FookApp {
       }
     }
 
-    // Volatility Index
-    this.setEl('volatility-cv', `${cv}%`);
+    // Income Predictability (Beginner Friendly)
     const vBadge = document.getElementById('volatility-badge');
     const vBar   = document.getElementById('volatility-bar');
     if (vBadge) {
-      if (cv < 20) { vBadge.className = 'badge badge-green'; vBadge.textContent = 'Stable'; }
-      else if (cv < 40) { vBadge.className = 'badge badge-cyan'; vBadge.textContent = 'Moderate'; }
-      else if (cv < 60) { vBadge.className = 'badge badge-amber'; vBadge.textContent = 'Volatile'; }
-      else { vBadge.className = 'badge badge-rose'; vBadge.textContent = 'High'; }
+      if (cv < 20) { vBadge.className = 'badge badge-green'; vBadge.textContent = 'Smooth 🟢'; this.setEl('volatility-cv', 'Smooth'); }
+      else if (cv < 40) { vBadge.className = 'badge badge-cyan'; vBadge.textContent = 'Moderate 🟡'; this.setEl('volatility-cv', 'Moderate'); }
+      else if (cv < 60) { vBadge.className = 'badge badge-amber'; vBadge.textContent = 'Wobbly 🟠'; this.setEl('volatility-cv', 'Wobbly'); }
+      else { vBadge.className = 'badge badge-rose'; vBadge.textContent = 'Rollercoaster 🔴'; this.setEl('volatility-cv', 'Rollercoaster'); }
     }
     if (vBar) vBar.style.width = `${Math.min(100, cv)}%`;
 
@@ -998,14 +1116,15 @@ class FookApp {
     const hBar = document.getElementById('health-bar');
     if (hBar) hBar.style.width = `${healthScore}%`;
 
-    // Runway
+    // Emergency Survival Runway
     this.setEl('runway-days', runwayDays >= 999 ? 'Infinite' : `${runwayDays} days`);
     const rBadge = document.getElementById('runway-badge');
     if (rBadge) {
-      if (runwayDays >= 999) { rBadge.className = 'badge badge-green'; rBadge.textContent = 'Infinite'; }
-      else if (runwayDays > 15) { rBadge.className = 'badge badge-cyan'; rBadge.textContent = 'Safe'; }
-      else if (runwayDays > 7) { rBadge.className = 'badge badge-amber'; rBadge.textContent = 'Caution'; }
-      else { rBadge.className = 'badge badge-rose'; rBadge.textContent = 'Critical'; }
+      if (runwayDays >= 999) { rBadge.className = 'badge badge-green'; rBadge.textContent = 'Super Safe'; }
+      else if (runwayDays > 30) { rBadge.className = 'badge badge-green'; rBadge.textContent = '1+ Month'; }
+      else if (runwayDays > 15) { rBadge.className = 'badge badge-cyan'; rBadge.textContent = 'Safe Buffer'; }
+      else if (runwayDays > 7) { rBadge.className = 'badge badge-amber'; rBadge.textContent = 'Tight'; }
+      else { rBadge.className = 'badge badge-rose'; rBadge.textContent = 'Low Buffer'; }
     }
     this.setEl('safe-invest', CurrencyEngine.format(safeToInvest, hc, 0));
 

@@ -295,29 +295,47 @@
   ══════════════════════════════════════════════ -->
   <div id="tab-dashboard" class="tab-panel active space-y-3">
 
-    <!-- DOOM MODE ALERT BANNER -->
+    <!-- ── HUMAN MONEY COACH ADVISOR BANNER ── -->
+    <div class="card" style="padding:14px 16px; border-left:3px solid var(--accent-green); background:var(--bg-elevated);">
+      <div style="display:flex; align-items:flex-start; gap:12px;">
+        <div style="width:36px; height:36px; border-radius:var(--radius-xs); background:rgba(129, 201, 149, 0.15); color:var(--accent-green); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
+            <p style="font-size:12.5px; font-weight:800; color:var(--text-primary);">Money Coach Summary</p>
+            <span class="badge badge-green" style="font-size:9.5px;">Live Advice</span>
+          </div>
+          <p id="coach-insight-text" style="font-size:12px; color:var(--text-secondary); line-height:1.45;">
+            Analyzing your cash flow and safe spending pace...
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPENDING WARNING ALERT (DOOM MODE) -->
     <div id="doom-banner" style="display:none; padding:12px 14px;" class="card" style="border-left:3px solid var(--accent-rose);">
       <div style="display:flex; align-items:flex-start; gap:10px;">
         <svg width="16" height="16" fill="none" stroke="var(--accent-rose)" viewBox="0 0 24 24" stroke-width="2.5" style="flex-shrink:0; margin-top:1px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         <div>
-          <p style="font-weight:700; font-size:12.5px; color:var(--accent-rose);">Spending Velocity Alert</p>
+          <p style="font-weight:700; font-size:12.5px; color:var(--accent-rose);">Spending Alert: You're spending too fast!</p>
           <p id="doom-message" style="font-size:11px; color:var(--text-secondary); margin-top:1px;"></p>
         </div>
       </div>
     </div>
 
-    <!-- ── PRIMARY KPI CAROUSEL ── -->
+    <!-- ── PRIMARY KPI CAROUSEL (Beginner Friendly) ── -->
     <div class="mobile-kpi-scroll">
 
-      <!-- Card 1: Safe Spend Ceiling -->
+      <!-- Card 1: Safe to Spend Right Now -->
       <div class="card kpi-snap card-glow-green" style="padding:16px; min-height:180px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
           <div style="flex:1; min-width:0;">
-            <p class="section-title">Safe Spend Remaining</p>
+            <p class="section-title" title="The exact money you can spend freely without touching rent or taxes">Safe to Spend Right Now</p>
             <p id="hero-safe-amount" class="big-num blur-private" style="margin-top:4px; color:var(--accent-green);">0.00</p>
             <span id="hero-pacing-badge" class="badge badge-green" style="margin-top:6px;">
               <span id="badge-dot" style="width:5px;height:5px;background:currentColor;display:inline-block;"></span>
-              <span id="badge-text">Normal</span>
+              <span id="badge-text">Safe Pace</span>
             </span>
           </div>
 
@@ -336,11 +354,11 @@
 
         <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; padding-top:8px; border-top:1px solid var(--border);">
           <div>
-            <p class="section-title">Spent</p>
+            <p class="section-title">Already Spent</p>
             <p id="hero-spent" class="sm-num blur-private" style="color:var(--accent-rose); margin-top:2px;">0.00</p>
           </div>
           <div>
-            <p class="section-title">Daily Rate</p>
+            <p class="section-title">Daily Limit</p>
             <p id="hero-daily-allowance" class="sm-num c-green blur-private" style="margin-top:2px;">0.00/day</p>
           </div>
           <div>
@@ -350,11 +368,11 @@
         </div>
       </div>
 
-      <!-- Card 2: Income Received -->
+      <!-- Card 2: Total Earned This Month -->
       <div class="card kpi-snap" style="padding:16px; min-height:180px; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <p class="section-title">Income Logged</p>
+            <p class="section-title">Total Earned This Month</p>
             <svg width="14" height="14" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
           </div>
           <p id="hero-actual-income" class="mid-num c-green blur-private">0.00</p>
@@ -362,40 +380,40 @@
         </div>
         <div style="padding:6px 8px; background:var(--bg-hover); border:1px solid var(--border); margin-top:6px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="section-title">Health Score</span>
+            <span class="section-title">Financial Peace Score</span>
             <span id="health-score-num" style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:14px; color:var(--accent-green);">100</span>
           </div>
           <div class="progress-track" style="margin-top:4px;"><div id="health-bar" class="progress-fill" style="width:100%; background:var(--accent-green);"></div></div>
         </div>
       </div>
 
-      <!-- Card 3: Cash Runway -->
+      <!-- Card 3: Emergency Survival Time (Runway) -->
       <div class="card kpi-snap" style="padding:16px; min-height:180px; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <p class="section-title">Cash Runway</p>
+            <p class="section-title">Emergency Survival Time</p>
             <span id="runway-badge" class="badge badge-green">Safe</span>
           </div>
           <p id="runway-days" class="mid-num blur-private">—</p>
-          <p style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">At current daily burn rate</p>
+          <p style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">Days you can survive if you earn $0</p>
         </div>
         <div style="padding:6px 8px; background:var(--bg-hover); border:1px solid var(--border); margin-top:6px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="section-title" style="color:var(--accent-violet);">Safe to Invest</span>
+            <span class="section-title" style="color:var(--accent-violet);">Extra Savings Buffer</span>
             <span id="safe-invest" class="sm-num blur-private" style="color:var(--accent-violet);">0.00</span>
           </div>
         </div>
       </div>
 
-      <!-- Card 4: Volatility -->
+      <!-- Card 4: Income Predictability -->
       <div class="card kpi-snap" style="padding:16px; min-height:180px; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <p class="section-title">Income Volatility</p>
+            <p class="section-title">Income Predictability</p>
             <span id="volatility-badge" class="badge badge-neutral">Stable</span>
           </div>
-          <p id="volatility-cv" class="mid-num c-amber blur-private">0%</p>
-          <p style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">Coefficient of Variation</p>
+          <p id="volatility-cv" class="mid-num c-amber blur-private">Smooth</p>
+          <p style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">How steady your earnings are</p>
         </div>
         <div style="margin-top:6px;">
           <div class="progress-track"><div id="volatility-bar" class="progress-fill" style="width:0%; background:var(--accent-amber);"></div></div>
@@ -405,47 +423,68 @@
     </div><!-- /mobile-kpi-scroll -->
 
 
+    <!-- ── "CAN I AFFORD THIS?" INSTANT PURCHASE DECISION TOOL ── -->
+    <div class="card" style="padding:14px; border-left:3px solid var(--accent-cyan);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" fill="none" stroke="var(--accent-cyan)" viewBox="0 0 24 24" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <p style="font-size:13px; font-weight:800; color:var(--text-primary);">"Can I Afford This?" Instant Purchase Checker</p>
+        </div>
+        <span class="badge badge-cyan" style="font-size:9px;">Zero Guilt</span>
+      </div>
+      <p style="font-size:11.5px; color:var(--text-secondary); margin-bottom:8px;">Want to buy new gear, a flight ticket, or a course? Check if it fits your safe budget:</p>
+
+      <div style="display:grid; grid-template-columns: 1fr 140px auto; gap:6px; margin-bottom:8px;">
+        <input type="text" id="afford-item-name" class="fook-input" placeholder="Item name (e.g. New Camera Lens, Flight to Berlin)..." style="font-size:12px;">
+        <input type="number" id="afford-item-price" class="fook-input" placeholder="Price (0.00)" style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px;">
+        <button id="afford-check-btn" onclick="window.fookApp.checkCanIAfford()" class="btn btn-primary btn-sm" style="padding:6px 14px;">Check</button>
+      </div>
+
+      <div id="afford-result-box" style="display:none; padding:10px; background:var(--bg-input); border:1px solid var(--border); font-size:12px; line-height:1.4;"></div>
+    </div>
+
+
     <!-- ── INTERACTIVE "WHAT-IF" SIMULATOR ── -->
     <div class="card simulator-box">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
-        <p style="font-size:12.5px; font-weight:700; color:var(--text-primary);">What-If Scenario Simulator</p>
+        <p style="font-size:12.5px; font-weight:700; color:var(--text-primary);">What-If Payout Simulator</p>
         <span class="badge badge-violet" style="font-size:9px;">Live Simulation</span>
       </div>
-      <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Simulate incoming client payouts to preview safe ceiling adjustments:</p>
+      <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Slide to see how an incoming client payment immediately increases your daily spending limit:</p>
 
       <div style="display:grid; grid-template-columns: 1fr auto; gap:8px; align-items:center; margin-bottom:8px;">
         <div>
           <input type="range" id="simulator-slider" min="-2000" max="4000" value="0" step="100" style="width:100%;">
           <div style="display:flex; justify-content:space-between; font-size:9.5px; color:var(--text-muted); margin-top:2px; font-family:'JetBrains Mono';">
-            <span>-2,000</span>
-            <span>0</span>
-            <span>+4,000</span>
+            <span>-$2,000</span>
+            <span>$0</span>
+            <span>+$4,000</span>
           </div>
         </div>
         <div style="text-align:right; min-width:80px;">
-          <span id="simulator-delta-label" style="font-family:'JetBrains Mono'; font-weight:800; font-size:13.5px; color:var(--accent-green);">+0</span>
+          <span id="simulator-delta-label" style="font-family:'JetBrains Mono'; font-weight:800; font-size:13.5px; color:var(--accent-green);">+$0</span>
         </div>
       </div>
 
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; padding:6px 10px; background:var(--bg-input); border:1px solid var(--border);">
         <div>
-          <p class="section-title">Simulated Safe Spend</p>
+          <p class="section-title">New Safe Budget</p>
           <p id="sim-safe-spend" class="num c-green" style="font-size:13.5px; font-weight:800; margin-top:1px;">0.00</p>
         </div>
         <div>
-          <p class="section-title">Simulated Daily Allowance</p>
+          <p class="section-title">New Daily Limit</p>
           <p id="sim-safe-daily" class="num c-cyan" style="font-size:13.5px; font-weight:800; margin-top:1px;">0.00/day</p>
         </div>
       </div>
     </div>
 
 
-    <!-- ── SUNDAY HABIT STREAK + REVENUE PARETO ── -->
+    <!-- ── SUNDAY HABIT STREAK + REVENUE BREAKDOWN ── -->
     <div class="grid-2">
       <!-- Sunday Check-in Streak -->
       <div class="card" style="padding:14px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <p class="section-title">Weekly Review Habit</p>
+          <p class="section-title">Weekly 2-Minute Money Review</p>
           <span id="streak-count-badge" class="badge badge-amber">0 weeks</span>
         </div>
         <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:6px;" id="streak-dots"></div>
@@ -455,10 +494,10 @@
         </button>
       </div>
 
-      <!-- Revenue Concentration -->
+      <!-- Who Pays You Most (Client Breakdown) -->
       <div class="card" style="padding:14px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <p class="section-title">Revenue Concentration (80/20)</p>
+          <p class="section-title">Who Pays You Most (Client Share)</p>
         </div>
         <div id="pareto-container" class="space-y-2"></div>
       </div>
@@ -796,7 +835,11 @@
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
           <button id="pwa-install-btn" onclick="window.fookApp.handlePWAInstall()" class="btn btn-primary" style="gap:6px; flex:1; justify-content:center;">
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-            Install to Device Now
+            Install to Device (PWA)
+          </button>
+          <button id="download-offline-html-btn" onclick="window.fookApp.downloadOfflineApp()" class="btn btn-ghost" style="gap:6px; flex:1; justify-content:center; color:var(--accent-cyan); border-color:var(--border);">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Download Standalone App (.html)
           </button>
         </div>
 
@@ -977,15 +1020,20 @@
       </ol>
     </div>
 
-    <!-- Offline ZIP / Standalone File Fallback -->
-    <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+    <!-- Standalone Offline App File & Backup -->
+    <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
       <div>
-        <p style="font-size:11.5px; font-weight:700; color:var(--text-primary);">Download Offline Backup</p>
-        <p style="font-size:10.5px; color:var(--text-muted);">JSON data backup for offline archiving</p>
+        <p style="font-size:11.5px; font-weight:700; color:var(--text-primary);">1-Click Standalone Offline File</p>
+        <p style="font-size:10.5px; color:var(--text-muted);">Works on any phone/PC without installation</p>
       </div>
-      <button onclick="window.fookApp.exportJSON()" class="btn btn-ghost btn-sm" style="font-size:11px;">
-        Download JSON
-      </button>
+      <div style="display:flex; gap:6px;">
+        <button onclick="window.fookApp.downloadOfflineApp()" class="btn btn-primary btn-sm" style="font-size:11px;">
+          Download App (.html)
+        </button>
+        <button onclick="window.fookApp.exportJSON()" class="btn btn-ghost btn-sm" style="font-size:11px;">
+          Backup JSON
+        </button>
+      </div>
     </div>
   </div>
 </div>
