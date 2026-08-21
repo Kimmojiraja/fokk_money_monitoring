@@ -1,23 +1,11 @@
 /**
- * FOOK v2.5 — Ultra-Premium Variable Income OS
- * Full application controller with:
- *  - First-time user onboarding & quick demo loader
- *  - 1-Tap quick-add suggestions
- *  - Interactive "What-If" Safe-Spend Simulator
- *  - Dark/Light luxury theme toggle
- *  - Mobile bottom navigation & bottom sheet modal
- *  - Income Volatility Index (Coefficient of Variation)
- *  - Doom Mode (runway alert)
- *  - Sunday Check-in Habit Streak
- *  - Financial Health Score
- *  - Prediction Override slider
- *  - Client Pareto 80/20 analysis
- *  - Dual ledger view (Mobile cards + Desktop table)
- *  - Tax deduction accounting report + CSV/JSON backup
+ * FOOK v3.0 — Precision Variable Income OS
+ * Clean Google Matte Dark / Light Theme • Sharp Architecture
+ * 100% Vector Icons • Realistic Financial Numbers & Multi-Currency Engine
  */
 
 // ═══════════════════════════════════════════
-// DEMO FREELANCER DATA
+// REALISTIC FREELANCER BASELINE DATA
 // ═══════════════════════════════════════════
 const DEFAULT_DEMO = {
   settings: {
@@ -33,17 +21,17 @@ const DEFAULT_DEMO = {
   },
   streak: { weeks: [true, true, true, false, true, true, false, true], currentWeekDone: false },
   transactions: [
-    { id: 'inc_1', date: '2026-08-02', type: 'income', amount: 1450, currency: 'USD', category: 'Freelance',   notes: 'Next.js Web App (Milestone 2)', isRecurring: false, isTaxDeductible: false, client: 'Acme Studio (US)' },
-    { id: 'inc_2', date: '2026-08-05', type: 'income', amount: 620,  currency: 'EUR', category: 'Freelance',   notes: 'UI/UX Mobile Design – Fiverr Pro', isRecurring: false, isTaxDeductible: false, client: 'Berlin Labs GmbH' },
-    { id: 'inc_3', date: '2026-08-10', type: 'income', amount: 65000,currency: 'KES', category: 'Retainer',    notes: 'DevOps Monthly Retainer', isRecurring: true, isTaxDeductible: false, client: 'SavannaPay Ltd' },
+    { id: 'inc_1', date: '2026-08-02', type: 'income', amount: 1450, currency: 'USD', category: 'Freelance',   notes: 'Frontend Dashboard (Milestone 2)', isRecurring: false, isTaxDeductible: false, client: 'Acme Studio (US)' },
+    { id: 'inc_2', date: '2026-08-05', type: 'income', amount: 620,  currency: 'EUR', category: 'Freelance',   notes: 'UI/UX Design Sprint', isRecurring: false, isTaxDeductible: false, client: 'Berlin Labs GmbH' },
+    { id: 'inc_3', date: '2026-08-10', type: 'income', amount: 65000,currency: 'KES', category: 'Retainer',    notes: 'Infrastructure Retainer', isRecurring: true, isTaxDeductible: false, client: 'SavannaPay Ltd' },
     { id: 'inc_4', date: '2026-08-14', type: 'income', amount: 45000,currency: 'INR', category: 'Consulting',  notes: 'AI Architecture Advisory', isRecurring: false, isTaxDeductible: false, client: 'NexAI Labs' },
-    { id: 'inc_5', date: '2026-08-18', type: 'income', amount: 350,  currency: 'USD', category: 'Royalties',   notes: 'Gumroad UI Kit Royalties', isRecurring: false, isTaxDeductible: false, client: 'Gumroad' },
-    { id: 'exp_1', date: '2026-08-01', type: 'expense', amount: 650, currency: 'USD', category: 'Housing & Rent',          notes: 'Apartment Rent', isRecurring: true, isTaxDeductible: false, client: 'Landlord' },
-    { id: 'exp_2', date: '2026-08-03', type: 'expense', amount: 20,  currency: 'USD', category: 'Software & Subscriptions', notes: 'ChatGPT Plus', isRecurring: true, isTaxDeductible: true, client: 'OpenAI' },
-    { id: 'exp_3', date: '2026-08-04', type: 'expense', amount: 45,  currency: 'USD', category: 'Food & Dining',            notes: 'Weekly Groceries', isRecurring: false, isTaxDeductible: false, client: 'Supermarket' },
+    { id: 'inc_5', date: '2026-08-18', type: 'income', amount: 350,  currency: 'USD', category: 'Royalties',   notes: 'UI Kit Digital Sales', isRecurring: false, isTaxDeductible: false, client: 'Gumroad' },
+    { id: 'exp_1', date: '2026-08-01', type: 'expense', amount: 650, currency: 'USD', category: 'Housing & Rent',          notes: 'Workspace & Studio Rent', isRecurring: true, isTaxDeductible: false, client: 'Studio Lease' },
+    { id: 'exp_2', date: '2026-08-03', type: 'expense', amount: 20,  currency: 'USD', category: 'Software & Subscriptions', notes: 'OpenAI API & ChatGPT Plus', isRecurring: true, isTaxDeductible: true, client: 'OpenAI' },
+    { id: 'exp_3', date: '2026-08-04', type: 'expense', amount: 45,  currency: 'USD', category: 'Food & Dining',            notes: 'Weekly Groceries', isRecurring: false, isTaxDeductible: false, client: 'Market' },
     { id: 'exp_4', date: '2026-08-07', type: 'expense', amount: 15,  currency: 'USD', category: 'Software & Subscriptions', notes: 'Figma Professional', isRecurring: true, isTaxDeductible: true, client: 'Figma' },
-    { id: 'exp_5', date: '2026-08-09', type: 'expense', amount: 35,  currency: 'USD', category: 'Transport',                notes: 'Uber – Client Co-working Meet', isRecurring: false, isTaxDeductible: true, client: 'Uber' },
-    { id: 'exp_6', date: '2026-08-12', type: 'expense', amount: 60,  currency: 'USD', category: 'Utilities',               notes: 'Fiber High-Speed Internet', isRecurring: true, isTaxDeductible: true, client: 'ISP Fiber' }
+    { id: 'exp_5', date: '2026-08-09', type: 'expense', amount: 35,  currency: 'USD', category: 'Transport',                notes: 'Client Meeting Transport', isRecurring: false, isTaxDeductible: true, client: 'Transport' },
+    { id: 'exp_6', date: '2026-08-12', type: 'expense', amount: 60,  currency: 'USD', category: 'Utilities',               notes: 'Fiber Broadband', isRecurring: true, isTaxDeductible: true, client: 'ISP Fiber' }
   ],
   historicalIncome: [
     { date: '2025-09-15', amount: 2800, currency: 'USD' },
@@ -61,10 +49,10 @@ const DEFAULT_DEMO = {
   overrideHistory: []
 };
 
-const CLIENT_COLORS = ['#10b981','#06b6d4','#8b5cf6','#f59e0b','#f43f5e','#3b82f6','#ec4899','#14b8a6'];
+const CLIENT_COLORS = ['#81c995','#78d9ec','#c58af9','#fdd663','#f28b82','#8ab4f8','#f43f5e','#14b8a6'];
 
 // ═══════════════════════════════════════════
-// FOOK APP CLASS
+// FOOK APPLICATION CLASS
 // ═══════════════════════════════════════════
 class FookApp {
   constructor() {
@@ -111,7 +99,7 @@ class FookApp {
   }
 
   // ──────────────────────────────────────────
-  // THEME MANAGEMENT
+  // THEME MANAGEMENT (Google Dark / Light)
   // ──────────────────────────────────────────
   applyTheme(theme) {
     this.state.settings.theme = theme;
@@ -124,18 +112,18 @@ class FookApp {
     if (theme === 'dark') {
       if (sunIcon)  sunIcon.style.display  = 'block';
       if (moonIcon) moonIcon.style.display = 'none';
-      if (metaTheme) metaTheme.setAttribute('content', '#06080d');
+      if (metaTheme) metaTheme.setAttribute('content', '#131314');
     } else {
       if (sunIcon)  sunIcon.style.display  = 'none';
       if (moonIcon) moonIcon.style.display = 'block';
-      if (metaTheme) metaTheme.setAttribute('content', '#f8fafc');
+      if (metaTheme) metaTheme.setAttribute('content', '#f8f9fa');
     }
     this.save();
   }
 
   toggleTheme() {
     this.applyTheme(this.state.settings.theme === 'dark' ? 'light' : 'dark');
-    this.toast(`Theme switched to ${this.state.settings.theme} mode`, 'cyan');
+    this.toast(`Theme set to ${this.state.settings.theme}`, 'cyan');
   }
 
   // ──────────────────────────────────────────
@@ -144,8 +132,8 @@ class FookApp {
   initCurrencySelectors() {
     const currencies = CurrencyEngine.getCurrenciesList();
     const hc = this.state.settings.homeCurrency;
-    const hdrOpts = currencies.map(c => `<option value="${c.code}" ${c.code === hc ? 'selected' : ''}>${c.flag} ${c.code}</option>`).join('');
-    const fullOpts = currencies.map(c => `<option value="${c.code}" ${c.code === hc ? 'selected' : ''}>${c.flag} ${c.code} – ${c.name}</option>`).join('');
+    const hdrOpts = currencies.map(c => `<option value="${c.code}" ${c.code === hc ? 'selected' : ''}>${c.code}</option>`).join('');
+    const fullOpts = currencies.map(c => `<option value="${c.code}" ${c.code === hc ? 'selected' : ''}>${c.code} – ${c.name}</option>`).join('');
 
     ['home-currency-select', 'settings-currency-select'].forEach(id => {
       const el = document.getElementById(id);
@@ -177,24 +165,24 @@ class FookApp {
       this.save();
       this.initCurrencySelectors();
       this.render();
-      this.toast('✨ Freelancer demo data loaded!', 'green');
+      this.toast('Freelancer baseline data loaded', 'green');
     };
     document.getElementById('quick-demo-btn')?.addEventListener('click', loadDemo);
     document.getElementById('load-demo-btn')?.addEventListener('click', loadDemo);
 
     // Clean Slate Reset
     document.getElementById('clean-slate-btn')?.addEventListener('click', () => {
-      if (confirm('Clear ALL transactions and history? This resets your local database.')) {
+      if (confirm('Clear all local records and restart clean?')) {
         this.state.transactions = [];
         this.state.historicalIncome = [];
         this.state.overrideHistory = [];
         this.save();
         this.render();
-        this.toast('All local data cleared!', 'amber');
+        this.toast('Local database cleared', 'amber');
       }
     });
 
-    // ── Desktop & Mobile Tab Switching ──
+    // Desktop & Mobile Tab Switching
     document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
       btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
     });
@@ -202,7 +190,7 @@ class FookApp {
       btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
     });
 
-    // ── Quick-Add 1-Tap Chips ──
+    // Quick-Add 1-Tap Chips
     document.querySelectorAll('.quick-chip[data-quick]').forEach(btn => {
       btn.addEventListener('click', () => {
         const text = btn.dataset.quick;
@@ -214,7 +202,7 @@ class FookApp {
       });
     });
 
-    // ── What-If Simulator Slider ──
+    // What-If Simulator Slider
     const simSlider = document.getElementById('simulator-slider');
     if (simSlider) {
       simSlider.addEventListener('input', (e) => {
@@ -223,7 +211,7 @@ class FookApp {
       });
     }
 
-    // ── Modals: Open & Close ──
+    // Modals: Open & Close
     document.querySelectorAll('[data-modal]').forEach(el => {
       el.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -237,11 +225,11 @@ class FookApp {
       bk.addEventListener('click', (e) => { if (e.target === bk) this.closeModal(bk.id); });
     });
 
-    // ── Modal Type Tabs (+ Income / − Expense) ──
+    // Modal Type Tabs
     document.getElementById('type-income-tab')?.addEventListener('click', () => this.setFormType('income'));
     document.getElementById('type-expense-tab')?.addEventListener('click', () => this.setFormType('expense'));
 
-    // ── Form Submit & Toggles ──
+    // Form Submit & Toggles
     document.getElementById('transaction-form')?.addEventListener('submit', (e) => {
       e.preventDefault();
       this.submitTransaction(e.target);
@@ -249,16 +237,16 @@ class FookApp {
     this.bindToggle('toggle-recurring', 'check-recurring');
     this.bindToggle('toggle-tax', 'check-taxded');
 
-    // ── Natural Language Input ──
+    // Natural Language Input
     const nlInput = document.getElementById('nl-input');
     nlInput?.addEventListener('input', (e) => this.handleNLPreview(e.target.value));
     nlInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); this.submitNL(); } });
     document.getElementById('nl-submit')?.addEventListener('click', () => this.submitNL());
 
-    // ── Voice Input ──
+    // Voice Input
     document.getElementById('voice-btn')?.addEventListener('click', () => this.toggleVoice());
 
-    // ── Currency & Language Selectors ──
+    // Currency & Language Selectors
     ['home-currency-select', 'settings-currency-select'].forEach(id => {
       document.getElementById(id)?.addEventListener('change', (e) => {
         this.state.settings.homeCurrency = e.target.value;
@@ -277,7 +265,7 @@ class FookApp {
       this.render();
     });
 
-    // ── Safe Spending Rate Slider ──
+    // Safe Spending Rate Slider
     const rateSlider = document.getElementById('safe-rate-slider');
     if (rateSlider) {
       rateSlider.value = Math.round((this.state.settings.safeRatePct || 0.7) * 100);
@@ -291,7 +279,7 @@ class FookApp {
       });
     }
 
-    // ── Prediction Override Slider ──
+    // Prediction Override Slider
     const slider = document.getElementById('override-slider');
     if (slider) {
       slider.value = this.state.settings.overrideAdjustment || 0;
@@ -300,7 +288,7 @@ class FookApp {
     }
     document.getElementById('apply-override')?.addEventListener('click', () => this.applyOverride());
 
-    // ── Ledger Search & Filter ──
+    // Ledger Search & Filter
     document.getElementById('ledger-search')?.addEventListener('input', (e) => {
       this.ledgerSearch = e.target.value.toLowerCase();
       this.renderLedger();
@@ -314,10 +302,10 @@ class FookApp {
       });
     });
 
-    // ── Sunday Habit Streak ──
+    // Sunday Habit Streak
     document.getElementById('checkin-btn')?.addEventListener('click', () => this.markWeekDone());
 
-    // ── Keyboard Shortcuts (T for Theme, P for Privacy) ──
+    // Keyboard Shortcuts
     document.addEventListener('keydown', (e) => {
       if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
       if (e.key === 'T' || e.key === 't') this.toggleTheme();
@@ -348,7 +336,7 @@ class FookApp {
       const isActive = b.dataset.tab === tabId;
       b.classList.toggle('active', isActive);
       b.style.background = isActive ? 'var(--accent-green)' : 'transparent';
-      b.style.color = isActive ? (document.documentElement.classList.contains('dark') ? '#06080d' : '#ffffff') : 'var(--text-muted)';
+      b.style.color = isActive ? (document.documentElement.classList.contains('dark') ? '#131314' : '#ffffff') : 'var(--text-muted)';
     });
 
     // Mobile Bottom Nav styling
@@ -356,7 +344,6 @@ class FookApp {
       b.classList.toggle('active', b.dataset.tab === tabId);
     });
 
-    // Refresh tab views
     if (tabId === 'ledger')   this.renderLedger();
     if (tabId === 'forecast') this.renderForecastTab();
     if (tabId === 'tax')      this.renderTaxTab();
@@ -406,7 +393,7 @@ class FookApp {
     if (eo) eo.style.display = this.state.settings.privacyMode ? 'none'  : 'block';
     if (ec) ec.style.display = this.state.settings.privacyMode ? 'block' : 'none';
     this.save();
-    this.toast(this.state.settings.privacyMode ? '🔒 Privacy blur active' : '👁️ Privacy blur disabled', 'cyan');
+    this.toast(this.state.settings.privacyMode ? 'Privacy blur enabled' : 'Privacy blur disabled', 'cyan');
   }
 
   // ──────────────────────────────────────────
@@ -461,12 +448,12 @@ class FookApp {
       preview.style.display = 'block';
       preview.innerHTML = `
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <span class="badge" style="background:${typeColor}18; color:${typeColor}; border-color:${typeColor}35;">${parsed.type === 'income' ? '+ Income' : '− Expense'}</span>
-          <span class="num" style="font-size:15px; font-weight:800; color:var(--text-primary);">${curr.symbol} ${parsed.amount.toLocaleString()}</span>
+          <span class="badge" style="background:${typeColor}15; color:${typeColor}; border-color:${typeColor}30;">${parsed.type === 'income' ? '+ Income' : '- Expense'}</span>
+          <span class="num" style="font-size:14px; font-weight:800; color:var(--text-primary);">${curr.symbol} ${parsed.amount.toLocaleString()}</span>
           <span class="badge badge-neutral">${parsed.category}</span>
-          ${parsed.isTaxDeductible ? '<span class="badge badge-amber">★ Tax-Ded.</span>' : ''}
+          ${parsed.isTaxDeductible ? '<span class="badge badge-amber">Tax-Ded.</span>' : ''}
           ${parsed.isRecurring ? '<span class="badge badge-cyan">Retainer</span>' : ''}
-          <button id="confirm-nl" class="btn btn-primary btn-sm" style="margin-left:auto;">Confirm & Log →</button>
+          <button id="confirm-nl" class="btn btn-primary btn-sm" style="margin-left:auto;">Confirm &amp; Log</button>
         </div>
       `;
       document.getElementById('confirm-nl')?.addEventListener('click', () => this.submitNL());
@@ -479,7 +466,7 @@ class FookApp {
     if (!text) return;
     const parsed = this.nlp.parseInput(text);
     if (!parsed || !parsed.amount || parsed.amount <= 0) {
-      this.toast('Include an amount — e.g. "500 USD from Upwork"', 'amber');
+      this.toast('Specify an amount — e.g. "1450 USD from Upwork"', 'amber');
       return;
     }
     const tx = {
@@ -493,7 +480,7 @@ class FookApp {
     if (input) input.value = '';
     const preview = document.getElementById('nl-preview');
     if (preview) preview.style.display = 'none';
-    this.toast(`Logged: ${tx.type === 'income' ? '+' : '−'}${CurrencyEngine.format(tx.amount, tx.currency)} · ${tx.category}`, tx.type === 'income' ? 'green' : 'amber');
+    this.toast(`Recorded: ${tx.type === 'income' ? '+' : '-'}${CurrencyEngine.format(tx.amount, tx.currency)} (${tx.category})`, tx.type === 'income' ? 'green' : 'amber');
     this.render();
   }
 
@@ -518,7 +505,7 @@ class FookApp {
     this.save();
     this.closeModal('transaction-modal');
     form.reset();
-    this.toast(`Saved! ${tx.type === 'income' ? '+' : '−'}${CurrencyEngine.format(tx.amount, tx.currency)}`, 'green');
+    this.toast(`Saved: ${tx.type === 'income' ? '+' : '-'}${CurrencyEngine.format(tx.amount, tx.currency)}`, 'green');
     this.render();
   }
 
@@ -558,7 +545,7 @@ class FookApp {
     this.state.overrideHistory.unshift({ date: new Date().toISOString().split('T')[0], adjustment: val, reason });
     this.save();
     this.renderForecastTab();
-    this.toast(`Forecast override applied: ${val > 0 ? '+' : ''}${val}%`, 'cyan');
+    this.toast(`Forecast override: ${val > 0 ? '+' : ''}${val}%`, 'cyan');
     this.render();
   }
 
@@ -573,7 +560,7 @@ class FookApp {
     this.state.streak.weeks = dots;
     this.save();
     this.renderStreak();
-    this.toast('🎉 Sunday check-in logged! Streak active.', 'green');
+    this.toast('Weekly check-in logged', 'green');
   }
 
   // ──────────────────────────────────────────
@@ -596,7 +583,7 @@ class FookApp {
   }
 
   toggleVoice() {
-    if (!this.speechRec) { this.toast('Voice recognition not supported in this browser', 'amber'); return; }
+    if (!this.speechRec) { this.toast('Voice recognition not supported in browser', 'amber'); return; }
     if (this.isRecording) { this.speechRec.stop(); this.stopVoice(); return; }
     this.isRecording = true;
     this.speechRec.start();
@@ -611,7 +598,7 @@ class FookApp {
   }
 
   // ──────────────────────────────────────────
-  // TOAST NOTIFICATIONS
+  // TOAST NOTIFICATIONS (Sharp, Clean)
   // ──────────────────────────────────────────
   toast(msg, type = 'green') {
     const colorMap = { green: 'var(--accent-green)', cyan: 'var(--accent-cyan)', amber: 'var(--accent-amber)', rose: 'var(--accent-rose)' };
@@ -619,17 +606,17 @@ class FookApp {
     const root = document.getElementById('toast-root') || document.body;
     const el = document.createElement('div');
     el.style.cssText = `background:var(--bg-elevated); color:var(--text-primary); border:1px solid var(--border);
-      border-left:3.5px solid ${color}; padding:11px 18px; border-radius:var(--radius-md);
-      font-size:13.5px; font-weight:600; box-shadow:var(--shadow-card); backdrop-filter:blur(16px);
-      display:flex; align-items:center; gap:9px; max-width:min(380px,88vw); pointer-events:auto;
-      opacity:0; transform:translateY(8px); transition:opacity 0.2s, transform 0.2s; white-space:normal;`;
-    el.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;"></span>${msg}`;
+      border-left:3px solid ${color}; padding:9px 15px; border-radius:var(--radius-xs);
+      font-size:12.5px; font-weight:600; box-shadow:var(--shadow-card);
+      display:flex; align-items:center; gap:8px; max-width:min(360px,88vw); pointer-events:auto;
+      opacity:0; transform:translateY(6px); transition:opacity 0.15s, transform 0.15s; white-space:normal;`;
+    el.innerHTML = `<span style="width:6px;height:6px;background:${color};flex-shrink:0;"></span>${msg}`;
     root.appendChild(el);
     setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 10);
     setTimeout(() => {
-      el.style.opacity = '0'; el.style.transform = 'translateY(8px)';
-      setTimeout(() => el.remove(), 250);
-    }, 3200);
+      el.style.opacity = '0'; el.style.transform = 'translateY(6px)';
+      setTimeout(() => el.remove(), 200);
+    }, 3000);
   }
 
   // ──────────────────────────────────────────
@@ -643,7 +630,6 @@ class FookApp {
     const currentDay  = now.getDate();
     const daysLeft    = Math.max(1, daysInMonth - currentDay);
 
-    // Filter current month
     const thisMonth = this.state.transactions.filter(t => t.date.startsWith(monthPrefix));
     let actualIncome = 0, actualSpend = 0, knownRecurring = 0;
     thisMonth.forEach(t => {
@@ -652,18 +638,15 @@ class FookApp {
       else actualSpend += v;
     });
 
-    // Historical in home currency for ML engine
     const histInHome = (this.state.historicalIncome || []).map(h => ({
       date: h.date,
       amount: CurrencyEngine.convert(h.amount, h.currency || 'USD', hc)
     }));
 
-    // ML Forecast
     const forecast = IncomeForecaster.forecastNext3Months(histInHome, knownRecurring);
     const overrideMultiplier = 1 + (this.state.settings.overrideAdjustment || 0) / 100;
     const expectedMonthTotal = Math.max(actualIncome, (forecast.projections[0]?.expected || 3000) * overrideMultiplier);
 
-    // Adaptive Safe Spending Ceiling
     const safeCalc = IncomeForecaster.calculateAdaptiveSafeCeiling(
       actualIncome,
       expectedMonthTotal,
@@ -676,17 +659,14 @@ class FookApp {
     const safeDaily  = Math.max(0, remaining / daysLeft);
     const pacingPct  = safeCeiling > 0 ? (actualSpend / safeCeiling) : 0;
 
-    // Volatility Index (Coefficient of Variation)
     const histAmts = histInHome.map(h => h.amount).filter(v => v > 0);
     const histMean = histAmts.length ? histAmts.reduce((a,b)=>a+b,0)/histAmts.length : 0;
     const histSD   = histAmts.length > 1 ? Math.sqrt(histAmts.reduce((s,v) => s + Math.pow(v - histMean, 2), 0) / histAmts.length) : 0;
     const cv       = histMean > 0 ? Math.round((histSD / histMean) * 100) : 0;
 
-    // Runway
     const runwayDays = burnPerDay > 0 ? Math.floor(remaining / burnPerDay) : 999;
     const safeToInvest = Math.max(0, remaining - (burnPerDay * daysLeft));
 
-    // Health Score
     const savingsRate  = actualIncome > 0 ? Math.min(100, Math.round(((actualIncome - actualSpend) / actualIncome) * 100)) : 0;
     const allClients   = [...new Set(this.state.transactions.filter(t => t.type === 'income').map(t => t.client).filter(Boolean))].length;
     const diversifyScore = Math.min(100, allClients * 20);
@@ -704,15 +684,15 @@ class FookApp {
     const p0 = forecast.projections[0];
     const predPill = document.getElementById('hero-predicted-pill');
     if (predPill && p0) {
-      predPill.innerHTML = `<span class="badge badge-cyan" style="font-size:11px; font-family:'JetBrains Mono';">Expected: ${CurrencyEngine.format(p0.conservative, hc, 0)} – ${CurrencyEngine.format(p0.optimistic, hc, 0)}</span>`;
+      predPill.innerHTML = `<span class="badge badge-cyan" style="font-size:10.5px; font-family:'JetBrains Mono';">Expected: ${CurrencyEngine.format(p0.conservative, hc, 0)} – ${CurrencyEngine.format(p0.optimistic, hc, 0)}</span>`;
     }
 
-    // Radial Gauge Ring (Circumference 207.3)
+    // Radial Gauge Ring (Circumference 188.5)
     const gauge = document.getElementById('gauge-ring');
     const gaugePct = document.getElementById('gauge-pct');
     if (gauge && gaugePct) {
       const pct = Math.min(100, Math.round(pacingPct * 100));
-      const C = 207.3;
+      const C = 188.5;
       gauge.style.strokeDashoffset = C - (pct / 100) * C;
       gaugePct.textContent = `${pct}%`;
       const color = pct > 90 ? 'var(--accent-rose)' : pct > 70 ? 'var(--accent-amber)' : 'var(--accent-green)';
@@ -724,9 +704,9 @@ class FookApp {
     const badge = document.getElementById('hero-pacing-badge');
     const badgeText = document.getElementById('badge-text');
     if (badge && badgeText) {
-      if (remaining < 0) { badge.className = 'badge badge-rose'; badgeText.textContent = 'Ceiling Exceeded!'; }
+      if (remaining < 0) { badge.className = 'badge badge-rose'; badgeText.textContent = 'Ceiling Exceeded'; }
       else if (pacingPct > 0.85) { badge.className = 'badge badge-amber'; badgeText.textContent = 'High Velocity'; }
-      else { badge.className = 'badge badge-green'; badgeText.textContent = 'Safe Velocity'; }
+      else { badge.className = 'badge badge-green'; badgeText.textContent = 'Normal Velocity'; }
     }
 
     // Doom Mode Alert
@@ -735,8 +715,8 @@ class FookApp {
       if (remaining < 0 || (burnPerDay > 0 && runwayDays < 5)) {
         doom.style.display = 'block';
         this.setEl('doom-message', remaining < 0
-          ? `You are over your safe spending ceiling by ${CurrencyEngine.format(Math.abs(remaining), hc, 0)}. Pause non-essential spending.`
-          : `At your current burn rate, safe reserves run out in ${runwayDays} days. ${daysLeft} days remain in the month.`
+          ? `Spending exceeds safe ceiling by ${CurrencyEngine.format(Math.abs(remaining), hc, 0)}.`
+          : `Safe buffer runs out in ${runwayDays} days at current daily pace.`
         );
       } else {
         doom.style.display = 'none';
@@ -751,7 +731,7 @@ class FookApp {
       if (cv < 20) { vBadge.className = 'badge badge-green'; vBadge.textContent = 'Stable'; }
       else if (cv < 40) { vBadge.className = 'badge badge-cyan'; vBadge.textContent = 'Moderate'; }
       else if (cv < 60) { vBadge.className = 'badge badge-amber'; vBadge.textContent = 'Volatile'; }
-      else { vBadge.className = 'badge badge-rose'; vBadge.textContent = 'Highly Volatile'; }
+      else { vBadge.className = 'badge badge-rose'; vBadge.textContent = 'High'; }
     }
     if (vBar) vBar.style.width = `${Math.min(100, cv)}%`;
 
@@ -771,7 +751,7 @@ class FookApp {
     }
     this.setEl('safe-invest', CurrencyEngine.format(safeToInvest, hc, 0));
 
-    // Onboarding Banner visibility check
+    // Onboarding Banner visibility
     const obBanner = document.getElementById('onboarding-banner');
     if (obBanner && this.state.settings.onboardingDismissed) {
       obBanner.style.display = 'none';
@@ -808,10 +788,10 @@ class FookApp {
     this.setEl('streak-count-badge', `${streakCount} week${streakCount !== 1 ? 's' : ''}`);
     const msgEl = document.getElementById('streak-message');
     if (msgEl) {
-      if (streakCount >= 6) msgEl.textContent = `🔥 ${streakCount}-week streak! You're mastering variable income planning.`;
-      else if (streakCount >= 3) msgEl.textContent = `💪 ${streakCount} weeks consistent! Building solid financial runway.`;
-      else if (this.state.streak.currentWeekDone) msgEl.textContent = `✅ This week's check-in complete. Next check-in on Sunday!`;
-      else msgEl.textContent = `Check your safe ceiling this Sunday to keep the streak going.`;
+      if (streakCount >= 6) msgEl.textContent = `${streakCount}-week streak active. Healthy cashflow discipline.`;
+      else if (streakCount >= 3) msgEl.textContent = `${streakCount} weeks consistent. Stable reserve tracking.`;
+      else if (this.state.streak.currentWeekDone) msgEl.textContent = `Weekly check-in complete. Next review on Sunday.`;
+      else msgEl.textContent = `Check your safe spending ceiling this Sunday to maintain habit.`;
     }
   }
 
@@ -828,7 +808,7 @@ class FookApp {
     });
     const sorted = Object.entries(incomeByClient).sort((a,b) => b[1] - a[1]);
     if (!sorted.length) {
-      container.innerHTML = '<p style="font-size:12px; color:var(--text-muted); padding:10px 0;">Log income to see your client revenue breakdown</p>';
+      container.innerHTML = '<p style="font-size:11.5px; color:var(--text-muted); padding:6px 0;">No income records logged yet</p>';
       return;
     }
     const total = sorted.reduce((s, [,v]) => s + v, 0);
@@ -837,11 +817,11 @@ class FookApp {
       const color = CLIENT_COLORS[i % CLIENT_COLORS.length];
       return `
         <div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px; font-size:11.5px;">
             <span style="font-weight:600; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:62%;">${client}</span>
             <div style="display:flex; align-items:center; gap:6px;">
-              <span class="num blur-private" style="color:var(--text-secondary); font-size:12px;">${CurrencyEngine.format(amount, hc, 0)}</span>
-              <span style="font-size:11px; font-weight:800; font-family:'JetBrains Mono'; color:${color}; min-width:32px; text-align:right;">${pct}%</span>
+              <span class="num blur-private" style="color:var(--text-secondary); font-size:11.5px;">${CurrencyEngine.format(amount, hc, 0)}</span>
+              <span style="font-size:10.5px; font-weight:800; font-family:'JetBrains Mono'; color:${color}; min-width:28px; text-align:right;">${pct}%</span>
             </div>
           </div>
           <div class="progress-track"><div class="progress-fill" style="width:${pct}%; background:${color};"></div></div>
@@ -859,17 +839,17 @@ class FookApp {
     const alerts = AnomalyDetector.detectAnomalies(this.state.transactions, hc);
     if (!alerts.length) {
       container.innerHTML = `
-        <div style="display:flex; align-items:center; gap:8px; padding:11px 14px; border-radius:var(--radius-md); background:var(--accent-green-glow); border:1px solid rgba(16,185,129,0.22);">
-          <svg width="15" height="15" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          <span style="font-size:12.5px; font-weight:600; color:var(--accent-green);">No anomalies. Clean spending signature.</span>
+        <div style="display:flex; align-items:center; gap:6px; padding:8px 10px; background:rgba(129, 201, 149, 0.08); border:1px solid rgba(129, 201, 149, 0.2);">
+          <svg width="13" height="13" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span style="font-size:11.5px; font-weight:600; color:var(--accent-green);">No statistical spending anomalies detected.</span>
         </div>
       `;
       return;
     }
     container.innerHTML = alerts.map(a => `
-      <div style="display:flex; align-items:flex-start; gap:9px; padding:11px 14px; border-radius:var(--radius-md); background:var(--accent-amber-glow); border:1px solid rgba(245,158,11,0.25); margin-bottom:6px;">
-        <svg width="15" height="15" fill="none" stroke="var(--accent-amber)" viewBox="0 0 24 24" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <p style="font-size:12px; color:var(--accent-amber); line-height:1.4;">${a.message}</p>
+      <div style="display:flex; align-items:flex-start; gap:8px; padding:8px 10px; background:rgba(253, 214, 99, 0.08); border:1px solid rgba(253, 214, 99, 0.2); margin-bottom:5px;">
+        <svg width="13" height="13" fill="none" stroke="var(--accent-amber)" viewBox="0 0 24 24" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p style="font-size:11.5px; color:var(--accent-amber); line-height:1.3;">${a.message}</p>
       </div>
     `).join('');
   }
@@ -896,13 +876,13 @@ class FookApp {
       const over  = spent > cap;
       const color = over ? 'var(--accent-rose)' : pct > 75 ? 'var(--accent-amber)' : 'var(--accent-green)';
       return `
-        <div class="card card-lift" style="padding:14px;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-            <span style="font-size:12.5px; font-weight:600; color:var(--text-primary);">${cat}</span>
-            ${over ? '<span class="badge badge-rose" style="font-size:9px;">Over!</span>' : ''}
+        <div class="card" style="padding:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+            <span style="font-size:12px; font-weight:600; color:var(--text-primary);">${cat}</span>
+            ${over ? '<span class="badge badge-rose" style="font-size:8.5px;">Over</span>' : ''}
           </div>
           <div class="progress-track" style="margin-bottom:6px;"><div class="progress-fill" style="width:${pct}%; background:${color};"></div></div>
-          <div style="display:flex; justify-content:space-between; font-size:11px;">
+          <div style="display:flex; justify-content:space-between; font-size:10.5px;">
             <span style="color:${color}; font-family:'JetBrains Mono'; font-weight:700;" class="blur-private">${CurrencyEngine.format(spent, hc, 0)}</span>
             <span style="color:var(--text-muted);" class="blur-private">/ ${CurrencyEngine.format(cap, hc, 0)}</span>
           </div>
@@ -932,7 +912,7 @@ class FookApp {
 
     const confBadge = document.getElementById('forecast-confidence-badge');
     if (confBadge) {
-      confBadge.textContent = `${forecast.confidenceScore}% ML Confidence`;
+      confBadge.textContent = `${forecast.confidenceScore}% Confidence`;
       confBadge.className = forecast.confidenceScore >= 80 ? 'badge badge-green' : 'badge badge-cyan';
     }
 
@@ -940,32 +920,32 @@ class FookApp {
     const cards = document.getElementById('forecast-cards');
     if (cards) {
       cards.innerHTML = forecast.projections.map((p, i) => `
-        <div class="card card-lift" style="padding:20px; border-top:3.5px solid ${colors[i]};">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+        <div class="card" style="padding:16px; border-top:3px solid ${colors[i]};">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
             <div>
-              <p style="font-size:14px; font-weight:800; color:var(--text-primary);">${p.monthName}</p>
-              <p style="font-size:11px; font-weight:600; color:var(--text-muted); margin-top:2px;">${p.notes}</p>
+              <p style="font-size:13px; font-weight:800; color:var(--text-primary);">${p.monthName}</p>
+              <p style="font-size:10.5px; font-weight:600; color:var(--text-muted); margin-top:1px;">${p.notes}</p>
             </div>
             ${this.state.settings.overrideAdjustment !== 0
-              ? `<span class="badge badge-violet" style="font-size:9px;">Override ${this.state.settings.overrideAdjustment > 0 ? '+' : ''}${this.state.settings.overrideAdjustment}%</span>`
+              ? `<span class="badge badge-violet" style="font-size:8.5px;">Override ${this.state.settings.overrideAdjustment > 0 ? '+' : ''}${this.state.settings.overrideAdjustment}%</span>`
               : ''}
           </div>
-          <div class="space-y-2.5" style="margin-bottom:14px;">
-            <div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid var(--border);">
+          <div class="space-y-2" style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; font-size:11.5px; padding:4px 0; border-bottom:1px solid var(--border);">
               <span style="color:var(--text-muted);">Conservative (P20)</span>
               <span class="num blur-private" style="color:var(--text-secondary);">${CurrencyEngine.format(p.conservative, hc, 0)}</span>
             </div>
-            <div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid var(--border); font-weight:700;">
+            <div style="display:flex; justify-content:space-between; font-size:11.5px; padding:4px 0; border-bottom:1px solid var(--border); font-weight:700;">
               <span style="color:${colors[i]};">Expected Target</span>
-              <span class="num blur-private" style="color:var(--text-primary); font-size:14.5px;">${CurrencyEngine.format(p.expected, hc, 0)}</span>
+              <span class="num blur-private" style="color:var(--text-primary); font-size:13px;">${CurrencyEngine.format(p.expected, hc, 0)}</span>
             </div>
-            <div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0;">
+            <div style="display:flex; justify-content:space-between; font-size:11.5px; padding:4px 0;">
               <span style="color:var(--text-muted);">Optimistic (P80)</span>
               <span class="num blur-private" style="color:var(--text-secondary);">${CurrencyEngine.format(p.optimistic, hc, 0)}</span>
             </div>
           </div>
-          <div style="padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-green-glow); border:1px solid rgba(16,185,129,0.22);">
-            <div style="display:flex; justify-content:space-between; font-size:12.5px;">
+          <div style="padding:8px 10px; background:var(--bg-input); border:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; font-size:11.5px;">
               <span style="color:var(--text-secondary);">Safe Spend Target</span>
               <span class="num c-green blur-private" style="font-weight:800;">${CurrencyEngine.format(p.safeSpendTarget, hc, 0)}</span>
             </div>
@@ -982,12 +962,12 @@ class FookApp {
         const date = new Date(h.date);
         const monthName = date.toLocaleString('default', { month: 'long', year: 'numeric' });
         return `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border-radius:var(--radius-md); background:var(--bg-hover); border:1px solid var(--border);">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:var(--bg-input); border:1px solid var(--border);">
             <div>
-              <p style="font-size:12.5px; font-weight:700; color:var(--text-primary);">${monthName}</p>
-              <p style="font-size:11px; color:var(--text-muted);">Actual logged</p>
+              <p style="font-size:11.5px; font-weight:700; color:var(--text-primary);">${monthName}</p>
+              <p style="font-size:10px; color:var(--text-muted);">Actual logged</p>
             </div>
-            <p class="num blur-private" style="font-size:14px; font-weight:800; color:var(--accent-green);">${CurrencyEngine.format(h.amount, hc, 0)}</p>
+            <p class="num blur-private" style="font-size:12.5px; font-weight:800; color:var(--accent-green);">${CurrencyEngine.format(h.amount, hc, 0)}</p>
           </div>
         `;
       }).join('');
@@ -1018,8 +998,8 @@ class FookApp {
     }
 
     if (!txs.length) {
-      const emptyMsg = '<p style="text-align:center; padding:28px; color:var(--text-muted); font-size:13px;">No transactions match your search filter.</p>';
-      if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted); font-size:13px;">No transactions found.</td></tr>`;
+      const emptyMsg = '<p style="text-align:center; padding:24px; color:var(--text-muted); font-size:12px;">No transactions match criteria.</p>';
+      if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted); font-size:12px;">No transactions found.</td></tr>`;
       if (mList) mList.innerHTML = emptyMsg;
       return;
     }
@@ -1033,20 +1013,20 @@ class FookApp {
         const typeColor = isIncome ? 'var(--accent-green)' : 'var(--accent-rose)';
         return `
           <tr>
-            <td style="color:var(--text-muted); font-family:'JetBrains Mono'; font-size:12px; white-space:nowrap;">${t.date}</td>
+            <td style="color:var(--text-muted); font-family:'JetBrains Mono'; font-size:11.5px; white-space:nowrap;">${t.date}</td>
             <td>
               <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
-                <span style="font-size:12px; font-weight:700; color:${typeColor};">${isIncome?'+':'−'} ${t.category}</span>
-                ${t.isRecurring ? '<span class="badge badge-cyan" style="font-size:9px;">Retainer</span>' : ''}
-                ${t.isTaxDeductible ? '<span class="badge badge-amber" style="font-size:9px;">★ Tax</span>' : ''}
+                <span style="font-size:11.5px; font-weight:700; color:${typeColor};">${isIncome?'+':'-'} ${t.category}</span>
+                ${t.isRecurring ? '<span class="badge badge-cyan" style="font-size:8.5px;">Retainer</span>' : ''}
+                ${t.isTaxDeductible ? '<span class="badge badge-amber" style="font-size:8.5px;">Tax</span>' : ''}
               </div>
             </td>
-            <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12.5px; color:var(--text-primary);">${t.notes || '—'}</td>
-            <td style="text-align:right;"><span class="num blur-private" style="font-size:13.5px; font-weight:800; color:${typeColor};">${isIncome?'+':'−'}${CurrencyEngine.format(t.amount, t.currency)}</span></td>
-            <td style="text-align:right;"><span class="num blur-private" style="font-size:12px; color:var(--text-secondary);">${isForeign ? CurrencyEngine.format(homeVal, hc) : '—'}</span></td>
+            <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; color:var(--text-primary);">${t.notes || '-'}</td>
+            <td style="text-align:right;"><span class="num blur-private" style="font-size:12.5px; font-weight:800; color:${typeColor};">${isIncome?'+':'-'}${CurrencyEngine.format(t.amount, t.currency)}</span></td>
+            <td style="text-align:right;"><span class="num blur-private" style="font-size:11.5px; color:var(--text-secondary);">${isForeign ? CurrencyEngine.format(homeVal, hc) : '-'}</span></td>
             <td style="text-align:right;">
-              <button onclick="window.fookApp.deleteTransaction('${t.id}')" class="btn btn-ghost btn-icon" style="color:var(--text-muted); min-width:30px; min-height:30px;" title="Delete">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              <button onclick="window.fookApp.deleteTransaction('${t.id}')" class="btn btn-ghost btn-icon" style="color:var(--text-muted); min-width:26px; min-height:26px;" title="Delete">
+                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
               </button>
             </td>
           </tr>
@@ -1063,23 +1043,23 @@ class FookApp {
         const typeColor = isIncome ? 'var(--accent-green)' : 'var(--accent-rose)';
         return `
           <div class="ledger-row-card">
-            <div style="width:10px; height:10px; border-radius:50%; background:${typeColor}; margin-top:5px; flex-shrink:0;"></div>
+            <div style="width:6px; height:6px; background:${typeColor}; margin-top:5px; flex-shrink:0;"></div>
             <div style="flex:1; min-width:0;">
               <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
                 <div style="min-width:0;">
-                  <p style="font-size:13.5px; font-weight:700; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.notes || t.category}</p>
-                  <p style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">${t.category} · ${t.date}</p>
+                  <p style="font-size:12.5px; font-weight:700; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.notes || t.category}</p>
+                  <p style="font-size:11px; color:var(--text-muted); margin-top:1px;">${t.category} · ${t.date}</p>
                 </div>
                 <div style="text-align:right; flex-shrink:0;">
-                  <p class="num blur-private" style="font-size:14.5px; font-weight:800; color:${typeColor};">${isIncome?'+':'−'}${CurrencyEngine.format(t.amount, t.currency)}</p>
-                  ${isForeign ? `<p class="num blur-private" style="font-size:11px; color:var(--text-muted);">${CurrencyEngine.format(homeVal, hc)}</p>` : ''}
+                  <p class="num blur-private" style="font-size:13.5px; font-weight:800; color:${typeColor};">${isIncome?'+':'-'}${CurrencyEngine.format(t.amount, t.currency)}</p>
+                  ${isForeign ? `<p class="num blur-private" style="font-size:10.5px; color:var(--text-muted);">${CurrencyEngine.format(homeVal, hc)}</p>` : ''}
                 </div>
               </div>
-              <div style="display:flex; gap:4px; margin-top:6px; align-items:center;">
-                ${t.isRecurring ? '<span class="badge badge-cyan" style="font-size:9px;">Retainer</span>' : ''}
-                ${t.isTaxDeductible ? '<span class="badge badge-amber" style="font-size:9px;">★ Tax-Ded.</span>' : ''}
-                <button onclick="window.fookApp.deleteTransaction('${t.id}')" style="margin-left:auto; background:none; border:none; cursor:pointer; color:var(--text-muted); padding:4px;" title="Delete">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+              <div style="display:flex; gap:4px; margin-top:4px; align-items:center;">
+                ${t.isRecurring ? '<span class="badge badge-cyan" style="font-size:8.5px;">Retainer</span>' : ''}
+                ${t.isTaxDeductible ? '<span class="badge badge-amber" style="font-size:8.5px;">Tax</span>' : ''}
+                <button onclick="window.fookApp.deleteTransaction('${t.id}')" style="margin-left:auto; background:none; border:none; cursor:pointer; color:var(--text-muted); padding:3px;" title="Delete">
+                  <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
                 </button>
               </div>
             </div>
@@ -1115,16 +1095,16 @@ class FookApp {
     const dedBreakdown = document.getElementById('tax-deductible-breakdown');
     if (dedBreakdown) {
       const sorted = Object.entries(dedByCategory).sort((a,b) => b[1]-a[1]);
-      if (!sorted.length) { dedBreakdown.innerHTML = '<p class="c-muted" style="font-size:12px;">Mark business expenses as "Tax Deductible" to generate reports.</p>'; }
+      if (!sorted.length) { dedBreakdown.innerHTML = '<p class="c-muted" style="font-size:11.5px;">No tax deductible expenses recorded.</p>'; }
       else {
         const total = sorted.reduce((s,[,v]) => s+v, 0);
         dedBreakdown.innerHTML = sorted.map(([cat, amt]) => {
           const pct = total > 0 ? Math.round((amt/total)*100) : 0;
-          return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
-            <span style="font-size:13px; color:var(--text-primary); font-weight:600;">${cat}</span>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <span style="font-size:11px; color:var(--text-muted);">${pct}%</span>
-              <span class="num c-amber blur-private" style="font-weight:800;">${CurrencyEngine.format(amt, hc)}</span>
+          return `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+            <span style="font-size:12px; color:var(--text-primary); font-weight:600;">${cat}</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:10.5px; color:var(--text-muted);">${pct}%</span>
+              <span class="num c-amber blur-private" style="font-weight:800; font-size:12px;">${CurrencyEngine.format(amt, hc)}</span>
             </div>
           </div>`;
         }).join('');
@@ -1134,18 +1114,18 @@ class FookApp {
     const incBreakdown = document.getElementById('tax-income-breakdown');
     if (incBreakdown) {
       const sorted = Object.entries(incomeByCategory).sort((a,b) => b[1]-a[1]);
-      if (!sorted.length) { incBreakdown.innerHTML = '<p class="c-muted" style="font-size:12px;">Log income to see category source breakdown.</p>'; }
+      if (!sorted.length) { incBreakdown.innerHTML = '<p class="c-muted" style="font-size:11.5px;">No income recorded.</p>'; }
       else {
         const total = sorted.reduce((s,[,v]) => s+v, 0);
         incBreakdown.innerHTML = sorted.map(([cat, amt], i) => {
           const pct = total > 0 ? Math.round((amt/total)*100) : 0;
           const color = CLIENT_COLORS[i % CLIENT_COLORS.length];
-          return `<div style="margin-bottom:10px;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:12px;">
+          return `<div style="margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-size:11.5px;">
               <span style="color:var(--text-primary); font-weight:600;">${cat}</span>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span style="color:var(--text-muted); font-size:11px;">${pct}%</span>
-                <span class="num blur-private" style="font-weight:800; color:${color};">${CurrencyEngine.format(amt, hc)}</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="color:var(--text-muted); font-size:10.5px;">${pct}%</span>
+                <span class="num blur-private" style="font-weight:800; color:${color}; font-size:11.5px;">${CurrencyEngine.format(amt, hc)}</span>
               </div>
             </div>
             <div class="progress-track"><div class="progress-fill" style="width:${pct}%; background:${color};"></div></div>
@@ -1166,12 +1146,12 @@ class FookApp {
       csv += `"${t.id}","${t.date}","${t.type}","${t.category}",${t.amount},"${t.currency}",${hv},"${hc}","${(t.notes||'').replace(/"/g,'""')}","${(t.client||'').replace(/"/g,'""')}",${t.isRecurring?'YES':'NO'},${t.isTaxDeductible?'YES':'NO'}\n`;
     });
     this.downloadBlob(csv, `fook_ledger_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
-    this.toast('📁 CSV ledger exported', 'green');
+    this.toast('CSV ledger exported', 'green');
   }
 
   exportJSON() {
     this.downloadBlob(JSON.stringify(this.state, null, 2), `fook_backup_${new Date().toISOString().split('T')[0]}.json`, 'application/json');
-    this.toast('💾 Full JSON backup downloaded', 'green');
+    this.toast('JSON backup downloaded', 'green');
   }
 
   downloadBlob(content, filename, mime) {
