@@ -6,15 +6,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="fook">
-  <meta name="theme-color" content="#07090e" id="meta-theme-color">
-  <meta name="description" content="fook — Offline variable income budgeting for global freelancers. No cloud, no bank sync, on-device ML.">
+  <meta name="theme-color" content="#06080d" id="meta-theme-color">
+  <meta name="description" content="fook — Offline-first variable income budgeting for freelancers. Zero cloud, on-device ML.">
   <link rel="manifest" href="manifest.json">
   <title>fook — Variable Income OS</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config = { darkMode: 'class', theme: { extend: {} } }</script>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* ──────── CSS VARIABLE BRIDGES ──────── */
     body { background: var(--bg-base); color: var(--text-primary); }
     .c-primary   { color: var(--text-primary) !important; }
     .c-secondary { color: var(--text-secondary) !important; }
@@ -29,566 +28,670 @@
     .bg-hover    { background: var(--bg-hover) !important; }
     .border-c    { border-color: var(--border) !important; }
 
-    /* ──────── TYPOGRAPHY ──────── */
-    .big-num { font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 800; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.04em; line-height: 1; color: var(--text-primary); }
-    .mid-num { font-size: clamp(1.2rem, 3vw, 1.6rem); font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.03em; }
-    .sm-num  { font-size: 1rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-    .section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fade-up 0.22s ease; }
 
-    /* ──────── MOBILE BOTTOM NAV ──────── */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-      background: var(--bg-card); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border-top: 1px solid var(--border);
-      display: flex; align-items: stretch;
-      padding-bottom: env(safe-area-inset-bottom);
-      height: calc(60px + env(safe-area-inset-bottom));
-    }
-    @media (min-width: 768px) { .bottom-nav { display: none; } }
-
-    .bottom-nav-item {
-      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 3px; cursor: pointer; padding: 6px 4px; border: none; background: transparent;
-      font-family: var(--font-sans); transition: all 0.15s ease; color: var(--text-muted);
-      position: relative; -webkit-tap-highlight-color: transparent;
-    }
-    .bottom-nav-item.active { color: var(--accent-green); }
-    .bottom-nav-item.active svg { transform: scale(1.1); }
-    .bottom-nav-item span { font-size: 10px; font-weight: 600; }
-    .bottom-nav-item svg { width: 22px; height: 22px; transition: transform 0.15s ease; }
-
-    /* Center FAB-style add button */
-    .bottom-nav-add {
-      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 3px; cursor: pointer; border: none; background: transparent; position: relative; -webkit-tap-highlight-color: transparent;
-    }
-    .bottom-nav-add .add-circle {
-      width: 44px; height: 44px; border-radius: 50%;
-      background: var(--accent-green); box-shadow: 0 4px 16px var(--accent-green-glow);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; font-weight: 300; color: white; margin-bottom: 2px;
-      transition: transform 0.15s ease;
-    }
-    html.dark .bottom-nav-add .add-circle { color: #07090e; }
-    .bottom-nav-add:active .add-circle { transform: scale(0.92); }
-    .bottom-nav-add span { font-size: 10px; font-weight: 600; color: var(--text-muted); }
-
-    /* Mobile content padding */
-    .page-content { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
-    @media (min-width: 768px) { .page-content { padding-bottom: 24px; } }
-
-    /* ──────── DESKTOP SIDEBAR-STYLE NAV (hidden on mobile) ──────── */
+    /* Desktop Tab Nav */
     .desktop-tab-nav { display: none; }
     @media (min-width: 768px) { .desktop-tab-nav { display: flex; } }
 
-    /* ──────── TAB PANELS ──────── */
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; animation: fade-up 0.25s ease; }
-
-    /* ──────── MOBILE CARD STACK ──────── */
+    /* Mobile KPI Carousel */
     .mobile-kpi-scroll {
-      display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 4px;
+      display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px;
     }
     .mobile-kpi-scroll::-webkit-scrollbar { display: none; }
-    .mobile-kpi-scroll .kpi-snap { scroll-snap-align: start; flex: 0 0 calc(100% - 32px); }
-    @media (min-width: 640px) { .mobile-kpi-scroll .kpi-snap { flex: 0 0 calc(50% - 8px); } }
-    @media (min-width: 900px) { .mobile-kpi-scroll { flex-wrap: wrap; overflow: visible; } .mobile-kpi-scroll .kpi-snap { flex: 1 1 220px; } }
+    .mobile-kpi-scroll .kpi-snap { scroll-snap-align: start; flex: 0 0 calc(100% - 28px); }
+    @media (min-width: 640px) { .mobile-kpi-scroll .kpi-snap { flex: 0 0 calc(50% - 10px); } }
+    @media (min-width: 960px) { .mobile-kpi-scroll { flex-wrap: wrap; overflow: visible; } .mobile-kpi-scroll .kpi-snap { flex: 1 1 240px; } }
 
-    /* ──────── TOGGLE SWITCH ──────── */
-    .toggle-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .toggle-track { width: 40px; height: 22px; border-radius: 11px; background: var(--bg-input); border: 1px solid var(--border); position: relative; transition: background 0.2s; flex-shrink: 0; }
-    .toggle-track.on { background: var(--accent-green); border-color: var(--accent-green); }
-    .toggle-thumb { width: 16px; height: 16px; border-radius: 50%; background: white; position: absolute; top: 2px; left: 2px; transition: left 0.2s cubic-bezier(0.16,1,0.3,1); box-shadow: 0 1px 4px rgba(0,0,0,0.25); }
-    .toggle-track.on .toggle-thumb { left: 20px; }
+    /* Grid Layouts */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    @media (max-width: 900px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } .grid-3 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
 
-    /* ──────── NL INPUT ──────── */
-    .nl-bar { transition: border-color 0.15s, box-shadow 0.15s; }
-    .nl-bar:focus-within { border-color: var(--accent-green) !important; box-shadow: 0 0 0 3px var(--accent-green-glow), var(--shadow-card); }
+    /* Page spacing for bottom nav */
+    .page-content { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+    @media (min-width: 768px) { .page-content { padding-bottom: 32px; } }
 
-    /* ──────── PROGRESS ──────── */
-    .progress-track { width:100%; height:6px; background:var(--bg-input); border-radius:99px; overflow:hidden; }
-    .progress-fill  { height:100%; border-radius:99px; transition:width 0.6s cubic-bezier(0.16,1,0.3,1); }
-
-    /* ──────── DOOM BANNER ──────── */
-    .doom-banner { background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(245,158,11,0.10)); border: 1px solid rgba(244,63,94,0.3); border-radius: var(--radius-lg); }
-
-    /* ──────── STREAK ──────── */
-    .streak-dot { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--border); background: var(--bg-hover); transition: all 0.3s ease; }
-    .streak-dot.done  { background: var(--accent-green); border-color: var(--accent-green); }
-    .streak-dot.today { border-color: var(--accent-amber); }
-
-    /* ──────── TABLES ──────── */
-    .fook-table { width: 100%; border-collapse: collapse; }
-    .fook-table th { padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
-    .fook-table td { padding: 12px 14px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    .fook-table tr:last-child td { border-bottom: none; }
-    .fook-table tbody tr:hover { background: var(--bg-hover); }
-    .fook-table tbody tr { transition: background 0.12s; }
-
-    /* ──────── OVERRIDE SLIDER ──────── */
-    input[type=range] { -webkit-appearance: none; height: 5px; border-radius: 3px; background: var(--bg-input); outline: none; width: 100%; cursor: pointer; }
-    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 2px 8px var(--accent-green-glow); cursor: pointer; }
-
-    /* ──────── MOBILE LEDGER CARD (instead of table on small) ──────── */
-    .ledger-card-mobile {
-      display: flex; flex-direction: column; gap: 10px;
-    }
+    /* Ledger Rows */
     .ledger-row-card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);
       padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start;
-      transition: border-color 0.15s;
-    }
-    .ledger-row-card:hover { border-color: var(--border-hover); }
-    .ledger-row-card .type-dot {
-      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
-    }
-
-    /* ──────── TOAST CONTAINER ──────── */
-    #toast-root { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column-reverse; align-items: center; gap: 8px; pointer-events: none; }
-    @media (min-width: 768px) { #toast-root { bottom: 28px; } }
-
-    /* ──────── MODAL ──────── */
-    .modal-backdrop { position: fixed; inset: 0; z-index: 200; background: var(--bg-overlay); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: none; align-items: flex-end; justify-content: center; }
-    .modal-backdrop.active { display: flex; animation: fade-in 0.18s ease; }
-    @media (min-width: 640px) { .modal-backdrop { align-items: center; } }
-    .modal-sheet {
-      width: 100%; max-width: 520px;
-      background: var(--bg-elevated); border: 1px solid var(--border);
-      border-radius: var(--radius-2xl) var(--radius-2xl) 0 0; padding: 20px; padding-bottom: calc(20px + env(safe-area-inset-bottom));
-      animation: slide-up 0.28s cubic-bezier(0.16,1,0.3,1);
-      max-height: 92vh; overflow-y: auto;
-    }
-    @media (min-width: 640px) { .modal-sheet { border-radius: var(--radius-2xl); padding-bottom: 20px; max-height: 90vh; } }
-    @keyframes slide-up { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    /* Sheet handle */
-    .sheet-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border-hover); margin: 0 auto 16px; display: block; }
-    @media (min-width: 640px) { .sheet-handle { display: none; } }
-
-    /* ──────── FORM ──────── */
-    .form-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px; }
-    .fook-input, .fook-select {
-      width: 100%; padding: 12px 14px; border-radius: var(--radius-md); font-size: 14px;
-      background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary);
-      font-family: var(--font-sans); outline: none; appearance: none;
       transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .fook-input:focus, .fook-select:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--accent-green-glow); }
-    .fook-input::placeholder { color: var(--text-muted); }
+    .ledger-row-card:hover { border-color: var(--border-hover); }
 
-    /* Radio type tabs */
+    /* Toggle Switch */
+    .toggle-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+    .toggle-track { width: 38px; height: 22px; border-radius: 11px; background: var(--bg-input); border: 1px solid var(--border); position: relative; transition: background 0.2s; flex-shrink: 0; }
+    .toggle-track.on { background: var(--accent-green); border-color: var(--accent-green); }
+    .toggle-thumb { width: 16px; height: 16px; border-radius: 50%; background: white; position: absolute; top: 2px; left: 2px; transition: left 0.2s cubic-bezier(0.16,1,0.3,1); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .toggle-track.on .toggle-thumb { left: 18px; }
+
+    /* Modal Type Tabs */
     .type-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .type-tab { padding: 12px; border-radius: var(--radius-md); border: 2px solid var(--border); cursor: pointer; text-align: center; font-weight: 700; font-size: 14px; transition: all 0.15s; background: var(--bg-input); color: var(--text-secondary); }
     .type-tab.income.active { border-color: var(--accent-green); background: var(--accent-green-glow); color: var(--accent-green); }
     .type-tab.expense.active { border-color: var(--accent-rose); background: var(--accent-rose-glow); color: var(--accent-rose); }
 
-    /* ──────── CATEGORY PILLS (FILTER) ──────── */
-    .filter-pill { padding: 7px 14px; border-radius: 99px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); transition: all 0.15s; white-space: nowrap; font-family: var(--font-sans); }
-    .filter-pill.active { background: var(--accent-green); border-color: var(--accent-green); color: white; }
-    html.dark .filter-pill.active { color: #07090e; }
+    /* Filter Pills */
+    .filter-pill { padding: 7px 15px; border-radius: var(--radius-full); font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); transition: all 0.15s; white-space: nowrap; }
+    .filter-pill.active { background: var(--accent-green); border-color: var(--accent-green); color: #ffffff; }
+    html.dark .filter-pill.active { color: #06080d; font-weight: 700; }
 
-    /* ──────── PRED RANGE ──────── */
-    .pred-range-pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 99px; border: 1px solid rgba(6,182,212,0.3); background: rgba(6,182,212,0.08); font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); white-space: nowrap; }
+    /* Streak Dots */
+    .streak-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--border); background: var(--bg-hover); transition: all 0.3s ease; }
+    .streak-dot.done { background: var(--accent-green); border-color: var(--accent-green); box-shadow: 0 0 8px var(--accent-green-glow); }
+    .streak-dot.today { border-color: var(--accent-amber); box-shadow: 0 0 6px var(--accent-amber-glow); }
 
-    /* ──────── SECTION GRID ──────── */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    @media (max-width: 900px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } .grid-3 { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 600px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+    /* Tables */
+    .fook-table { width: 100%; border-collapse: collapse; }
+    .fook-table th { padding: 12px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); border-bottom: 1px solid var(--border); text-align: left; }
+    .fook-table td { padding: 13px 14px; font-size: 13.5px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .fook-table tr:last-child td { border-bottom: none; }
+    .fook-table tbody tr:hover { background: var(--bg-hover); }
 
-    /* Change chip */
-    .chip-up   { background: rgba(16,185,129,0.12); color: var(--accent-green);  font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
-    .chip-down { background: rgba(244,63,94,0.12);  color: var(--accent-rose);   font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
-
-    /* Print */
-    @media print { .no-print { display: none !important; } body { background: white !important; color: black !important; } body::before { display: none; } }
+    @media print { .no-print { display: none !important; } body { background: white !important; color: black !important; } }
   </style>
 </head>
 
 <body class="flex flex-col min-h-screen">
-<!-- ═══ HEADER ═══ -->
-<header class="sticky top-0 z-40 no-print" style="background:var(--bg-card); border-bottom:1px solid var(--border); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); padding-top:env(safe-area-inset-top);">
-  <div class="max-w-7xl mx-auto px-4 sm:px-5 h-14 flex items-center gap-3">
 
-    <!-- Logo -->
-    <div class="flex items-center gap-2 flex-shrink-0">
-      <div style="background:linear-gradient(135deg,#10b981,#06b6d4); width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(16,185,129,0.3); flex-shrink:0;">
-        <span style="font-family:'JetBrains Mono',monospace; font-weight:900; font-size:12px; color:#07090e;">fk</span>
+<!-- ════════════════════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════════════════ -->
+<header class="sticky top-0 z-40 no-print" style="background:var(--bg-card); border-bottom:1px solid var(--border); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); padding-top:env(safe-area-inset-top);">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-15 flex items-center gap-3">
+
+    <!-- Logo & Status -->
+    <div class="flex items-center gap-2.5 flex-shrink-0 cursor-pointer" onclick="window.fookApp.switchTab('dashboard')">
+      <div style="background:linear-gradient(135deg,#10b981,#06b6d4); width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(16,185,129,0.35); flex-shrink:0;">
+        <span style="font-family:'JetBrains Mono',monospace; font-weight:900; font-size:13px; color:#06080d;">fk</span>
       </div>
-      <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:17px; color:var(--text-primary);">fook</span>
-      <span class="badge badge-green hidden sm:inline-flex" style="font-size:9px; padding:1px 6px; margin-left:2px;">OFFLINE</span>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:17px; color:var(--text-primary); letter-spacing:-0.02em;">fook</span>
+          <span class="badge badge-green hidden sm:inline-flex" style="font-size:9px; padding:1px 6px;">100% OFFLINE</span>
+        </div>
+        <p class="c-muted hidden md:block" style="font-size:9.5px; margin-top:-1px;">Variable Income OS</p>
+      </div>
     </div>
 
     <!-- Desktop Tab Nav -->
-    <nav class="desktop-tab-nav flex-1 max-w-md mx-auto" style="display:none;">
-      <div style="display:flex; gap:4px; padding:4px; background:var(--bg-input); border-radius:var(--radius-md); border:1px solid var(--border);">
-        <button class="tab-btn active" data-tab="dashboard" style="flex:1; padding:6px 10px; border-radius:var(--radius-sm); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Dashboard</button>
-        <button class="tab-btn" data-tab="forecast" style="flex:1; padding:6px 10px; border-radius:var(--radius-sm); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Forecast</button>
-        <button class="tab-btn" data-tab="ledger" style="flex:1; padding:6px 10px; border-radius:var(--radius-sm); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Ledger</button>
-        <button class="tab-btn" data-tab="tax" style="flex:1; padding:6px 10px; border-radius:var(--radius-sm); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Tax</button>
+    <nav class="desktop-tab-nav flex-1 max-w-md mx-auto">
+      <div style="display:flex; gap:4px; padding:4px; background:var(--bg-input); border-radius:var(--radius-md); border:1px solid var(--border); width:100%;">
+        <button class="tab-btn active" data-tab="dashboard" style="flex:1; padding:7px 12px; border-radius:var(--radius-sm); font-size:12.5px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted); transition:all 0.15s;">Dashboard</button>
+        <button class="tab-btn" data-tab="forecast" style="flex:1; padding:7px 12px; border-radius:var(--radius-sm); font-size:12.5px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted); transition:all 0.15s;">Forecast</button>
+        <button class="tab-btn" data-tab="ledger" style="flex:1; padding:7px 12px; border-radius:var(--radius-sm); font-size:12.5px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted); transition:all 0.15s;">Ledger</button>
+        <button class="tab-btn" data-tab="tax" style="flex:1; padding:7px 12px; border-radius:var(--radius-sm); font-size:12.5px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted); transition:all 0.15s;">Tax</button>
       </div>
     </nav>
 
-    <!-- Right Controls -->
+    <!-- Header Controls -->
     <div class="flex items-center gap-1.5 ml-auto">
-      <!-- Currency -->
-      <select id="home-currency-select" class="fook-select" style="width:auto; padding:5px 8px; font-size:12px; font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--accent-green); background:var(--bg-input); border-color:var(--border); min-width:80px;"></select>
+      <!-- Currency selector -->
+      <select id="home-currency-select" class="fook-select" style="width:auto; padding:6px 9px; font-size:12px; font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--accent-green); background:var(--bg-input); border-color:var(--border); min-width:82px; cursor:pointer;" title="Change display currency"></select>
 
-      <!-- Theme -->
-      <button id="theme-btn" class="btn btn-ghost btn-icon" title="Toggle theme (T)" style="min-width:34px; min-height:34px;">
-        <svg id="icon-sun" width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        <svg id="icon-moon" width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="display:none;"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      <!-- Theme toggle -->
+      <button id="theme-btn" class="btn btn-ghost btn-icon" title="Toggle theme (Shortcut: T)">
+        <svg id="icon-sun" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="icon-moon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="display:none;"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
       </button>
 
-      <!-- Privacy -->
-      <button id="privacy-btn" class="btn btn-ghost btn-icon" title="Privacy blur (P)" style="min-width:34px; min-height:34px;">
-        <svg id="eye-open" width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <svg id="eye-closed" width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      <!-- Privacy mode -->
+      <button id="privacy-btn" class="btn btn-ghost btn-icon" title="Privacy blur numbers (Shortcut: P)">
+        <svg id="eye-open" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg id="eye-closed" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
       </button>
 
-      <!-- Desktop: Add button -->
-      <button class="btn btn-primary btn-sm no-print hidden sm:flex" data-modal="transaction-modal" style="gap:5px; min-height:34px;">
+      <!-- Desktop Log Entry Button -->
+      <button class="btn btn-primary btn-sm hidden sm:flex" data-modal="transaction-modal" style="gap:6px;">
         <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Log Entry
       </button>
     </div>
+
   </div>
 </header>
 
-<!-- ═══ MAIN ═══ -->
-<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-5 lg:px-8 py-4 space-y-4 page-content relative z-10">
+<!-- ════════════════════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════════════════ -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-4 page-content relative z-10">
 
-  <!-- ── NL QUICK INPUT BAR ── -->
-  <div class="card nl-bar" style="padding:12px 14px; border-radius:var(--radius-xl);">
-    <div style="display:flex; align-items:center; gap:10px;">
-      <div style="color:var(--accent-green); flex-shrink:0; margin-top:1px;">
-        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+  <!-- ── FIRST-TIME USER ONBOARDING GUIDE BANNER (Dismissable) ── -->
+  <div id="onboarding-banner" class="onboarding-card animate-fade-up">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:12px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:18px;">💡</span>
+        <h2 style="font-size:14.5px; font-weight:700; color:var(--text-primary);">How fook Protects Your Variable Income</h2>
       </div>
-      <input type="text" id="nl-input" style="flex:1; background:transparent; border:none; outline:none; font-size:14px; color:var(--text-primary); font-family:var(--font-sans); min-width:0;"
-        placeholder="Quick log: '500 USD from Upwork' or 'spent 45 on food'..."/>
-      <div id="voice-waves" style="display:none; align-items:center; gap:1px; height:18px; flex-shrink:0;">
-        <span class="voice-wave" style="height:8px;"></span><span class="voice-wave"></span><span class="voice-wave"></span><span class="voice-wave" style="height:10px;"></span>
-      </div>
-      <button id="voice-btn" class="btn btn-ghost btn-icon" style="flex-shrink:0; min-width:34px; min-height:34px;" title="Voice input">
-        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-      </button>
-      <button id="nl-submit" class="btn btn-primary btn-sm" style="flex-shrink:0; min-height:34px;">Log</button>
+      <button id="dismiss-onboarding-btn" class="btn btn-ghost btn-sm" style="font-size:11px; padding:3px 8px; color:var(--text-muted);">Dismiss ✕</button>
     </div>
-    <!-- NL Parse Preview -->
-    <div id="nl-preview" style="display:none; margin-top:10px; padding-top:10px; border-top:1px solid var(--border);"></div>
-  </div>
 
-  <!-- ══════════ DASHBOARD TAB ══════════ -->
-  <div id="tab-dashboard" class="tab-panel active space-y-4">
-
-    <!-- DOOM BANNER -->
-    <div id="doom-banner" style="display:none; padding:14px 16px;" class="doom-banner">
-      <div style="display:flex; align-items:flex-start; gap:12px;">
-        <span style="font-size:22px; flex-shrink:0;">🚨</span>
+    <!-- 3 Steps -->
+    <div class="grid-3" style="gap:12px; margin-bottom:14px;">
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <span class="onboarding-step-num">1</span>
         <div>
-          <p style="font-weight:700; font-size:14px; color:var(--accent-rose); margin-bottom:2px;">Spending Runway Critical</p>
-          <p id="doom-message" style="font-size:12px; color:var(--text-secondary);"></p>
+          <p style="font-size:12.5px; font-weight:700; color:var(--text-primary);">Log Gig &amp; Client Pay</p>
+          <p style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;">Type or speak your pay from Upwork, retainers, or consulting.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <span class="onboarding-step-num">2</span>
+        <div>
+          <p style="font-size:12.5px; font-weight:700; color:var(--text-primary);">Calculates Safe Spend</p>
+          <p style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;">fook calculates your safe daily ceiling so you don't overspend.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <span class="onboarding-step-num">3</span>
+        <div>
+          <p style="font-size:12.5px; font-weight:700; color:var(--text-primary);">Never Run Out</p>
+          <p style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;">Adaptive budgeting guards your cash buffer through dry months.</p>
         </div>
       </div>
     </div>
 
-    <!-- HERO KPI — scrollable on mobile, grid on desktop -->
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <button id="quick-demo-btn" class="btn btn-primary btn-sm" style="font-size:12px; padding:6px 14px;">
+        ✨ Load Freelancer Demo Data
+      </button>
+      <span style="font-size:11px; color:var(--text-muted);">See how it adapts in real-time with sample USD, EUR &amp; KES earnings</span>
+    </div>
+  </div>
+
+  <!-- ── SMART NATURAL LANGUAGE INPUT BAR + 1-TAP QUICK CHIPS ── -->
+  <div class="card" style="padding:14px 16px; border-radius:var(--radius-xl);">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="color:var(--accent-green); flex-shrink:0;">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+      <input type="text" id="nl-input" style="flex:1; background:transparent; border:none; outline:none; font-size:14px; color:var(--text-primary); font-family:var(--font-sans); min-width:0;"
+        placeholder="Type naturally: '1200 USD from client' or 'spent 45 on groceries'..." />
+      <div id="voice-waves" style="display:none; align-items:center; gap:1px; height:18px; flex-shrink:0;">
+        <span class="voice-wave" style="height:8px;"></span><span class="voice-wave"></span><span class="voice-wave"></span><span class="voice-wave" style="height:10px;"></span>
+      </div>
+      <button id="voice-btn" class="btn btn-ghost btn-icon" style="flex-shrink:0;" title="Voice input (speak your pay or spend)">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button id="nl-submit" class="btn btn-primary btn-sm" style="flex-shrink:0;">Log</button>
+    </div>
+
+    <!-- AI Parse Preview -->
+    <div id="nl-preview" style="display:none; margin-top:10px; padding-top:10px; border-top:1px solid var(--border);"></div>
+
+    <!-- 1-Tap Quick-Add Suggestions -->
+    <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border); display:flex; gap:6px; overflow-x:auto; scrollbar-width:none;" class="no-scrollbar">
+      <span style="font-size:11px; font-weight:700; color:var(--text-muted); align-self:center; margin-right:4px; text-transform:uppercase; letter-spacing:0.04em;">Quick Log:</span>
+      <button class="quick-chip chip-income" data-quick="+ 1500 USD from Upwork Milestone">+ $1,500 Upwork</button>
+      <button class="quick-chip chip-income" data-quick="+ 650 EUR Client Retainer">+ €650 Retainer</button>
+      <button class="quick-chip chip-expense" data-quick="spent 45 USD on groceries">- $45 Groceries</button>
+      <button class="quick-chip chip-expense" data-quick="spent 15 USD on Figma software">- $15 Figma</button>
+      <button class="quick-chip chip-expense" data-quick="spent 650 USD on rent">- $650 Rent</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       TAB 1: DASHBOARD
+  ══════════════════════════════════════════════ -->
+  <div id="tab-dashboard" class="tab-panel active space-y-4">
+
+    <!-- DOOM MODE ALERT BANNER -->
+    <div id="doom-banner" style="display:none; padding:14px 18px;" class="card" style="background:linear-gradient(135deg, rgba(244,63,94,0.14), rgba(245,158,11,0.08)); border-color:rgba(244,63,94,0.35);">
+      <div style="display:flex; align-items:flex-start; gap:12px;">
+        <span style="font-size:22px; flex-shrink:0;">🚨</span>
+        <div>
+          <p style="font-weight:700; font-size:14px; color:var(--accent-rose);">DOOM MODE — Spending Velocity Too High</p>
+          <p id="doom-message" style="font-size:12px; color:var(--text-secondary); margin-top:2px;"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ROW 1: PRIMARY KPI CAROUSEL (Mobile Swipeable / Desktop Grid) ── -->
     <div class="mobile-kpi-scroll">
 
-      <!-- Card 1: Safe Spend (PRIMARY) -->
-      <div class="card kpi-snap card-glow-green" style="padding:20px; min-height:190px; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <!-- Card 1: Safe Spend Ceiling (PRIMARY GAUGE) -->
+      <div class="card kpi-snap card-glow-green" style="padding:22px; min-height:205px; display:flex; flex-direction:column; justify-content:space-between;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
           <div style="flex:1; min-width:0;">
-            <p class="section-title">Safe Spend Remaining</p>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <p class="section-title">Safe Spend Remaining</p>
+              <span class="badge badge-neutral" style="font-size:9px; cursor:help;" title="What you can spend safely before next month without running dry">ℹ️</span>
+            </div>
             <p id="hero-safe-amount" class="big-num blur-private" style="margin-top:8px; color:var(--accent-green);">—</p>
-            <span id="hero-pacing-badge" class="badge badge-green" style="margin-top:8px; display:inline-flex; gap:5px;">
+            <span id="hero-pacing-badge" class="badge badge-green" style="margin-top:8px;">
               <span id="badge-dot" style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;"></span>
               <span id="badge-text">Calculating...</span>
             </span>
           </div>
-          <!-- Radial gauge -->
-          <div style="position:relative; width:78px; height:78px; flex-shrink:0;">
-            <svg width="78" height="78" viewBox="0 0 78 78">
-              <circle cx="39" cy="39" r="31" fill="none" stroke="var(--bg-input)" stroke-width="7"/>
-              <circle id="gauge-ring" cx="39" cy="39" r="31" fill="none" stroke-width="7" stroke="#10b981" stroke-dasharray="194.8" stroke-dashoffset="194.8" stroke-linecap="round" transform="rotate(-90 39 39)"/>
+
+          <!-- Radial Gauge Ring -->
+          <div style="position:relative; width:82px; height:82px; flex-shrink:0;">
+            <svg width="82" height="82" viewBox="0 0 82 82">
+              <circle cx="41" cy="41" r="33" fill="none" stroke="var(--bg-input)" stroke-width="7"/>
+              <circle id="gauge-ring" cx="41" cy="41" r="33" fill="none" stroke-width="7" stroke="#10b981" stroke-dasharray="207.3" stroke-dashoffset="207.3" stroke-linecap="round" transform="rotate(-90 41 41)"/>
             </svg>
             <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
               <span id="gauge-pct" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;color:var(--accent-green);">0%</span>
-              <span style="font-size:8px;font-weight:700;letter-spacing:0.05em;color:var(--text-muted);">USED</span>
+              <span style="font-size:8px;font-weight:700;letter-spacing:0.06em;color:var(--text-muted);">USED</span>
             </div>
           </div>
         </div>
-        <!-- Sub row -->
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin-top:14px; padding-top:12px; border-top:1px solid var(--border);">
-          <div><p class="section-title">Spent</p><p id="hero-spent" class="sm-num blur-private" style="color:var(--accent-rose); margin-top:3px;">—</p></div>
-          <div><p class="section-title">Safe/Day</p><p id="hero-daily-allowance" class="sm-num c-green blur-private" style="margin-top:3px;">—</p></div>
-          <div><p class="section-title">Days Left</p><p id="hero-days" class="sm-num" style="margin-top:3px; color:var(--text-primary);">—</p></div>
+
+        <!-- Sub metrics breakdown -->
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:14px; padding-top:12px; border-top:1px solid var(--border);">
+          <div>
+            <p class="section-title">Spent</p>
+            <p id="hero-spent" class="sm-num blur-private" style="color:var(--accent-rose); margin-top:3px;">—</p>
+          </div>
+          <div>
+            <p class="section-title">Safe / Day</p>
+            <p id="hero-daily-allowance" class="sm-num c-green blur-private" style="margin-top:3px;">—</p>
+          </div>
+          <div>
+            <p class="section-title">Days Left</p>
+            <p id="hero-days" class="sm-num c-primary" style="margin-top:3px;">—</p>
+          </div>
         </div>
       </div>
 
-      <!-- Card 2: Income -->
-      <div class="card kpi-snap" style="padding:20px; min-height:190px; display:flex; flex-direction:column; justify-content:space-between;">
+      <!-- Card 2: Income Received -->
+      <div class="card kpi-snap" style="padding:20px; min-height:205px; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <p class="section-title">Income Received</p>
-            <svg width="16" height="16" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <p class="section-title">Income Received</p>
+              <span class="badge badge-neutral" style="font-size:9px;" title="Total earnings logged this month across all currencies">ℹ️</span>
+            </div>
+            <svg width="16" height="16" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
           </div>
           <p id="hero-actual-income" class="mid-num c-green blur-private">—</p>
           <div id="hero-predicted-pill" style="margin-top:8px;"></div>
         </div>
-        <!-- Health Score mini -->
-        <div style="padding:10px 12px; border-radius:var(--radius-md); background:var(--bg-hover); border:1px solid var(--border); margin-top:12px;">
+        <!-- Financial Health Score bar -->
+        <div style="padding:10px 12px; border-radius:var(--radius-md); background:var(--bg-hover); border:1px solid var(--border); margin-top:10px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="section-title">Health Score</span>
-            <span id="health-score-num" style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:18px; color:var(--accent-green);">—</span>
+            <span id="health-score-num" style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:16px; color:var(--accent-green);">—</span>
           </div>
           <div class="progress-track" style="margin-top:6px;"><div id="health-bar" class="progress-fill" style="width:0%; background:var(--accent-green);"></div></div>
         </div>
       </div>
 
-      <!-- Card 3: Runway -->
-      <div class="card kpi-snap" style="padding:20px; min-height:190px; display:flex; flex-direction:column; justify-content:space-between;">
+      <!-- Card 3: Cash Runway -->
+      <div class="card kpi-snap" style="padding:20px; min-height:205px; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <p class="section-title">Cash Runway</p>
-            <span id="runway-badge" class="badge badge-green">—</span>
+            <span id="runway-badge" class="badge badge-green">Safe</span>
           </div>
           <p id="runway-days" class="mid-num blur-private">— days</p>
-          <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">At current burn rate</p>
+          <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">At current daily burn rate</p>
         </div>
-        <div style="padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-violet-glow); border:1px solid rgba(139,92,246,0.2); margin-top:12px;">
-          <p class="section-title" style="color:var(--accent-violet); margin-bottom:4px;">Safe to Invest</p>
-          <p id="safe-invest" class="sm-num blur-private" style="color:var(--accent-violet);">—</p>
+        <div style="padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-violet-glow); border:1px solid rgba(139,92,246,0.2); margin-top:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="section-title" style="color:var(--accent-violet);">Safe to Invest</span>
+            <span id="safe-invest" class="sm-num blur-private" style="color:var(--accent-violet);">—</span>
+          </div>
         </div>
       </div>
 
-      <!-- Card 4: Volatility -->
-      <div class="card kpi-snap" style="padding:20px; min-height:190px; display:flex; flex-direction:column; justify-content:space-between;">
+      <!-- Card 4: Income Volatility Index -->
+      <div class="card kpi-snap" style="padding:20px; min-height:205px; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <p class="section-title">Income Volatility</p>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <p class="section-title">Income Volatility</p>
+              <span class="badge badge-neutral" style="font-size:9px;" title="Coefficient of variation: measures how unpredictable your income is">ℹ️</span>
+            </div>
             <span id="volatility-badge" class="badge badge-neutral">—</span>
           </div>
           <p id="volatility-cv" class="mid-num c-amber blur-private">—</p>
-          <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">Coeff. of Variation</p>
+          <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">Lower % = more predictable cashflow</p>
         </div>
-        <div style="margin-top:12px;">
+        <div style="margin-top:10px;">
           <div class="progress-track"><div id="volatility-bar" class="progress-fill" style="width:0%; background:var(--accent-amber);"></div></div>
-          <p style="font-size:10px; color:var(--text-muted); margin-top:5px;">Lower = more stable income</p>
         </div>
       </div>
 
     </div><!-- /mobile-kpi-scroll -->
 
-    <!-- ── QUICK ACTIONS row (mobile only) ── -->
-    <div class="grid-2 sm:hidden" style="gap:10px;">
-      <button class="btn btn-primary" style="justify-content:center; padding:14px; font-size:14px; border-radius:var(--radius-lg);" data-modal="transaction-modal" id="quick-income-btn">
-        + Log Income
-      </button>
-      <button class="btn btn-ghost" style="justify-content:center; padding:14px; font-size:14px; border-radius:var(--radius-lg); border-color:var(--accent-rose); color:var(--accent-rose);" data-modal="transaction-modal" id="quick-expense-btn">
-        − Log Expense
-      </button>
-    </div>
 
-    <!-- ── STREAK + ANOMALIES row ── -->
-    <div class="grid-2" style="gap:12px;">
-
-      <!-- Streak -->
-      <div class="card" style="padding:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <p class="section-title">Weekly Streak</p>
-          <span id="streak-count-badge" class="badge badge-amber">0 wks</span>
+    <!-- ── ROW 2: INTERACTIVE "WHAT-IF" SIMULATOR ── -->
+    <div class="card simulator-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:16px;">🔮</span>
+          <p style="font-size:13.5px; font-weight:700; color:var(--text-primary);">"What-If" Income Simulator</p>
         </div>
-        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;" id="streak-dots"></div>
-        <p id="streak-message" style="font-size:12px; color:var(--text-secondary); line-height:1.5;">Log a transaction this week!</p>
-        <button id="checkin-btn" class="btn btn-ghost btn-sm" style="width:100%; margin-top:10px; justify-content:center;">✓ Check In This Week</button>
+        <span class="badge badge-violet" style="font-size:10px;">Live Dynamic Preview</span>
+      </div>
+      <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">Move the slider to see how Landing a gig or a dry spell changes your safe spending ceiling instantly:</p>
+
+      <div style="display:grid; grid-template-columns: 1fr auto; gap:12px; align-items:center; margin-bottom:12px;">
+        <div>
+          <input type="range" id="simulator-slider" min="-2000" max="4000" value="0" step="100" style="width:100%;">
+          <div style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--text-muted); margin-top:4px; font-family:'JetBrains Mono';">
+            <span>-$2,000 (Dry month)</span>
+            <span>$0 (Current)</span>
+            <span>+$4,000 (Big project)</span>
+          </div>
+        </div>
+        <div style="text-align:right; min-width:110px;">
+          <span id="simulator-delta-label" style="font-family:'JetBrains Mono'; font-weight:800; font-size:15px; color:var(--accent-green);">+$0</span>
+        </div>
       </div>
 
-      <!-- Anomalies -->
-      <div class="card" style="padding:16px;">
+      <!-- Result Preview -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; padding:10px 14px; border-radius:var(--radius-md); background:var(--bg-card); border:1px solid var(--border);">
+        <div>
+          <p class="section-title">Simulated Safe Spend</p>
+          <p id="sim-safe-spend" class="num c-green" style="font-size:15px; font-weight:800; margin-top:2px;">—</p>
+        </div>
+        <div>
+          <p class="section-title">Simulated Daily Allowance</p>
+          <p id="sim-safe-daily" class="num c-cyan" style="font-size:15px; font-weight:800; margin-top:2px;">—/day</p>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── ROW 3: SUNDAY HABIT STREAK + REVENUE PARETO ── -->
+    <div class="grid-2">
+
+      <!-- Sunday Check-in Streak -->
+      <div class="card" style="padding:18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <p class="section-title">Anomaly Alerts</p>
-          <span class="badge badge-neutral" style="font-size:9px;">Z-Score</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <p class="section-title">Sunday Check-in Streak</p>
+            <span class="badge badge-neutral" style="font-size:9px;" title="Check your budget ceiling once a week to stay disciplined">ℹ️</span>
+          </div>
+          <span id="streak-count-badge" class="badge badge-amber">0 weeks</span>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;" id="streak-dots"></div>
+        <p id="streak-message" style="font-size:12px; color:var(--text-secondary); line-height:1.5;">Check in this Sunday to keep your budgeting habit alive!</p>
+        <button id="checkin-btn" class="btn btn-ghost btn-sm" style="width:100%; margin-top:12px; justify-content:center;">
+          ✓ Mark This Week Done
+        </button>
+      </div>
+
+      <!-- Revenue by Source / Client Pareto -->
+      <div class="card" style="padding:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <p class="section-title">Revenue by Client</p>
+            <span class="badge badge-neutral" style="font-size:9px;" title="Pareto 80/20 breakdown of your top income streams">80/20</span>
+          </div>
+        </div>
+        <div id="pareto-container" class="space-y-3"></div>
+      </div>
+
+    </div>
+
+
+    <!-- ── ROW 4: ANOMALIES & PREDICTION OVERRIDE ── -->
+    <div class="grid-2">
+
+      <!-- Anomaly Alert Card -->
+      <div class="card" style="padding:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <p class="section-title">Anomaly Detector</p>
+          <span class="badge badge-neutral" style="font-size:9px;">Z-Score σ</span>
         </div>
         <div id="anomaly-container"></div>
       </div>
 
-    </div>
-
-    <!-- ── OVERRIDE + PARETO row ── -->
-    <div class="grid-2" style="gap:12px;">
-
-      <!-- Prediction Override -->
-      <div class="card" style="padding:16px;">
+      <!-- Manual Forecast Override -->
+      <div class="card" style="padding:18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <p class="section-title">Adjust My Forecast</p>
+          <p class="section-title">Adjust My Prediction</p>
           <span class="badge badge-violet" style="font-size:9px;">Manual Override</span>
         </div>
-        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">Know this month is slow? Adjust your prediction.</p>
-        <div style="margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; color:var(--text-secondary);">Adjustment</span>
-          <span id="override-pct-label" style="font-family:'JetBrains Mono'; font-size:14px; font-weight:700; color:var(--text-primary);">0%</span>
+        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:10px;">Know this month will be slow? Adjust the ML forecast manually:</p>
+
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+          <span style="color:var(--text-secondary);">Adjustment</span>
+          <span id="override-pct-label" style="font-family:'JetBrains Mono'; font-weight:700; color:var(--text-primary);">0%</span>
         </div>
-        <input type="range" id="override-slider" min="-50" max="50" value="0" step="5" style="margin-bottom:10px;">
-        <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-bottom:10px;">
-          <span>-50% Slow</span><span>0</span><span>+50% Big</span>
+        <input type="range" id="override-slider" min="-50" max="50" value="0" step="5" style="margin-bottom:8px;">
+
+        <div style="padding:8px 12px; border-radius:var(--radius-md); background:var(--accent-cyan-glow); border:1px solid rgba(6,182,212,0.2); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:11.5px; color:var(--text-secondary);">Adjusted Forecast:</span>
+          <span id="override-result" style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px; color:var(--accent-cyan);" class="blur-private">—</span>
         </div>
-        <div style="padding:8px 12px; border-radius:var(--radius-md); background:var(--accent-cyan-glow); border:1px solid rgba(6,182,212,0.2); margin-bottom:8px;">
-          <p style="font-size:11px; color:var(--text-secondary);">Adjusted prediction:</p>
-          <p id="override-result" style="font-family:'JetBrains Mono'; font-weight:700; font-size:14px; color:var(--accent-cyan);" class="blur-private">—</p>
-        </div>
-        <input type="text" id="override-reason" class="fook-input" style="font-size:12px; padding:8px 10px; margin-bottom:8px;" placeholder="Reason (optional)...">
+        <input type="text" id="override-reason" class="fook-input" style="font-size:12px; padding:7px 11px; margin-bottom:8px;" placeholder="Reason (e.g., Client on vacation)...">
         <button id="apply-override" class="btn btn-ghost btn-sm" style="width:100%; justify-content:center; color:var(--accent-cyan); border-color:rgba(6,182,212,0.3);">Apply Override</button>
       </div>
 
-      <!-- Client Pareto -->
-      <div class="card" style="padding:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <p class="section-title">Revenue by Source</p>
-          <span class="badge badge-neutral" style="font-size:9px;">Pareto 80/20</span>
-        </div>
-        <div id="pareto-container"></div>
-      </div>
-
     </div>
 
-    <!-- ── CATEGORY CEILINGS ── -->
+
+    <!-- ── ROW 5: ADAPTIVE CATEGORY CEILINGS ── -->
     <div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <p class="section-title">Adaptive Category Ceilings</p>
-        <p style="font-size:10px; color:var(--text-muted); display:none;" class="sm:block">Rebalances with income</p>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div>
+          <p class="section-title">Adaptive Category Ceilings</p>
+          <p style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;">Ceilings automatically expand when you land gigs and contract when slow</p>
+        </div>
       </div>
-      <div id="category-ceilings" class="grid-4" style="gap:10px;"></div>
+      <div id="category-ceilings" class="grid-4"></div>
     </div>
 
   </div><!-- /tab-dashboard -->
 
-  <!-- ══════════ FORECAST TAB ══════════ -->
+
+  <!-- ══════════════════════════════════════════════
+       TAB 2: FORECAST
+  ══════════════════════════════════════════════ -->
   <div id="tab-forecast" class="tab-panel space-y-4">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
       <div>
-        <p class="section-title">3-Month Income Forecast</p>
-        <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Confidence intervals — never a false single number</p>
+        <p class="section-title">3-Month Income Forecast (On-Device ARIMA)</p>
+        <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Probabilistic ranges — never a misleading single number</p>
       </div>
       <span id="forecast-confidence-badge" class="badge badge-cyan">— Confidence</span>
     </div>
-    <!-- Explainer -->
-    <div class="card" style="padding:14px; background:var(--accent-violet-glow); border-color:rgba(139,92,246,0.2);">
-      <div style="display:flex; gap:10px; align-items:flex-start;">
-        <span style="font-size:18px;">🎯</span>
-        <div><p style="font-size:13px; font-weight:600; color:var(--accent-violet); margin-bottom:3px;">Why ranges, not single numbers?</p>
-          <p style="font-size:12px; color:var(--text-secondary);">Freelance income is uncertain. We show Conservative → Expected → Optimistic so you can plan defensively or ambitiously. The model gets better with more history.</p></div>
+
+    <!-- Explainer Banner -->
+    <div class="card" style="padding:16px; background:var(--accent-violet-glow); border-color:rgba(139,92,246,0.25);">
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <span style="font-size:20px; flex-shrink:0;">🎯</span>
+        <div>
+          <p style="font-size:13.5px; font-weight:700; color:var(--accent-violet); margin-bottom:3px;">Why Conservative, Expected &amp; Optimistic?</p>
+          <p style="font-size:12px; color:var(--text-secondary); line-height:1.5;">Freelance income fluctuates. A single number creates false security. fook shows <strong>Conservative (P20)</strong> so you can plan defensibly, and <strong>Optimistic (P80)</strong> for best-case growth.</p>
+        </div>
       </div>
     </div>
-    <div id="forecast-cards" class="grid-3" style="gap:12px;"></div>
-    <div class="card" style="padding:16px;">
-      <p class="section-title" style="margin-bottom:12px;">Historical vs. Prediction Accuracy</p>
+
+    <!-- 3 Forecast Cards -->
+    <div id="forecast-cards" class="grid-3"></div>
+
+    <!-- Accuracy Tracker -->
+    <div class="card" style="padding:18px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <p class="section-title">Historical Accuracy (Last 3 Months)</p>
+        <span class="badge badge-neutral" style="font-size:9px;">Honest ML</span>
+      </div>
       <div id="accuracy-tracker" class="space-y-3"></div>
-      <p style="font-size:11px; color:var(--text-muted); margin-top:10px;">💡 Log 6+ months of income for best predictions.</p>
+      <p style="font-size:11.5px; color:var(--text-muted); margin-top:12px;">💡 Tip: The more months you log, the more precise the on-device forecast becomes.</p>
     </div>
-    <div class="card" style="padding:16px;">
+
+    <!-- Override History -->
+    <div class="card" style="padding:18px;">
       <p class="section-title" style="margin-bottom:10px;">Your Override History</p>
       <div id="override-history"></div>
     </div>
   </div><!-- /tab-forecast -->
 
-  <!-- ══════════ LEDGER TAB ══════════ -->
+
+  <!-- ══════════════════════════════════════════════
+       TAB 3: LEDGER
+  ══════════════════════════════════════════════ -->
   <div id="tab-ledger" class="tab-panel space-y-4">
-    <!-- Filter pills (horizontal scroll) -->
-    <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none;">
+    <!-- Filter Pills (Scrollable) -->
+    <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none;" class="no-scrollbar">
       <button class="filter-pill active" data-filter="all">All</button>
-      <button class="filter-pill" data-filter="income" style="color:var(--accent-green);">Income</button>
-      <button class="filter-pill" data-filter="expense" style="color:var(--accent-rose);">Expenses</button>
-      <button class="filter-pill" data-filter="recurring" style="color:var(--accent-cyan);">Recurring</button>
-      <button class="filter-pill" data-filter="tax" style="color:var(--accent-amber);">Tax-Ded.</button>
+      <button class="filter-pill" data-filter="income" style="color:var(--accent-green);">+ Income</button>
+      <button class="filter-pill" data-filter="expense" style="color:var(--accent-rose);">− Expenses</button>
+      <button class="filter-pill" data-filter="recurring" style="color:var(--accent-cyan);">Retainers</button>
+      <button class="filter-pill" data-filter="tax" style="color:var(--accent-amber);">★ Tax-Deductible</button>
     </div>
+
     <!-- Search + Export -->
     <div style="display:flex; gap:10px; align-items:center;">
       <div style="flex:1; position:relative;">
         <svg width="14" height="14" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24" stroke-width="2" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); pointer-events:none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="ledger-search" class="fook-input" style="padding-left:36px; font-size:13px;" placeholder="Search...">
+        <input type="text" id="ledger-search" class="fook-input" style="padding-left:36px; font-size:13px;" placeholder="Search transactions, clients, notes...">
       </div>
-      <button onclick="window.fookApp.exportCSV()" class="btn btn-ghost btn-sm" style="flex-shrink:0;">CSV</button>
-      <button onclick="window.fookApp.exportJSON()" class="btn btn-ghost btn-sm" style="flex-shrink:0;">JSON</button>
+      <button onclick="window.fookApp.exportCSV()" class="btn btn-ghost btn-sm" style="flex-shrink:0;">Export CSV</button>
+      <button onclick="window.fookApp.exportJSON()" class="btn btn-ghost btn-sm" style="flex-shrink:0;">Backup JSON</button>
     </div>
-    <!-- Ledger: card list on mobile, table on desktop -->
-    <div id="ledger-mobile-list" class="ledger-card-mobile sm:hidden"></div>
+
+    <!-- Mobile Card List -->
+    <div id="ledger-mobile-list" class="space-y-2.5 sm:hidden"></div>
+
+    <!-- Desktop Data Table -->
     <div class="card hidden sm:block" style="overflow:hidden; padding:0;">
-      <div style="overflow-x:auto;"><table class="fook-table"><thead><tr>
-        <th>Date</th><th>Type</th><th>Description</th><th style="text-align:right;">Amount</th><th style="text-align:right;">Home</th><th></th>
-      </tr></thead><tbody id="ledger-tbody"></tbody></table></div>
+      <div style="overflow-x:auto;">
+        <table class="fook-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Category &amp; Type</th>
+              <th>Description / Client</th>
+              <th style="text-align:right;">Original</th>
+              <th style="text-align:right;">In Home Currency</th>
+              <th style="text-align:right; width:50px;"></th>
+            </tr>
+          </thead>
+          <tbody id="ledger-tbody"></tbody>
+        </table>
+      </div>
     </div>
   </div><!-- /tab-ledger -->
 
-  <!-- ══════════ TAX TAB ══════════ -->
+
+  <!-- ══════════════════════════════════════════════
+       TAB 4: TAX
+  ══════════════════════════════════════════════ -->
   <div id="tab-tax" class="tab-panel space-y-4">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <p class="section-title">Tax & Accounting Summary</p>
+      <div>
+        <p class="section-title">Tax &amp; Accounting Summary</p>
+        <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Categorized report ready for tax filing</p>
+      </div>
       <div style="display:flex; gap:8px;">
         <button onclick="window.fookApp.exportCSV()" class="btn btn-ghost btn-sm">Export CSV</button>
-        <button onclick="window.print()" class="btn btn-ghost btn-sm no-print">Print</button>
+        <button onclick="window.print()" class="btn btn-ghost btn-sm no-print">Print Report</button>
       </div>
     </div>
-    <div class="grid-3" style="gap:12px;">
-      <div class="card" style="padding:16px;"><p class="section-title" style="margin-bottom:6px;">Gross Income</p><p id="tax-gross" class="mid-num c-green blur-private">—</p></div>
-      <div class="card" style="padding:16px;"><p class="section-title" style="margin-bottom:6px;">Tax Deductions</p><p id="tax-deductions" class="mid-num c-amber blur-private">—</p></div>
-      <div class="card card-glow-green" style="padding:16px;"><p class="section-title" style="margin-bottom:6px;">Net Taxable</p><p id="tax-net" class="mid-num c-green blur-private">—</p></div>
+
+    <div class="grid-3">
+      <div class="card" style="padding:18px;">
+        <p class="section-title" style="margin-bottom:6px;">Gross Freelance Income</p>
+        <p id="tax-gross" class="mid-num c-green blur-private">—</p>
+        <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">All income streams</p>
+      </div>
+      <div class="card" style="padding:18px;">
+        <p class="section-title" style="margin-bottom:6px;">Deductible Expenses</p>
+        <p id="tax-deductions" class="mid-num c-amber blur-private">—</p>
+        <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">Software, hardware, internet, travel</p>
+      </div>
+      <div class="card card-glow-green" style="padding:18px;">
+        <p class="section-title" style="margin-bottom:6px;">Net Taxable Earnings</p>
+        <p id="tax-net" class="mid-num c-green blur-private">—</p>
+        <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">Gross minus deductible expenses</p>
+      </div>
     </div>
-    <div class="card" style="padding:16px;"><p class="section-title" style="margin-bottom:12px;">Deductible Breakdown</p><div id="tax-deductible-breakdown"></div></div>
-    <div class="card" style="padding:16px;"><p class="section-title" style="margin-bottom:12px;">Income by Source</p><div id="tax-income-breakdown"></div></div>
-    <p style="font-size:11px; color:var(--text-muted); text-align:center;">⚠️ For reference only. Consult a qualified accountant for official filings.</p>
+
+    <div class="card" style="padding:18px;">
+      <p class="section-title" style="margin-bottom:12px;">Deductible Expense Breakdown</p>
+      <div id="tax-deductible-breakdown"></div>
+    </div>
+
+    <div class="card" style="padding:18px;">
+      <p class="section-title" style="margin-bottom:12px;">Income by Source Breakdown</p>
+      <div id="tax-income-breakdown"></div>
+    </div>
+
+    <p style="font-size:11.5px; color:var(--text-muted); text-align:center;">
+      ⚠️ Summary provided for personal tracking. Consult a qualified tax advisor for official declarations.
+    </p>
   </div><!-- /tab-tax -->
 
-  <!-- ══════════ SETTINGS TAB ══════════ -->
+
+  <!-- ══════════════════════════════════════════════
+       TAB 5: SETTINGS
+  ══════════════════════════════════════════════ -->
   <div id="tab-settings" class="tab-panel space-y-4">
-    <p class="section-title">Settings & Preferences</p>
-    <div class="card" style="padding:20px; display:flex; flex-direction:column; gap:18px;">
+    <p class="section-title">Settings &amp; Preferences</p>
+    <div class="card" style="padding:22px; display:flex; flex-direction:column; gap:20px;">
       <!-- Currency -->
-      <div><label class="form-label">Home Display Currency</label>
-        <select id="settings-currency-select" class="fook-select"></select></div>
-      <!-- Language -->
-      <div><label class="form-label">Language</label>
-        <select id="language-select" class="fook-select">
-          <option value="en">🇺🇸 English</option><option value="es">🇪🇸 Español</option>
-          <option value="hi">🇮🇳 हिन्दी</option><option value="pt">🇧🇷 Português</option>
-          <option value="fr">🇫🇷 Français</option>
-        </select></div>
-      <!-- Safe Rate -->
       <div>
-        <label class="form-label">Safe Spending Rate</label>
-        <div style="display:flex; align-items:center; gap:12px; margin-top:4px;">
-          <input type="range" id="safe-rate-slider" min="40" max="90" value="70" step="5" style="flex:1;">
-          <span id="safe-rate-label" style="font-family:'JetBrains Mono'; font-weight:700; font-size:14px; color:var(--accent-green); min-width:35px;">70%</span>
-        </div>
-        <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">% of predicted income you're allowed to spend safely</p>
+        <label class="section-title" style="display:block; margin-bottom:8px;">Home Display Currency</label>
+        <select id="settings-currency-select" class="fook-select" style="cursor:pointer;"></select>
       </div>
-      <!-- Demo / Reset -->
+
+      <!-- Language -->
+      <div>
+        <label class="section-title" style="display:block; margin-bottom:8px;">Language</label>
+        <select id="language-select" class="fook-select" style="cursor:pointer;">
+          <option value="en">🇺🇸 English</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="hi">🇮🇳 हिन्दी</option>
+          <option value="pt">🇧🇷 Português</option>
+          <option value="fr">🇫🇷 Français</option>
+        </select>
+      </div>
+
+      <!-- Safe Spending Rate Slider -->
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <label class="section-title">Safe Spending Rate</label>
+          <span id="safe-rate-label" style="font-family:'JetBrains Mono'; font-weight:800; font-size:14.5px; color:var(--accent-green);">70%</span>
+        </div>
+        <input type="range" id="safe-rate-slider" min="40" max="90" value="70" step="5">
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:6px;">% of predicted monthly income allocated to your safe spending ceiling (default: 70%)</p>
+      </div>
+
+      <!-- Data Management -->
       <hr style="border-color:var(--border);">
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <button id="load-demo-btn" class="btn btn-ghost" style="justify-content:center;">Load Demo Data</button>
-        <button id="clean-slate-btn" class="btn btn-ghost" style="justify-content:center; color:var(--accent-rose); border-color:rgba(244,63,94,0.3);">Reset All Data</button>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button id="load-demo-btn" class="btn btn-ghost" style="justify-content:center;">
+          ✨ Reload Demo Freelancer Data
+        </button>
+        <button id="clean-slate-btn" class="btn btn-ghost" style="justify-content:center; color:var(--accent-rose); border-color:rgba(244,63,94,0.3);">
+          🗑️ Clear All Local Data (Reset)
+        </button>
       </div>
     </div>
   </div><!-- /tab-settings -->
 
 </main>
 
-<!-- ═══ BOTTOM NAV (Mobile) ═══ -->
+
+<!-- ════════════════════════════════════════════════════════════
+     MOBILE BOTTOM NAVIGATION (Fixed)
+════════════════════════════════════════════════════════════ -->
 <nav class="bottom-nav no-print">
   <button class="bottom-nav-item active" data-tab="dashboard">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-    <span>Dashboard</span>
+    <span>Home</span>
   </button>
   <button class="bottom-nav-item" data-tab="forecast">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     <span>Forecast</span>
   </button>
-  <!-- CENTER ADD -->
+  <!-- Center Add Button -->
   <button class="bottom-nav-add" data-modal="transaction-modal">
     <div class="add-circle">+</div>
-    <span>Add</span>
+    <span>Log</span>
   </button>
   <button class="bottom-nav-item" data-tab="ledger">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -600,91 +703,104 @@
   </button>
 </nav>
 
-<!-- ═══ TOAST ROOT ═══ -->
+<!-- Toast Root -->
 <div id="toast-root"></div>
 
-<!-- ═══ MODAL: Add Transaction (Bottom Sheet on mobile) ═══ -->
+
+<!-- ════════════════════════════════════════════════════════════
+     MODAL: ADD ENTRY (Bottom Sheet on Mobile / Centered on Desktop)
+════════════════════════════════════════════════════════════ -->
 <div id="transaction-modal" class="modal-backdrop">
   <div class="modal-sheet">
     <div class="sheet-handle"></div>
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-      <h3 style="font-size:17px; font-weight:700; color:var(--text-primary);">Log Entry</h3>
+      <h3 style="font-size:17px; font-weight:700; color:var(--text-primary);">Log Income or Expense</h3>
       <button class="btn btn-ghost btn-icon modal-close-btn" data-modal="transaction-modal">
         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
+
     <form id="transaction-form" style="display:flex; flex-direction:column; gap:14px;">
-      <!-- Type tabs -->
+      <!-- Type Switcher -->
       <div class="type-tabs">
         <div class="type-tab income active" id="type-income-tab">+ Income</div>
         <div class="type-tab expense" id="type-expense-tab">− Expense</div>
       </div>
       <input type="hidden" name="type" id="tx-type-hidden" value="income">
+
       <!-- Amount + Currency -->
-      <div style="display:grid; grid-template-columns:1fr 110px; gap:10px;">
+      <div style="display:grid; grid-template-columns: 1fr 115px; gap:10px;">
         <div>
-          <label class="form-label">Amount</label>
-          <input type="number" step="any" name="amount" required class="fook-input" placeholder="0.00" style="font-family:'JetBrains Mono'; font-size:20px; font-weight:700; padding:14px;">
+          <label class="section-title" style="display:block; margin-bottom:6px;">Amount</label>
+          <input type="number" step="any" name="amount" required class="fook-input" placeholder="0.00" style="font-family:'JetBrains Mono'; font-size:20px; font-weight:800; padding:13px;">
         </div>
         <div>
-          <label class="form-label">Currency</label>
-          <select name="currency" id="modal-currency-select" class="fook-select" style="padding:14px 8px;"></select>
+          <label class="section-title" style="display:block; margin-bottom:6px;">Currency</label>
+          <select name="currency" id="modal-currency-select" class="fook-select" style="padding:13px 8px; cursor:pointer;"></select>
         </div>
       </div>
+
       <!-- Category + Date -->
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
         <div>
-          <label class="form-label">Category</label>
-          <select name="category" id="modal-category" class="fook-select">
-            <optgroup label="Income">
-              <option value="Freelance">Freelance</option>
-              <option value="Retainer">Retainer</option>
-              <option value="Consulting">Consulting</option>
-              <option value="Bonus">Bonus</option>
-              <option value="Royalties">Royalties</option>
+          <label class="section-title" style="display:block; margin-bottom:6px;">Category</label>
+          <select name="category" id="modal-category" class="fook-select" style="cursor:pointer;">
+            <optgroup label="Income Streams">
+              <option value="Freelance">💻 Freelance Gigs</option>
+              <option value="Retainer">🔄 Monthly Retainer</option>
+              <option value="Consulting">🎯 Consulting &amp; Advisory</option>
+              <option value="Royalties">📦 Digital Products / Royalties</option>
+              <option value="Bonus">🎁 Bonus / Milestone Bounty</option>
             </optgroup>
             <optgroup label="Expenses">
-              <option value="Food & Dining">Food & Dining</option>
-              <option value="Housing & Rent">Housing & Rent</option>
-              <option value="Software & Subscriptions">Software & Subs</option>
-              <option value="Equipment & Tech">Equipment</option>
-              <option value="Transport">Transport</option>
-              <option value="Utilities">Utilities</option>
-              <option value="Taxes & Legal">Taxes & Legal</option>
-              <option value="Health & Fitness">Health</option>
+              <option value="Food & Dining">🍕 Food &amp; Groceries</option>
+              <option value="Housing & Rent">🏢 Housing &amp; Rent</option>
+              <option value="Software & Subscriptions">⚡ Software &amp; Tools</option>
+              <option value="Equipment & Tech">💻 Equipment &amp; Tech</option>
+              <option value="Transport">🚗 Transport &amp; Uber</option>
+              <option value="Utilities">💡 Utilities &amp; Internet</option>
+              <option value="Taxes & Legal">⚖️ Taxes &amp; Legal</option>
+              <option value="Health & Fitness">🏃 Health &amp; Fitness</option>
             </optgroup>
           </select>
         </div>
         <div>
-          <label class="form-label">Date</label>
+          <label class="section-title" style="display:block; margin-bottom:6px;">Date</label>
           <input type="date" name="date" class="fook-input">
         </div>
       </div>
-      <!-- Notes -->
+
+      <!-- Notes / Client Name -->
       <div>
-        <label class="form-label">Description / Client</label>
-        <input type="text" name="notes" class="fook-input" placeholder="Upwork milestone, Java House, Netflix...">
+        <label class="section-title" style="display:block; margin-bottom:6px;">Description / Client Name</label>
+        <input type="text" name="notes" class="fook-input" placeholder="e.g. Upwork Milestone 2, BioGroceries, Fiber Wifi...">
       </div>
+
       <!-- Toggles -->
-      <div style="display:flex; gap:20px; flex-wrap:wrap; padding-top:2px;">
+      <div style="display:flex; gap:20px; flex-wrap:wrap; padding-top:4px;">
         <label class="toggle-wrap">
           <div class="toggle-track" id="toggle-recurring"><div class="toggle-thumb"></div></div>
           <input type="checkbox" name="isRecurring" id="check-recurring" style="display:none;">
-          <span style="font-size:13px; color:var(--text-secondary);">Recurring</span>
+          <span style="font-size:13px; color:var(--text-secondary);">Recurring Monthly Retainer</span>
         </label>
         <label class="toggle-wrap">
           <div class="toggle-track" id="toggle-tax"><div class="toggle-thumb"></div></div>
           <input type="checkbox" name="isTaxDeductible" id="check-taxded" style="display:none;">
-          <span style="font-size:13px; color:var(--text-secondary);">Tax Deductible</span>
+          <span style="font-size:13px; color:var(--text-secondary);">Tax Deductible Expense</span>
         </label>
       </div>
+
       <!-- Submit -->
-      <button type="submit" class="btn btn-primary" style="padding:14px; font-size:15px; border-radius:var(--radius-lg); justify-content:center;">Save Entry</button>
+      <button type="submit" class="btn btn-primary" style="padding:14px; font-size:15px; border-radius:var(--radius-lg); justify-content:center; margin-top:6px;">
+        Save Entry
+      </button>
     </form>
   </div>
 </div>
 
-<!-- ═══ SCRIPTS ═══ -->
+<!-- ════════════════════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════════════════════ -->
 <script src="currency_matrix.js"></script>
 <script src="i18n.js"></script>
 <script src="ml_engine.js"></script>

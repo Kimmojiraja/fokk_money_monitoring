@@ -1,22 +1,23 @@
 /**
- * FOOK v2 — Global Variable Income OS
+ * FOOK v2.5 — Ultra-Premium Variable Income OS
  * Full application controller with:
- *  - Dark/Light theme toggle
- *  - Tabbed navigation
+ *  - First-time user onboarding & quick demo loader
+ *  - 1-Tap quick-add suggestions
+ *  - Interactive "What-If" Safe-Spend Simulator
+ *  - Dark/Light luxury theme toggle
+ *  - Mobile bottom navigation & bottom sheet modal
  *  - Income Volatility Index (Coefficient of Variation)
  *  - Doom Mode (runway alert)
- *  - Weekly Check-In Streak
+ *  - Sunday Check-in Habit Streak
  *  - Financial Health Score
- *  - Prediction Override
- *  - Client Pareto Analysis
- *  - Prediction Accuracy Tracker (honest ML)
- *  - Safe-to-Invest Calculator
- *  - Full Ledger with search & filter
- *  - Tax deduction breakdown
+ *  - Prediction Override slider
+ *  - Client Pareto 80/20 analysis
+ *  - Dual ledger view (Mobile cards + Desktop table)
+ *  - Tax deduction accounting report + CSV/JSON backup
  */
 
 // ═══════════════════════════════════════════
-// DEMO DATA
+// DEMO FREELANCER DATA
 // ═══════════════════════════════════════════
 const DEFAULT_DEMO = {
   settings: {
@@ -27,23 +28,22 @@ const DEFAULT_DEMO = {
     safeRatePct: 0.70,
     monthlyFixedCommitments: 850,
     overrideAdjustment: 0,
-    overrideReason: ''
+    overrideReason: '',
+    onboardingDismissed: false
   },
   streak: { weeks: [true, true, true, false, true, true, false, true], currentWeekDone: false },
   transactions: [
-    { id: 'inc_1', date: '2026-08-02', type: 'income', amount: 1450, currency: 'USD', category: 'Freelance',   notes: 'Next.js Dashboard (Milestone 2)', isRecurring: false, isTaxDeductible: false, client: 'Acme Corp (US)' },
-    { id: 'inc_2', date: '2026-08-05', type: 'income', amount: 620,  currency: 'EUR', category: 'Freelance',   notes: 'UI/UX Design Sprint – Fiverr Pro', isRecurring: false, isTaxDeductible: false, client: 'Berlin Studio GmbH' },
+    { id: 'inc_1', date: '2026-08-02', type: 'income', amount: 1450, currency: 'USD', category: 'Freelance',   notes: 'Next.js Web App (Milestone 2)', isRecurring: false, isTaxDeductible: false, client: 'Acme Studio (US)' },
+    { id: 'inc_2', date: '2026-08-05', type: 'income', amount: 620,  currency: 'EUR', category: 'Freelance',   notes: 'UI/UX Mobile Design – Fiverr Pro', isRecurring: false, isTaxDeductible: false, client: 'Berlin Labs GmbH' },
     { id: 'inc_3', date: '2026-08-10', type: 'income', amount: 65000,currency: 'KES', category: 'Retainer',    notes: 'DevOps Monthly Retainer', isRecurring: true, isTaxDeductible: false, client: 'SavannaPay Ltd' },
-    { id: 'inc_4', date: '2026-08-14', type: 'income', amount: 45000,currency: 'INR', category: 'Consulting',  notes: 'Architecture Review – AI Startup', isRecurring: false, isTaxDeductible: false, client: 'NexAI Labs' },
-    { id: 'inc_5', date: '2026-08-18', type: 'income', amount: 350,  currency: 'USD', category: 'Royalties',   notes: 'Gumroad Template Sales', isRecurring: false, isTaxDeductible: false, client: 'Gumroad' },
-    { id: 'exp_1', date: '2026-08-01', type: 'expense', amount: 650, currency: 'USD', category: 'Housing & Rent',          notes: 'Monthly Apartment Rent', isRecurring: true, isTaxDeductible: false, client: 'Landlord' },
+    { id: 'inc_4', date: '2026-08-14', type: 'income', amount: 45000,currency: 'INR', category: 'Consulting',  notes: 'AI Architecture Advisory', isRecurring: false, isTaxDeductible: false, client: 'NexAI Labs' },
+    { id: 'inc_5', date: '2026-08-18', type: 'income', amount: 350,  currency: 'USD', category: 'Royalties',   notes: 'Gumroad UI Kit Royalties', isRecurring: false, isTaxDeductible: false, client: 'Gumroad' },
+    { id: 'exp_1', date: '2026-08-01', type: 'expense', amount: 650, currency: 'USD', category: 'Housing & Rent',          notes: 'Apartment Rent', isRecurring: true, isTaxDeductible: false, client: 'Landlord' },
     { id: 'exp_2', date: '2026-08-03', type: 'expense', amount: 20,  currency: 'USD', category: 'Software & Subscriptions', notes: 'ChatGPT Plus', isRecurring: true, isTaxDeductible: true, client: 'OpenAI' },
-    { id: 'exp_3', date: '2026-08-04', type: 'expense', amount: 120, currency: 'EUR', category: 'Food & Dining',            notes: 'Weekly Organic Groceries', isRecurring: false, isTaxDeductible: false, client: 'BioSupermarkt' },
-    { id: 'exp_4', date: '2026-08-07', type: 'expense', amount: 210, currency: 'USD', category: 'Equipment & Tech',         notes: 'Logitech MX Master 3S', isRecurring: false, isTaxDeductible: true, client: 'Amazon' },
-    { id: 'exp_5', date: '2026-08-09', type: 'expense', amount: 45,  currency: 'USD', category: 'Transport',                notes: 'Uber – co-working & client meet', isRecurring: false, isTaxDeductible: true, client: 'Uber' },
-    { id: 'exp_6', date: '2026-08-12', type: 'expense', amount: 15,  currency: 'USD', category: 'Software & Subscriptions', notes: 'Figma Professional Plan', isRecurring: true, isTaxDeductible: true, client: 'Figma' },
-    { id: 'exp_7', date: '2026-08-15', type: 'expense', amount: 3500,currency: 'KES', category: 'Food & Dining',            notes: 'Team dinner – tech community', isRecurring: false, isTaxDeductible: false, client: 'Java House' },
-    { id: 'exp_8', date: '2026-08-19', type: 'expense', amount: 60,  currency: 'USD', category: 'Utilities',               notes: 'Fiber Internet – high speed', isRecurring: true, isTaxDeductible: true, client: 'ISP Fiber' }
+    { id: 'exp_3', date: '2026-08-04', type: 'expense', amount: 45,  currency: 'USD', category: 'Food & Dining',            notes: 'Weekly Groceries', isRecurring: false, isTaxDeductible: false, client: 'Supermarket' },
+    { id: 'exp_4', date: '2026-08-07', type: 'expense', amount: 15,  currency: 'USD', category: 'Software & Subscriptions', notes: 'Figma Professional', isRecurring: true, isTaxDeductible: true, client: 'Figma' },
+    { id: 'exp_5', date: '2026-08-09', type: 'expense', amount: 35,  currency: 'USD', category: 'Transport',                notes: 'Uber – Client Co-working Meet', isRecurring: false, isTaxDeductible: true, client: 'Uber' },
+    { id: 'exp_6', date: '2026-08-12', type: 'expense', amount: 60,  currency: 'USD', category: 'Utilities',               notes: 'Fiber High-Speed Internet', isRecurring: true, isTaxDeductible: true, client: 'ISP Fiber' }
   ],
   historicalIncome: [
     { date: '2025-09-15', amount: 2800, currency: 'USD' },
@@ -61,28 +61,26 @@ const DEFAULT_DEMO = {
   overrideHistory: []
 };
 
-// ═══════════════════════════════════════════
-// PALETTE for clients/categories
-// ═══════════════════════════════════════════
 const CLIENT_COLORS = ['#10b981','#06b6d4','#8b5cf6','#f59e0b','#f43f5e','#3b82f6','#ec4899','#14b8a6'];
 
 // ═══════════════════════════════════════════
-// MAIN APP CLASS
+// FOOK APP CLASS
 // ═══════════════════════════════════════════
 class FookApp {
   constructor() {
-    this.nlp           = null; // set after ML loads
-    this.speechRec     = null;
-    this.isRecording   = false;
-    this.activeTab     = 'dashboard';
-    this.ledgerFilter  = 'all';
-    this.ledgerSearch  = '';
-    this.state         = null;
+    this.nlp          = null;
+    this.speechRec    = null;
+    this.isRecording  = false;
+    this.activeTab    = 'dashboard';
+    this.ledgerFilter = 'all';
+    this.ledgerSearch = '';
+    this.simulatedDelta = 0;
+    this.state        = null;
     this.init();
   }
 
   // ──────────────────────────────────────────
-  // INIT
+  // INITIALIZATION
   // ──────────────────────────────────────────
   init() {
     this.loadState();
@@ -101,10 +99,9 @@ class FookApp {
     } catch(e) {
       this.state = JSON.parse(JSON.stringify(DEFAULT_DEMO));
     }
-    // Ensure all keys exist (migration guard)
-    this.state.settings    = Object.assign({}, DEFAULT_DEMO.settings, this.state.settings || {});
-    this.state.streak      = Object.assign({}, DEFAULT_DEMO.streak, this.state.streak || {});
-    this.state.overrideHistory = this.state.overrideHistory || [];
+    this.state.settings         = Object.assign({}, DEFAULT_DEMO.settings, this.state.settings || {});
+    this.state.streak           = Object.assign({}, DEFAULT_DEMO.streak, this.state.streak || {});
+    this.state.overrideHistory  = this.state.overrideHistory || [];
     this.state.historicalIncome = this.state.historicalIncome || [];
     I18nEngine.setLocale(this.state.settings.language || 'en');
   }
@@ -114,7 +111,7 @@ class FookApp {
   }
 
   // ──────────────────────────────────────────
-  // THEME
+  // THEME MANAGEMENT
   // ──────────────────────────────────────────
   applyTheme(theme) {
     this.state.settings.theme = theme;
@@ -123,18 +120,22 @@ class FookApp {
     html.classList.add(theme);
     const sunIcon  = document.getElementById('icon-sun');
     const moonIcon = document.getElementById('icon-moon');
+    const metaTheme = document.getElementById('meta-theme-color');
     if (theme === 'dark') {
       if (sunIcon)  sunIcon.style.display  = 'block';
       if (moonIcon) moonIcon.style.display = 'none';
+      if (metaTheme) metaTheme.setAttribute('content', '#06080d');
     } else {
       if (sunIcon)  sunIcon.style.display  = 'none';
       if (moonIcon) moonIcon.style.display = 'block';
+      if (metaTheme) metaTheme.setAttribute('content', '#f8fafc');
     }
     this.save();
   }
 
   toggleTheme() {
     this.applyTheme(this.state.settings.theme === 'dark' ? 'light' : 'dark');
+    this.toast(`Theme switched to ${this.state.settings.theme} mode`, 'cyan');
   }
 
   // ──────────────────────────────────────────
@@ -155,42 +156,80 @@ class FookApp {
   }
 
   // ──────────────────────────────────────────
-  // EVENT BINDING
+  // STATIC EVENT BINDINGS
   // ──────────────────────────────────────────
   bindStaticEvents() {
-    // Theme
+    // Theme & Privacy
     document.getElementById('theme-btn')?.addEventListener('click', () => this.toggleTheme());
-
-    // Privacy
     document.getElementById('privacy-btn')?.addEventListener('click', () => this.togglePrivacy());
 
-    // Demo / Reset
-    document.getElementById('load-demo-btn')?.addEventListener('click', () => { this.state = JSON.parse(JSON.stringify(DEFAULT_DEMO)); this.save(); this.initCurrencySelectors(); this.render(); this.toast('Demo data loaded! 🎉', 'green'); });
-    document.getElementById('clean-slate-btn')?.addEventListener('click', () => { if(confirm('Clear ALL data? This cannot be undone.')) { this.state.transactions = []; this.state.historicalIncome = []; this.state.overrideHistory = []; this.save(); this.render(); this.toast('Clean slate!', 'amber'); } });
+    // Onboarding Banner Dismiss
+    document.getElementById('dismiss-onboarding-btn')?.addEventListener('click', () => {
+      this.state.settings.onboardingDismissed = true;
+      this.save();
+      const banner = document.getElementById('onboarding-banner');
+      if (banner) banner.style.display = 'none';
+    });
 
-    // ── Tab nav: desktop header buttons ──
+    // Quick Demo Loaders
+    const loadDemo = () => {
+      this.state = JSON.parse(JSON.stringify(DEFAULT_DEMO));
+      this.save();
+      this.initCurrencySelectors();
+      this.render();
+      this.toast('✨ Freelancer demo data loaded!', 'green');
+    };
+    document.getElementById('quick-demo-btn')?.addEventListener('click', loadDemo);
+    document.getElementById('load-demo-btn')?.addEventListener('click', loadDemo);
+
+    // Clean Slate Reset
+    document.getElementById('clean-slate-btn')?.addEventListener('click', () => {
+      if (confirm('Clear ALL transactions and history? This resets your local database.')) {
+        this.state.transactions = [];
+        this.state.historicalIncome = [];
+        this.state.overrideHistory = [];
+        this.save();
+        this.render();
+        this.toast('All local data cleared!', 'amber');
+      }
+    });
+
+    // ── Desktop & Mobile Tab Switching ──
     document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
       btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
     });
-
-    // ── Bottom nav (mobile) ──
     document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(btn => {
       btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
     });
 
-    // ── Modals: open ──
-    document.querySelectorAll('[data-modal]').forEach(el => {
-      el.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const modalId = el.dataset.modal;
-        // Quick income/expense buttons
-        if (el.id === 'quick-income-btn')  this.openModal(modalId, 'income');
-        else if (el.id === 'quick-expense-btn') this.openModal(modalId, 'expense');
-        else this.openModal(modalId);
+    // ── Quick-Add 1-Tap Chips ──
+    document.querySelectorAll('.quick-chip[data-quick]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.dataset.quick;
+        const input = document.getElementById('nl-input');
+        if (input) {
+          input.value = text;
+          this.submitNL();
+        }
       });
     });
 
-    // ── Modals: close ──
+    // ── What-If Simulator Slider ──
+    const simSlider = document.getElementById('simulator-slider');
+    if (simSlider) {
+      simSlider.addEventListener('input', (e) => {
+        this.simulatedDelta = parseInt(e.target.value);
+        this.updateSimulatorPreview();
+      });
+    }
+
+    // ── Modals: Open & Close ──
+    document.querySelectorAll('[data-modal]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.openModal(el.dataset.modal);
+      });
+    });
     document.querySelectorAll('.modal-close-btn').forEach(el => {
       el.addEventListener('click', () => this.closeModal(el.dataset.modal));
     });
@@ -198,46 +237,47 @@ class FookApp {
       bk.addEventListener('click', (e) => { if (e.target === bk) this.closeModal(bk.id); });
     });
 
-    // ── Transaction form ──
-    document.getElementById('transaction-form')?.addEventListener('submit', (e) => { e.preventDefault(); this.submitTransaction(e.target); });
-
-    // ── Toggle switches ──
-    this.bindToggle('toggle-recurring', 'check-recurring');
-    this.bindToggle('toggle-tax', 'check-taxded');
-
-    // ── Modal type tabs (new mobile design) ──
+    // ── Modal Type Tabs (+ Income / − Expense) ──
     document.getElementById('type-income-tab')?.addEventListener('click', () => this.setFormType('income'));
     document.getElementById('type-expense-tab')?.addEventListener('click', () => this.setFormType('expense'));
 
-    // ── NL Input ──
+    // ── Form Submit & Toggles ──
+    document.getElementById('transaction-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.submitTransaction(e.target);
+    });
+    this.bindToggle('toggle-recurring', 'check-recurring');
+    this.bindToggle('toggle-tax', 'check-taxded');
+
+    // ── Natural Language Input ──
     const nlInput = document.getElementById('nl-input');
     nlInput?.addEventListener('input', (e) => this.handleNLPreview(e.target.value));
     nlInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); this.submitNL(); } });
     document.getElementById('nl-submit')?.addEventListener('click', () => this.submitNL());
 
-    // ── Voice ──
+    // ── Voice Input ──
     document.getElementById('voice-btn')?.addEventListener('click', () => this.toggleVoice());
 
-    // ── Currency selectors (header + settings) ──
+    // ── Currency & Language Selectors ──
     ['home-currency-select', 'settings-currency-select'].forEach(id => {
       document.getElementById(id)?.addEventListener('change', (e) => {
         this.state.settings.homeCurrency = e.target.value;
-        // Sync both selects
         ['home-currency-select', 'settings-currency-select'].forEach(sid => {
           const s = document.getElementById(sid); if (s) s.value = e.target.value;
         });
-        this.save(); this.render();
+        this.save();
+        this.render();
       });
     });
 
-    // ── Language ──
     document.getElementById('language-select')?.addEventListener('change', (e) => {
       this.state.settings.language = e.target.value;
       I18nEngine.setLocale(e.target.value);
-      this.save(); this.render();
+      this.save();
+      this.render();
     });
 
-    // ── Safe Rate slider ──
+    // ── Safe Spending Rate Slider ──
     const rateSlider = document.getElementById('safe-rate-slider');
     if (rateSlider) {
       rateSlider.value = Math.round((this.state.settings.safeRatePct || 0.7) * 100);
@@ -246,11 +286,12 @@ class FookApp {
         const v = parseInt(e.target.value);
         if (rateLabel) rateLabel.textContent = `${v}%`;
         this.state.settings.safeRatePct = v / 100;
-        this.save(); this.render();
+        this.save();
+        this.render();
       });
     }
 
-    // ── Override slider ──
+    // ── Prediction Override Slider ──
     const slider = document.getElementById('override-slider');
     if (slider) {
       slider.value = this.state.settings.overrideAdjustment || 0;
@@ -259,8 +300,11 @@ class FookApp {
     }
     document.getElementById('apply-override')?.addEventListener('click', () => this.applyOverride());
 
-    // ── Ledger search & filter ──
-    document.getElementById('ledger-search')?.addEventListener('input', (e) => { this.ledgerSearch = e.target.value.toLowerCase(); this.renderLedger(); });
+    // ── Ledger Search & Filter ──
+    document.getElementById('ledger-search')?.addEventListener('input', (e) => {
+      this.ledgerSearch = e.target.value.toLowerCase();
+      this.renderLedger();
+    });
     document.querySelectorAll('.filter-pill[data-filter]').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-pill[data-filter]').forEach(b => b.classList.remove('active'));
@@ -270,10 +314,10 @@ class FookApp {
       });
     });
 
-    // ── Streak check-in ──
+    // ── Sunday Habit Streak ──
     document.getElementById('checkin-btn')?.addEventListener('click', () => this.markWeekDone());
 
-    // ── Keyboard shortcuts ──
+    // ── Keyboard Shortcuts (T for Theme, P for Privacy) ──
     document.addEventListener('keydown', (e) => {
       if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
       if (e.key === 'T' || e.key === 't') this.toggleTheme();
@@ -291,44 +335,37 @@ class FookApp {
     });
   }
 
-  setFormType(type) {
-    const incTab = document.getElementById('type-income-tab');
-    const expTab = document.getElementById('type-expense-tab');
-    const hidden = document.getElementById('tx-type-hidden');
-    if (incTab) incTab.classList.toggle('active', type === 'income');
-    if (expTab) expTab.classList.toggle('active', type === 'expense');
-    if (hidden) hidden.value = type;
-    // Adjust category default
-    const catSel = document.getElementById('modal-category');
-    if (catSel) {
-      if (type === 'income') catSel.value = 'Freelance';
-      else catSel.value = 'Food & Dining';
-    }
-  }
-
+  // ──────────────────────────────────────────
+  // TAB NAVIGATION
+  // ──────────────────────────────────────────
   switchTab(tabId) {
     this.activeTab = tabId;
-    // Panels
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById(`tab-${tabId}`)?.classList.add('active');
-    // Desktop tab buttons
+
+    // Desktop Tab Nav styling
     document.querySelectorAll('.tab-btn[data-tab]').forEach(b => {
       const isActive = b.dataset.tab === tabId;
       b.classList.toggle('active', isActive);
       b.style.background = isActive ? 'var(--accent-green)' : 'transparent';
-      b.style.color = isActive ? (document.documentElement.classList.contains('dark') ? '#07090e' : '#fff') : 'var(--text-muted)';
+      b.style.color = isActive ? (document.documentElement.classList.contains('dark') ? '#06080d' : '#ffffff') : 'var(--text-muted)';
     });
-    // Bottom nav buttons
+
+    // Mobile Bottom Nav styling
     document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(b => {
       b.classList.toggle('active', b.dataset.tab === tabId);
     });
-    // Tab-specific renders
+
+    // Refresh tab views
     if (tabId === 'ledger')   this.renderLedger();
     if (tabId === 'forecast') this.renderForecastTab();
     if (tabId === 'tax')      this.renderTaxTab();
   }
 
-  openModal(id, presetType) {
+  // ──────────────────────────────────────────
+  // MODAL MANAGEMENT
+  // ──────────────────────────────────────────
+  openModal(id, presetType = 'income') {
     const m = document.getElementById(id);
     if (!m) return;
     m.classList.add('active');
@@ -337,7 +374,7 @@ class FookApp {
     if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
     ['toggle-recurring','toggle-tax'].forEach(t => document.getElementById(t)?.classList.remove('on'));
     ['check-recurring','check-taxded'].forEach(c => { const el = document.getElementById(c); if(el) el.checked = false; });
-    this.setFormType(presetType || 'income');
+    this.setFormType(presetType);
   }
 
   closeModal(id) {
@@ -345,42 +382,95 @@ class FookApp {
     if (m) { m.classList.remove('active'); document.body.style.overflow = ''; }
   }
 
+  setFormType(type) {
+    const incTab = document.getElementById('type-income-tab');
+    const expTab = document.getElementById('type-expense-tab');
+    const hidden = document.getElementById('tx-type-hidden');
+    if (incTab) incTab.classList.toggle('active', type === 'income');
+    if (expTab) expTab.classList.toggle('active', type === 'expense');
+    if (hidden) hidden.value = type;
+    const catSel = document.getElementById('modal-category');
+    if (catSel) {
+      catSel.value = (type === 'income') ? 'Freelance' : 'Food & Dining';
+    }
+  }
+
   // ──────────────────────────────────────────
-  // PRIVACY
+  // PRIVACY MODE
   // ──────────────────────────────────────────
   togglePrivacy() {
     this.state.settings.privacyMode = !this.state.settings.privacyMode;
     document.body.classList.toggle('privacy-active', this.state.settings.privacyMode);
     const eo = document.getElementById('eye-open');
     const ec = document.getElementById('eye-closed');
-    if (eo) eo.style.display  = this.state.settings.privacyMode ? 'none'  : 'block';
-    if (ec) ec.style.display  = this.state.settings.privacyMode ? 'block' : 'none';
+    if (eo) eo.style.display = this.state.settings.privacyMode ? 'none'  : 'block';
+    if (ec) ec.style.display = this.state.settings.privacyMode ? 'block' : 'none';
     this.save();
+    this.toast(this.state.settings.privacyMode ? '🔒 Privacy blur active' : '👁️ Privacy blur disabled', 'cyan');
   }
 
   // ──────────────────────────────────────────
-  // NL INPUT
+  // WHAT-IF SIMULATOR
+  // ──────────────────────────────────────────
+  updateSimulatorPreview() {
+    const hc = this.state.settings.homeCurrency;
+    const now = new Date();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const daysLeft = Math.max(1, daysInMonth - now.getDate());
+
+    const histInHome = (this.state.historicalIncome || []).map(h => ({
+      date: h.date,
+      amount: CurrencyEngine.convert(h.amount, h.currency || 'USD', hc)
+    }));
+
+    const forecast = IncomeForecaster.forecastNext3Months(histInHome, 0);
+    const baseExpected = forecast.projections[0]?.expected || 3000;
+    const simExpected = Math.max(0, baseExpected + this.simulatedDelta);
+
+    const safeCalc = IncomeForecaster.calculateAdaptiveSafeCeiling(
+      simExpected,
+      simExpected,
+      this.state.settings.monthlyFixedCommitments,
+      this.state.settings.safeRatePct
+    );
+
+    const deltaLabel = document.getElementById('simulator-delta-label');
+    if (deltaLabel) {
+      const sign = this.simulatedDelta > 0 ? '+' : '';
+      deltaLabel.textContent = `${sign}${CurrencyEngine.format(this.simulatedDelta, hc, 0)}`;
+      deltaLabel.style.color = this.simulatedDelta > 0 ? 'var(--accent-green)' : this.simulatedDelta < 0 ? 'var(--accent-rose)' : 'var(--text-primary)';
+    }
+
+    const simSpendEl = document.getElementById('sim-safe-spend');
+    const simDailyEl = document.getElementById('sim-safe-daily');
+    if (simSpendEl) simSpendEl.textContent = CurrencyEngine.format(safeCalc.safeCeiling, hc, 0);
+    if (simDailyEl) simDailyEl.textContent = `${CurrencyEngine.format(Math.max(0, safeCalc.safeCeiling / daysLeft), hc, 0)}/day`;
+  }
+
+  // ──────────────────────────────────────────
+  // NATURAL LANGUAGE PARSING & QUICK LOGGING
   // ──────────────────────────────────────────
   handleNLPreview(text) {
     const preview = document.getElementById('nl-preview');
-    if (!text || text.trim().length < 3) { preview?.classList.add('hidden'); return; }
+    if (!text || text.trim().length < 3) { if (preview) preview.style.display = 'none'; return; }
     const parsed = this.nlp.parseInput(text);
-    if (!parsed || !parsed.amount) { preview?.classList.add('hidden'); return; }
+    if (!parsed || !parsed.amount) { if (preview) preview.style.display = 'none'; return; }
     const curr = CURRENCY_DATABASE[parsed.currency] || CURRENCY_DATABASE.USD;
     const typeColor = parsed.type === 'income' ? 'var(--accent-green)' : 'var(--accent-rose)';
-    preview.classList.remove('hidden');
-    preview.innerHTML = `
-      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-        <span class="badge" style="background:${typeColor}20; color:${typeColor}; border-color:${typeColor}40;">${parsed.type === 'income' ? '+ Income' : '− Expense'}</span>
-        <span class="num" style="font-size:15px; font-weight:700; color:var(--text-primary);">${curr.symbol} ${parsed.amount.toLocaleString()}</span>
-        <span class="badge badge-neutral">${parsed.category}</span>
-        ${parsed.isTaxDeductible ? '<span class="badge badge-amber">★ Tax Ded.</span>' : ''}
-        ${parsed.isRecurring ? '<span class="badge badge-cyan">Recurring</span>' : ''}
-        <span style="font-size:12px; color:var(--text-secondary); font-style:italic; margin-left:auto;">"${parsed.notes}"</span>
-        <button id="confirm-nl" class="btn btn-primary btn-sm">Confirm →</button>
-      </div>
-    `;
-    document.getElementById('confirm-nl')?.addEventListener('click', () => this.submitNL());
+    if (preview) {
+      preview.style.display = 'block';
+      preview.innerHTML = `
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span class="badge" style="background:${typeColor}18; color:${typeColor}; border-color:${typeColor}35;">${parsed.type === 'income' ? '+ Income' : '− Expense'}</span>
+          <span class="num" style="font-size:15px; font-weight:800; color:var(--text-primary);">${curr.symbol} ${parsed.amount.toLocaleString()}</span>
+          <span class="badge badge-neutral">${parsed.category}</span>
+          ${parsed.isTaxDeductible ? '<span class="badge badge-amber">★ Tax-Ded.</span>' : ''}
+          ${parsed.isRecurring ? '<span class="badge badge-cyan">Retainer</span>' : ''}
+          <button id="confirm-nl" class="btn btn-primary btn-sm" style="margin-left:auto;">Confirm & Log →</button>
+        </div>
+      `;
+      document.getElementById('confirm-nl')?.addEventListener('click', () => this.submitNL());
+    }
   }
 
   submitNL() {
@@ -388,12 +478,21 @@ class FookApp {
     const text = input?.value?.trim();
     if (!text) return;
     const parsed = this.nlp.parseInput(text);
-    if (!parsed || !parsed.amount || parsed.amount <= 0) { this.toast('Include an amount — e.g. "500 USD from client"', 'amber'); return; }
-    const tx = { id: 'tx_' + Date.now(), date: new Date().toISOString().split('T')[0], ...parsed, client: parsed.type === 'income' ? (parsed.notes || 'Direct') : 'General' };
+    if (!parsed || !parsed.amount || parsed.amount <= 0) {
+      this.toast('Include an amount — e.g. "500 USD from Upwork"', 'amber');
+      return;
+    }
+    const tx = {
+      id: 'tx_' + Date.now(),
+      date: new Date().toISOString().split('T')[0],
+      ...parsed,
+      client: parsed.type === 'income' ? (parsed.notes || 'Direct') : 'General'
+    };
     this.state.transactions.unshift(tx);
     this.save();
     if (input) input.value = '';
-    document.getElementById('nl-preview')?.classList.add('hidden');
+    const preview = document.getElementById('nl-preview');
+    if (preview) preview.style.display = 'none';
     this.toast(`Logged: ${tx.type === 'income' ? '+' : '−'}${CurrencyEngine.format(tx.amount, tx.currency)} · ${tx.category}`, tx.type === 'income' ? 'green' : 'amber');
     this.render();
   }
@@ -424,16 +523,16 @@ class FookApp {
   }
 
   deleteTransaction(id) {
-    if (!confirm('Delete this entry?')) return;
+    if (!confirm('Delete this transaction?')) return;
     this.state.transactions = this.state.transactions.filter(t => t.id !== id);
     this.save();
     this.render();
     if (this.activeTab === 'ledger') this.renderLedger();
-    this.toast('Deleted', 'rose');
+    this.toast('Transaction removed', 'rose');
   }
 
   // ──────────────────────────────────────────
-  // OVERRIDE SLIDER
+  // PREDICTION OVERRIDE
   // ──────────────────────────────────────────
   handleOverrideSlider(val) {
     const v = parseInt(val);
@@ -442,7 +541,6 @@ class FookApp {
       label.textContent = v > 0 ? `+${v}%` : `${v}%`;
       label.style.color = v > 0 ? 'var(--accent-green)' : v < 0 ? 'var(--accent-rose)' : 'var(--text-primary)';
     }
-    // Preview adjusted prediction
     const hc = this.state.settings.homeCurrency;
     const histInHome = (this.state.historicalIncome || []).map(h => ({ date: h.date, amount: CurrencyEngine.convert(h.amount, h.currency || 'USD', hc) }));
     const forecast = IncomeForecaster.forecastNext3Months(histInHome, 0);
@@ -460,12 +558,12 @@ class FookApp {
     this.state.overrideHistory.unshift({ date: new Date().toISOString().split('T')[0], adjustment: val, reason });
     this.save();
     this.renderForecastTab();
-    this.toast(`Prediction override applied: ${val > 0 ? '+' : ''}${val}%`, 'cyan');
+    this.toast(`Forecast override applied: ${val > 0 ? '+' : ''}${val}%`, 'cyan');
     this.render();
   }
 
   // ──────────────────────────────────────────
-  // WEEKLY STREAK
+  // SUNDAY HABIT STREAK
   // ──────────────────────────────────────────
   markWeekDone() {
     this.state.streak.currentWeekDone = true;
@@ -475,11 +573,11 @@ class FookApp {
     this.state.streak.weeks = dots;
     this.save();
     this.renderStreak();
-    this.toast('Weekly check-in logged! 🎉 Keep the streak alive!', 'green');
+    this.toast('🎉 Sunday check-in logged! Streak active.', 'green');
   }
 
   // ──────────────────────────────────────────
-  // VOICE
+  // SPEECH / VOICE
   // ──────────────────────────────────────────
   initSpeech() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -498,23 +596,22 @@ class FookApp {
   }
 
   toggleVoice() {
-    if (!this.speechRec) { this.toast('Voice not supported in this browser', 'amber'); return; }
+    if (!this.speechRec) { this.toast('Voice recognition not supported in this browser', 'amber'); return; }
     if (this.isRecording) { this.speechRec.stop(); this.stopVoice(); return; }
     this.isRecording = true;
     this.speechRec.start();
-    document.getElementById('voice-waves')?.classList.remove('hidden');
-    document.getElementById('voice-waves')?.classList.add('flex');
+    const w = document.getElementById('voice-waves');
+    if (w) w.style.display = 'flex';
   }
 
   stopVoice() {
     this.isRecording = false;
     const w = document.getElementById('voice-waves');
-    w?.classList.add('hidden');
-    w?.classList.remove('flex');
+    if (w) w.style.display = 'none';
   }
 
   // ──────────────────────────────────────────
-  // TOAST
+  // TOAST NOTIFICATIONS
   // ──────────────────────────────────────────
   toast(msg, type = 'green') {
     const colorMap = { green: 'var(--accent-green)', cyan: 'var(--accent-cyan)', amber: 'var(--accent-amber)', rose: 'var(--accent-rose)' };
@@ -522,21 +619,21 @@ class FookApp {
     const root = document.getElementById('toast-root') || document.body;
     const el = document.createElement('div');
     el.style.cssText = `background:var(--bg-elevated); color:var(--text-primary); border:1px solid var(--border);
-      border-left:3px solid ${color}; padding:10px 16px; border-radius:var(--radius-md);
-      font-size:13px; font-weight:500; box-shadow:var(--shadow-card); backdrop-filter:blur(16px);
-      display:flex; align-items:center; gap:8px; max-width:min(360px,88vw); pointer-events:auto;
+      border-left:3.5px solid ${color}; padding:11px 18px; border-radius:var(--radius-md);
+      font-size:13.5px; font-weight:600; box-shadow:var(--shadow-card); backdrop-filter:blur(16px);
+      display:flex; align-items:center; gap:9px; max-width:min(380px,88vw); pointer-events:auto;
       opacity:0; transform:translateY(8px); transition:opacity 0.2s, transform 0.2s; white-space:normal;`;
-    el.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:${color};flex-shrink:0;"></span>${msg}`;
+    el.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;"></span>${msg}`;
     root.appendChild(el);
     setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 10);
     setTimeout(() => {
       el.style.opacity = '0'; el.style.transform = 'translateY(8px)';
       setTimeout(() => el.remove(), 250);
-    }, 3000);
+    }, 3200);
   }
 
   // ──────────────────────────────────────────
-  // MAIN RENDER CYCLE
+  // MAIN REACTIVE RENDER CYCLE
   // ──────────────────────────────────────────
   render() {
     const hc = this.state.settings.homeCurrency;
@@ -546,7 +643,7 @@ class FookApp {
     const currentDay  = now.getDate();
     const daysLeft    = Math.max(1, daysInMonth - currentDay);
 
-    // Split current month
+    // Filter current month
     const thisMonth = this.state.transactions.filter(t => t.date.startsWith(monthPrefix));
     let actualIncome = 0, actualSpend = 0, knownRecurring = 0;
     thisMonth.forEach(t => {
@@ -555,7 +652,7 @@ class FookApp {
       else actualSpend += v;
     });
 
-    // Historical in home currency for ML
+    // Historical in home currency for ML engine
     const histInHome = (this.state.historicalIncome || []).map(h => ({
       date: h.date,
       amount: CurrencyEngine.convert(h.amount, h.currency || 'USD', hc)
@@ -563,29 +660,31 @@ class FookApp {
 
     // ML Forecast
     const forecast = IncomeForecaster.forecastNext3Months(histInHome, knownRecurring);
-    let overrideMultiplier = 1 + (this.state.settings.overrideAdjustment || 0) / 100;
+    const overrideMultiplier = 1 + (this.state.settings.overrideAdjustment || 0) / 100;
     const expectedMonthTotal = Math.max(actualIncome, (forecast.projections[0]?.expected || 3000) * overrideMultiplier);
 
-    // Adaptive ceiling
-    const safeCalc = IncomeForecaster.calculateAdaptiveSafeCeiling(actualIncome, expectedMonthTotal, this.state.settings.monthlyFixedCommitments, this.state.settings.safeRatePct);
+    // Adaptive Safe Spending Ceiling
+    const safeCalc = IncomeForecaster.calculateAdaptiveSafeCeiling(
+      actualIncome,
+      expectedMonthTotal,
+      this.state.settings.monthlyFixedCommitments,
+      this.state.settings.safeRatePct
+    );
     const safeCeiling = safeCalc.safeCeiling;
     const remaining = safeCeiling - actualSpend;
     const burnPerDay = currentDay > 0 ? actualSpend / currentDay : 0;
     const safeDaily  = Math.max(0, remaining / daysLeft);
     const pacingPct  = safeCeiling > 0 ? (actualSpend / safeCeiling) : 0;
 
-    // Volatility (Coefficient of Variation)
+    // Volatility Index (Coefficient of Variation)
     const histAmts = histInHome.map(h => h.amount).filter(v => v > 0);
     const histMean = histAmts.length ? histAmts.reduce((a,b)=>a+b,0)/histAmts.length : 0;
     const histSD   = histAmts.length > 1 ? Math.sqrt(histAmts.reduce((s,v) => s + Math.pow(v - histMean, 2), 0) / histAmts.length) : 0;
     const cv       = histMean > 0 ? Math.round((histSD / histMean) * 100) : 0;
 
-    // Runway: days until safe budget exhausted at current burn rate
+    // Runway
     const runwayDays = burnPerDay > 0 ? Math.floor(remaining / burnPerDay) : 999;
-
-    // Safe-to-invest: remaining after accounting for all expected expenses until month end
-    const projExpense = burnPerDay * daysLeft;
-    const safeToInvest = Math.max(0, remaining - projExpense);
+    const safeToInvest = Math.max(0, remaining - (burnPerDay * daysLeft));
 
     // Health Score
     const savingsRate  = actualIncome > 0 ? Math.min(100, Math.round(((actualIncome - actualSpend) / actualIncome) * 100)) : 0;
@@ -594,26 +693,26 @@ class FookApp {
     const accuracyScore  = forecast.confidenceScore || 70;
     const healthScore    = Math.round((savingsRate * 0.4) + (diversifyScore * 0.3) + (accuracyScore * 0.3));
 
-    // ── RENDER HERO ──
+    // ── HERO KPIS ──
     this.setEl('hero-safe-amount', CurrencyEngine.format(remaining, hc, 0));
-    this.setEl('hero-spent',       CurrencyEngine.format(actualSpend, hc, 0));
-    this.setEl('hero-daily-allowance', CurrencyEngine.format(safeDaily, hc, 0) + '/day');
-    this.setEl('hero-days',        `${daysLeft} days`);
+    this.setEl('hero-spent', CurrencyEngine.format(actualSpend, hc, 0));
+    this.setEl('hero-daily-allowance', `${CurrencyEngine.format(safeDaily, hc, 0)}/day`);
+    this.setEl('hero-days', `${daysLeft} days`);
     this.setEl('hero-actual-income', CurrencyEngine.format(actualIncome, hc, 0));
 
-    // Predicted income range pill
+    // Predicted Pill
     const p0 = forecast.projections[0];
-    if (p0) {
-      const predLabel = document.getElementById('hero-predicted-income-label');
-      if (predLabel) predLabel.textContent = `${CurrencyEngine.format(p0.conservative, hc, 0)} – ${CurrencyEngine.format(p0.optimistic, hc, 0)}`;
+    const predPill = document.getElementById('hero-predicted-pill');
+    if (predPill && p0) {
+      predPill.innerHTML = `<span class="badge badge-cyan" style="font-size:11px; font-family:'JetBrains Mono';">Expected: ${CurrencyEngine.format(p0.conservative, hc, 0)} – ${CurrencyEngine.format(p0.optimistic, hc, 0)}</span>`;
     }
 
-    // Gauge ring (circumference = 2π×36 ≈ 226.2)
+    // Radial Gauge Ring (Circumference 207.3)
     const gauge = document.getElementById('gauge-ring');
     const gaugePct = document.getElementById('gauge-pct');
     if (gauge && gaugePct) {
       const pct = Math.min(100, Math.round(pacingPct * 100));
-      const C = 226.2;
+      const C = 207.3;
       gauge.style.strokeDashoffset = C - (pct / 100) * C;
       gaugePct.textContent = `${pct}%`;
       const color = pct > 90 ? 'var(--accent-rose)' : pct > 70 ? 'var(--accent-amber)' : 'var(--accent-green)';
@@ -621,31 +720,30 @@ class FookApp {
       gaugePct.style.color = color;
     }
 
-    // Pacing badge
+    // Pacing Badge
     const badge = document.getElementById('hero-pacing-badge');
     const badgeText = document.getElementById('badge-text');
     if (badge && badgeText) {
-      if (remaining < 0) { badge.className = 'badge badge-rose'; badgeText.textContent = 'Over Ceiling!'; }
+      if (remaining < 0) { badge.className = 'badge badge-rose'; badgeText.textContent = 'Ceiling Exceeded!'; }
       else if (pacingPct > 0.85) { badge.className = 'badge badge-amber'; badgeText.textContent = 'High Velocity'; }
       else { badge.className = 'badge badge-green'; badgeText.textContent = 'Safe Velocity'; }
     }
 
-    // ── DOOM MODE ──
+    // Doom Mode Alert
     const doom = document.getElementById('doom-banner');
     if (doom) {
       if (remaining < 0 || (burnPerDay > 0 && runwayDays < 5)) {
         doom.style.display = 'block';
-        doom.classList.remove('hidden');
         this.setEl('doom-message', remaining < 0
-          ? `You've exceeded your safe ceiling by ${CurrencyEngine.format(Math.abs(remaining), hc, 0)}. Log income or reduce spend immediately.`
-          : `At your burn rate, your safe buffer runs out in ${runwayDays} days. ${daysLeft} days remain in the month.`
+          ? `You are over your safe spending ceiling by ${CurrencyEngine.format(Math.abs(remaining), hc, 0)}. Pause non-essential spending.`
+          : `At your current burn rate, safe reserves run out in ${runwayDays} days. ${daysLeft} days remain in the month.`
         );
       } else {
         doom.style.display = 'none';
       }
     }
 
-    // ── VOLATILITY ──
+    // Volatility Index
     this.setEl('volatility-cv', `${cv}%`);
     const vBadge = document.getElementById('volatility-badge');
     const vBar   = document.getElementById('volatility-bar');
@@ -657,66 +755,43 @@ class FookApp {
     }
     if (vBar) vBar.style.width = `${Math.min(100, cv)}%`;
 
-    // ── STREAK ──
-    this.renderStreak();
-
-    // ── HEALTH SCORE ──
-    const healthRing = document.getElementById('health-ring');
-    if (healthRing) {
-      const HC = 175.9;
-      healthRing.style.strokeDashoffset = HC - (healthScore / 100) * HC;
-      const hColor = healthScore >= 70 ? '#10b981' : healthScore >= 45 ? '#f59e0b' : '#f43f5e';
-      healthRing.setAttribute('stroke', hColor);
-    }
+    // Health Score
     this.setEl('health-score-num', `${healthScore}`);
-    const hLabel = document.getElementById('health-label-badge');
-    if (hLabel) {
-      if (healthScore >= 70) { hLabel.className = 'badge badge-green'; hLabel.textContent = 'Healthy'; }
-      else if (healthScore >= 45) { hLabel.className = 'badge badge-amber'; hLabel.textContent = 'Fair'; }
-      else { hLabel.className = 'badge badge-rose'; hLabel.textContent = 'At Risk'; }
-    }
-    this.setEl('hc-savings', `${savingsRate}%`);
-    this.setEl('hc-diversify', `${diversifyScore}%`);
-    this.setEl('hc-accuracy', `${accuracyScore}%`);
-    if (document.getElementById('hbar-savings'))   document.getElementById('hbar-savings').style.width   = `${savingsRate}%`;
-    if (document.getElementById('hbar-diversify')) document.getElementById('hbar-diversify').style.width = `${diversifyScore}%`;
-    if (document.getElementById('hbar-accuracy'))  document.getElementById('hbar-accuracy').style.width  = `${accuracyScore}%`;
+    const hBar = document.getElementById('health-bar');
+    if (hBar) hBar.style.width = `${healthScore}%`;
 
-    // ── RUNWAY ──
+    // Runway
     this.setEl('runway-days', runwayDays >= 999 ? 'Infinite' : `${runwayDays} days`);
     const rBadge = document.getElementById('runway-badge');
     if (rBadge) {
       if (runwayDays >= 999) { rBadge.className = 'badge badge-green'; rBadge.textContent = 'Infinite'; }
       else if (runwayDays > 15) { rBadge.className = 'badge badge-cyan'; rBadge.textContent = 'Safe'; }
       else if (runwayDays > 7) { rBadge.className = 'badge badge-amber'; rBadge.textContent = 'Caution'; }
-      else { rBadge.className = 'badge badge-rose'; rBadge.textContent = '🔴 Critical'; }
+      else { rBadge.className = 'badge badge-rose'; rBadge.textContent = 'Critical'; }
     }
     this.setEl('safe-invest', CurrencyEngine.format(safeToInvest, hc, 0));
 
-    // ── PARETO (Client Revenue) ──
+    // Onboarding Banner visibility check
+    const obBanner = document.getElementById('onboarding-banner');
+    if (obBanner && this.state.settings.onboardingDismissed) {
+      obBanner.style.display = 'none';
+    }
+
+    // Render Subcomponents
+    this.updateSimulatorPreview();
+    this.renderStreak();
     this.renderPareto(hc);
-
-    // ── ANOMALIES ──
     this.renderAnomalies(hc);
-
-    // ── CATEGORY CEILINGS ──
     this.renderCategoryGrid(thisMonth, safeCeiling, hc);
 
-    // ── OVERRIDE SLIDER REFRESH ──
-    const slider = document.getElementById('override-slider');
-    if (slider) this.handleOverrideSlider(slider.value);
-
-    // Apply i18n
-    I18nEngine.applyTranslations();
-
-    // Render active tab data
+    // Refresh Active Tab
     if (this.activeTab === 'forecast') this.renderForecastTab();
     if (this.activeTab === 'ledger')   this.renderLedger();
     if (this.activeTab === 'tax')      this.renderTaxTab();
   }
 
   // ──────────────────────────────────────────
-  // STREAK
+  // STREAK HABIT RENDER
   // ──────────────────────────────────────────
   renderStreak() {
     const weeks = this.state.streak.weeks || Array(8).fill(false);
@@ -733,37 +808,40 @@ class FookApp {
     this.setEl('streak-count-badge', `${streakCount} week${streakCount !== 1 ? 's' : ''}`);
     const msgEl = document.getElementById('streak-message');
     if (msgEl) {
-      if (streakCount >= 6) msgEl.textContent = `🔥 ${streakCount}-week streak! You're mastering your variable income.`;
-      else if (streakCount >= 3) msgEl.textContent = `💪 ${streakCount} weeks strong! Consistency is building real insight.`;
-      else if (this.state.streak.currentWeekDone) msgEl.textContent = `✅ This week's check-in done! Come back next Sunday.`;
-      else msgEl.textContent = `Check in this week to keep your streak alive.`;
+      if (streakCount >= 6) msgEl.textContent = `🔥 ${streakCount}-week streak! You're mastering variable income planning.`;
+      else if (streakCount >= 3) msgEl.textContent = `💪 ${streakCount} weeks consistent! Building solid financial runway.`;
+      else if (this.state.streak.currentWeekDone) msgEl.textContent = `✅ This week's check-in complete. Next check-in on Sunday!`;
+      else msgEl.textContent = `Check your safe ceiling this Sunday to keep the streak going.`;
     }
   }
 
   // ──────────────────────────────────────────
-  // PARETO ANALYSIS
+  // PARETO REVENUE ANALYSIS
   // ──────────────────────────────────────────
   renderPareto(hc) {
     const container = document.getElementById('pareto-container');
     if (!container) return;
     const incomeByClient = {};
     this.state.transactions.filter(t => t.type === 'income').forEach(t => {
-      const key = t.client || t.notes || 'Unknown';
+      const key = t.client || t.notes || 'Direct Clients';
       incomeByClient[key] = (incomeByClient[key] || 0) + CurrencyEngine.convert(t.amount, t.currency, hc);
     });
     const sorted = Object.entries(incomeByClient).sort((a,b) => b[1] - a[1]);
-    if (!sorted.length) { container.innerHTML = '<p style="font-size:12px; color:var(--text-muted); padding:8px 0;">Log income to see client breakdown</p>'; return; }
+    if (!sorted.length) {
+      container.innerHTML = '<p style="font-size:12px; color:var(--text-muted); padding:10px 0;">Log income to see your client revenue breakdown</p>';
+      return;
+    }
     const total = sorted.reduce((s, [,v]) => s + v, 0);
-    container.innerHTML = sorted.slice(0, 6).map(([client, amount], i) => {
+    container.innerHTML = sorted.slice(0, 5).map(([client, amount], i) => {
       const pct = total > 0 ? Math.round((amount / total) * 100) : 0;
       const color = CLIENT_COLORS[i % CLIENT_COLORS.length];
       return `
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:12px;">
-            <span style="color:var(--text-primary); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%;">${client}</span>
+            <span style="font-weight:600; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:62%;">${client}</span>
             <div style="display:flex; align-items:center; gap:6px;">
-              <span class="num" style="font-size:12px; color:var(--text-secondary);" class="blur-private">${CurrencyEngine.format(amount, hc, 0)}</span>
-              <span style="font-size:10px; font-weight:700; font-family:'JetBrains Mono'; color:${color}; min-width:30px; text-align:right;">${pct}%</span>
+              <span class="num blur-private" style="color:var(--text-secondary); font-size:12px;">${CurrencyEngine.format(amount, hc, 0)}</span>
+              <span style="font-size:11px; font-weight:800; font-family:'JetBrains Mono'; color:${color}; min-width:32px; text-align:right;">${pct}%</span>
             </div>
           </div>
           <div class="progress-track"><div class="progress-fill" style="width:${pct}%; background:${color};"></div></div>
@@ -773,23 +851,25 @@ class FookApp {
   }
 
   // ──────────────────────────────────────────
-  // ANOMALIES
+  // ANOMALY DETECTOR
   // ──────────────────────────────────────────
   renderAnomalies(hc) {
     const container = document.getElementById('anomaly-container');
     if (!container) return;
     const alerts = AnomalyDetector.detectAnomalies(this.state.transactions, hc);
     if (!alerts.length) {
-      container.innerHTML = `<div style="display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-green-glow); border:1px solid rgba(16,185,129,0.2);">
-        <svg width="14" height="14" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        <span style="font-size:12px; color:var(--accent-green);">No anomalies detected. Clean spending signature.</span>
-      </div>`;
+      container.innerHTML = `
+        <div style="display:flex; align-items:center; gap:8px; padding:11px 14px; border-radius:var(--radius-md); background:var(--accent-green-glow); border:1px solid rgba(16,185,129,0.22);">
+          <svg width="15" height="15" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span style="font-size:12.5px; font-weight:600; color:var(--accent-green);">No anomalies. Clean spending signature.</span>
+        </div>
+      `;
       return;
     }
     container.innerHTML = alerts.map(a => `
-      <div style="display:flex; align-items:flex-start; gap:8px; padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-amber-glow); border:1px solid rgba(245,158,11,0.25);">
-        <svg width="14" height="14" fill="none" stroke="var(--accent-amber)" viewBox="0 0 24 24" stroke-width="2" style="flex-shrink:0; margin-top:1px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <p style="font-size:11px; color:var(--accent-amber);">${a.message}</p>
+      <div style="display:flex; align-items:flex-start; gap:9px; padding:11px 14px; border-radius:var(--radius-md); background:var(--accent-amber-glow); border:1px solid rgba(245,158,11,0.25); margin-bottom:6px;">
+        <svg width="15" height="15" fill="none" stroke="var(--accent-amber)" viewBox="0 0 24 24" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p style="font-size:12px; color:var(--accent-amber); line-height:1.4;">${a.message}</p>
       </div>
     `).join('');
   }
@@ -818,13 +898,13 @@ class FookApp {
       return `
         <div class="card card-lift" style="padding:14px;">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-            <span style="font-size:12px; font-weight:600; color:var(--text-primary);">${cat}</span>
+            <span style="font-size:12.5px; font-weight:600; color:var(--text-primary);">${cat}</span>
             ${over ? '<span class="badge badge-rose" style="font-size:9px;">Over!</span>' : ''}
           </div>
           <div class="progress-track" style="margin-bottom:6px;"><div class="progress-fill" style="width:${pct}%; background:${color};"></div></div>
-          <div style="display:flex; justify-content:space-between; font-size:10px;">
-            <span style="color:${color}; font-family:'JetBrains Mono'; font-weight:600;" class="blur-private">${CurrencyEngine.format(spent, hc, 0)}</span>
-            <span style="color:var(--text-muted);" class="blur-private">/ ${CurrencyEngine.format(cap, hc, 0)} · ${pct}%</span>
+          <div style="display:flex; justify-content:space-between; font-size:11px;">
+            <span style="color:${color}; font-family:'JetBrains Mono'; font-weight:700;" class="blur-private">${CurrencyEngine.format(spent, hc, 0)}</span>
+            <span style="color:var(--text-muted);" class="blur-private">/ ${CurrencyEngine.format(cap, hc, 0)}</span>
           </div>
         </div>
       `;
@@ -853,87 +933,64 @@ class FookApp {
     const confBadge = document.getElementById('forecast-confidence-badge');
     if (confBadge) {
       confBadge.textContent = `${forecast.confidenceScore}% ML Confidence`;
-      confBadge.className = forecast.confidenceScore >= 80 ? 'badge badge-green' : forecast.confidenceScore >= 65 ? 'badge badge-cyan' : 'badge badge-amber';
+      confBadge.className = forecast.confidenceScore >= 80 ? 'badge badge-green' : 'badge badge-cyan';
     }
 
     const colors = ['var(--accent-green)', 'var(--accent-cyan)', 'var(--accent-violet)'];
     const cards = document.getElementById('forecast-cards');
     if (cards) {
       cards.innerHTML = forecast.projections.map((p, i) => `
-        <div class="card" style="padding:20px; border-top:3px solid ${colors[i]};">
+        <div class="card card-lift" style="padding:20px; border-top:3.5px solid ${colors[i]};">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
             <div>
-              <p style="font-size:13px; font-weight:700; color:var(--text-primary);">${p.monthName}</p>
-              <p style="font-size:10px; font-weight:600; color:var(--text-muted); margin-top:2px;">${p.notes}</p>
+              <p style="font-size:14px; font-weight:800; color:var(--text-primary);">${p.monthName}</p>
+              <p style="font-size:11px; font-weight:600; color:var(--text-muted); margin-top:2px;">${p.notes}</p>
             </div>
             ${this.state.settings.overrideAdjustment !== 0
               ? `<span class="badge badge-violet" style="font-size:9px;">Override ${this.state.settings.overrideAdjustment > 0 ? '+' : ''}${this.state.settings.overrideAdjustment}%</span>`
               : ''}
           </div>
-          <div class="space-y-2" style="margin-bottom:14px;">
-            <div style="display:flex; justify-content:space-between; font-size:12px; padding:6px 0; border-bottom:1px solid var(--border);">
+          <div class="space-y-2.5" style="margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid var(--border);">
               <span style="color:var(--text-muted);">Conservative (P20)</span>
               <span class="num blur-private" style="color:var(--text-secondary);">${CurrencyEngine.format(p.conservative, hc, 0)}</span>
             </div>
-            <div style="display:flex; justify-content:space-between; font-size:12px; padding:6px 0; border-bottom:1px solid var(--border); font-weight:700;">
+            <div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0; border-bottom:1px solid var(--border); font-weight:700;">
               <span style="color:${colors[i]};">Expected Target</span>
-              <span class="num blur-private" style="color:var(--text-primary); font-size:14px;">${CurrencyEngine.format(p.expected, hc, 0)}</span>
+              <span class="num blur-private" style="color:var(--text-primary); font-size:14.5px;">${CurrencyEngine.format(p.expected, hc, 0)}</span>
             </div>
-            <div style="display:flex; justify-content:space-between; font-size:12px; padding:6px 0;">
+            <div style="display:flex; justify-content:space-between; font-size:12.5px; padding:6px 0;">
               <span style="color:var(--text-muted);">Optimistic (P80)</span>
               <span class="num blur-private" style="color:var(--text-secondary);">${CurrencyEngine.format(p.optimistic, hc, 0)}</span>
             </div>
           </div>
-          <div style="padding:10px; border-radius:var(--radius-md); background:var(--accent-green-glow); border:1px solid rgba(16,185,129,0.2);">
-            <div style="display:flex; justify-content:space-between; font-size:12px;">
+          <div style="padding:10px 12px; border-radius:var(--radius-md); background:var(--accent-green-glow); border:1px solid rgba(16,185,129,0.22);">
+            <div style="display:flex; justify-content:space-between; font-size:12.5px;">
               <span style="color:var(--text-secondary);">Safe Spend Target</span>
-              <span class="num c-green blur-private" style="font-weight:700;">${CurrencyEngine.format(p.safeSpendTarget, hc, 0)}</span>
+              <span class="num c-green blur-private" style="font-weight:800;">${CurrencyEngine.format(p.safeSpendTarget, hc, 0)}</span>
             </div>
           </div>
         </div>
       `).join('');
     }
 
-    // Accuracy tracker (honest ML: compare last 3 months historical vs actual)
+    // Accuracy Tracker
     const accuracyEl = document.getElementById('accuracy-tracker');
     if (accuracyEl && histInHome.length >= 2) {
       const last3 = histInHome.slice(-3).reverse();
       accuracyEl.innerHTML = last3.map(h => {
         const date = new Date(h.date);
         const monthName = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-        const histMean  = histAmtsFrom(histInHome, h.date);
-        const diff      = histMean > 0 ? Math.round(((h.amount - histMean) / histMean) * 100) : 0;
         return `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-radius:var(--radius-md); background:var(--bg-hover); border:1px solid var(--border);">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border-radius:var(--radius-md); background:var(--bg-hover); border:1px solid var(--border);">
             <div>
-              <p style="font-size:12px; font-weight:600; color:var(--text-primary);">${monthName}</p>
-              <p style="font-size:11px; color:var(--text-muted);">Actual income logged</p>
+              <p style="font-size:12.5px; font-weight:700; color:var(--text-primary);">${monthName}</p>
+              <p style="font-size:11px; color:var(--text-muted);">Actual logged</p>
             </div>
-            <div style="text-align:right;">
-              <p class="num blur-private" style="font-size:13px; font-weight:700; color:var(--text-primary);">${CurrencyEngine.format(h.amount, hc, 0)}</p>
-              <span class="change-chip ${diff >= 0 ? 'up' : 'down'}">${diff >= 0 ? '+' : ''}${diff}% vs avg</span>
-            </div>
+            <p class="num blur-private" style="font-size:14px; font-weight:800; color:var(--accent-green);">${CurrencyEngine.format(h.amount, hc, 0)}</p>
           </div>
         `;
       }).join('');
-    }
-
-    // Override history
-    const ohEl = document.getElementById('override-history');
-    if (ohEl) {
-      if (!this.state.overrideHistory.length) {
-        ohEl.innerHTML = '<p class="c-muted" style="font-size:12px;">No manual overrides applied yet.</p>';
-      } else {
-        ohEl.innerHTML = this.state.overrideHistory.slice(0,5).map(o => `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:var(--radius-md); background:var(--bg-hover); border:1px solid var(--border); font-size:12px;">
-            <div>
-              <span class="badge ${o.adjustment > 0 ? 'badge-green' : 'badge-rose'}">${o.adjustment > 0 ? '+' : ''}${o.adjustment}%</span>
-              ${o.reason ? `<span class="c-secondary" style="margin-left:8px; font-style:italic;">"${o.reason}"</span>` : ''}
-            </div>
-            <span class="c-muted">${o.date}</span>
-          </div>
-        `).join('');
-      }
     }
   }
 
@@ -941,8 +998,8 @@ class FookApp {
   // LEDGER TAB
   // ──────────────────────────────────────────
   renderLedger() {
-    const tbody  = document.getElementById('ledger-tbody');
-    const mList  = document.getElementById('ledger-mobile-list');
+    const tbody = document.getElementById('ledger-tbody');
+    const mList = document.getElementById('ledger-mobile-list');
     const hc = this.state.settings.homeCurrency;
 
     let txs = [...this.state.transactions];
@@ -960,30 +1017,14 @@ class FookApp {
       );
     }
 
-    const emptyMsg = '<p style="text-align:center; padding:24px; color:var(--text-muted); font-size:13px;">No transactions match your filter.</p>';
-
     if (!txs.length) {
-      if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted); font-size:13px;">No transactions match.</td></tr>`;
+      const emptyMsg = '<p style="text-align:center; padding:28px; color:var(--text-muted); font-size:13px;">No transactions match your search filter.</p>';
+      if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted); font-size:13px;">No transactions found.</td></tr>`;
       if (mList) mList.innerHTML = emptyMsg;
       return;
     }
 
-    txs.forEach(t => {
-      const isIncome  = t.type === 'income';
-      const homeVal   = CurrencyEngine.convert(t.amount, t.currency, hc);
-      const isForeign = t.currency.toUpperCase() !== hc.toUpperCase();
-      const typeColor = isIncome ? 'var(--accent-green)' : 'var(--accent-rose)';
-      const typeSign  = isIncome ? '+' : '−';
-
-      // Desktop table row
-      if (tbody) {
-        // handled in batch below
-      }
-      // Mobile card
-      // handled in batch below
-    });
-
-    // Desktop table (batch)
+    // Desktop Table View
     if (tbody) {
       tbody.innerHTML = txs.map(t => {
         const isIncome  = t.type === 'income';
@@ -995,16 +1036,16 @@ class FookApp {
             <td style="color:var(--text-muted); font-family:'JetBrains Mono'; font-size:12px; white-space:nowrap;">${t.date}</td>
             <td>
               <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
-                <span style="font-size:12px; font-weight:600; color:${typeColor};">${isIncome?'+':'−'} ${t.category}</span>
+                <span style="font-size:12px; font-weight:700; color:${typeColor};">${isIncome?'+':'−'} ${t.category}</span>
                 ${t.isRecurring ? '<span class="badge badge-cyan" style="font-size:9px;">Retainer</span>' : ''}
                 ${t.isTaxDeductible ? '<span class="badge badge-amber" style="font-size:9px;">★ Tax</span>' : ''}
               </div>
             </td>
-            <td style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; color:var(--text-primary);">${t.notes || '—'}</td>
-            <td style="text-align:right;"><span class="num blur-private" style="font-size:13px; font-weight:700; color:${typeColor};">${isIncome?'+':'−'}${CurrencyEngine.format(t.amount, t.currency)}</span></td>
+            <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12.5px; color:var(--text-primary);">${t.notes || '—'}</td>
+            <td style="text-align:right;"><span class="num blur-private" style="font-size:13.5px; font-weight:800; color:${typeColor};">${isIncome?'+':'−'}${CurrencyEngine.format(t.amount, t.currency)}</span></td>
             <td style="text-align:right;"><span class="num blur-private" style="font-size:12px; color:var(--text-secondary);">${isForeign ? CurrencyEngine.format(homeVal, hc) : '—'}</span></td>
             <td style="text-align:right;">
-              <button onclick="window.fookApp.deleteTransaction('${t.id}')" class="btn btn-ghost btn-icon" style="color:var(--text-muted); min-width:30px; min-height:30px;">
+              <button onclick="window.fookApp.deleteTransaction('${t.id}')" class="btn btn-ghost btn-icon" style="color:var(--text-muted); min-width:30px; min-height:30px;" title="Delete">
                 <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
               </button>
             </td>
@@ -1013,7 +1054,7 @@ class FookApp {
       }).join('');
     }
 
-    // Mobile card list
+    // Mobile Card Stack View
     if (mList) {
       mList.innerHTML = txs.map(t => {
         const isIncome  = t.type === 'income';
@@ -1022,23 +1063,23 @@ class FookApp {
         const typeColor = isIncome ? 'var(--accent-green)' : 'var(--accent-rose)';
         return `
           <div class="ledger-row-card">
-            <div class="type-dot" style="background:${typeColor}; margin-top:5px;"></div>
+            <div style="width:10px; height:10px; border-radius:50%; background:${typeColor}; margin-top:5px; flex-shrink:0;"></div>
             <div style="flex:1; min-width:0;">
               <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
                 <div style="min-width:0;">
-                  <p style="font-size:13px; font-weight:600; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.notes || t.category}</p>
-                  <p style="font-size:11px; color:var(--text-muted); margin-top:2px;">${t.category} · ${t.date}</p>
+                  <p style="font-size:13.5px; font-weight:700; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.notes || t.category}</p>
+                  <p style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">${t.category} · ${t.date}</p>
                 </div>
                 <div style="text-align:right; flex-shrink:0;">
-                  <p class="num blur-private" style="font-size:14px; font-weight:700; color:${typeColor};">${isIncome?'+':'−'}${CurrencyEngine.format(t.amount, t.currency)}</p>
+                  <p class="num blur-private" style="font-size:14.5px; font-weight:800; color:${typeColor};">${isIncome?'+':'−'}${CurrencyEngine.format(t.amount, t.currency)}</p>
                   ${isForeign ? `<p class="num blur-private" style="font-size:11px; color:var(--text-muted);">${CurrencyEngine.format(homeVal, hc)}</p>` : ''}
                 </div>
               </div>
               <div style="display:flex; gap:4px; margin-top:6px; align-items:center;">
-                ${t.isRecurring ? '<span class="badge badge-cyan" style="font-size:9px;">Recurring</span>' : ''}
+                ${t.isRecurring ? '<span class="badge badge-cyan" style="font-size:9px;">Retainer</span>' : ''}
                 ${t.isTaxDeductible ? '<span class="badge badge-amber" style="font-size:9px;">★ Tax-Ded.</span>' : ''}
-                <button onclick="window.fookApp.deleteTransaction('${t.id}')" style="margin-left:auto; background:none; border:none; cursor:pointer; color:var(--text-muted); padding:4px; display:flex; align-items:center; min-width:28px; min-height:28px; justify-content:center;">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                <button onclick="window.fookApp.deleteTransaction('${t.id}')" style="margin-left:auto; background:none; border:none; cursor:pointer; color:var(--text-muted); padding:4px;" title="Delete">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
                 </button>
               </div>
             </div>
@@ -1074,16 +1115,16 @@ class FookApp {
     const dedBreakdown = document.getElementById('tax-deductible-breakdown');
     if (dedBreakdown) {
       const sorted = Object.entries(dedByCategory).sort((a,b) => b[1]-a[1]);
-      if (!sorted.length) { dedBreakdown.innerHTML = '<p class="c-muted" style="font-size:12px;">Mark expenses as "Tax Deductible" to see breakdown.</p>'; }
+      if (!sorted.length) { dedBreakdown.innerHTML = '<p class="c-muted" style="font-size:12px;">Mark business expenses as "Tax Deductible" to generate reports.</p>'; }
       else {
         const total = sorted.reduce((s,[,v]) => s+v, 0);
         dedBreakdown.innerHTML = sorted.map(([cat, amt]) => {
           const pct = total > 0 ? Math.round((amt/total)*100) : 0;
           return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
-            <span style="font-size:13px; color:var(--text-primary);">${cat}</span>
+            <span style="font-size:13px; color:var(--text-primary); font-weight:600;">${cat}</span>
             <div style="display:flex; align-items:center; gap:10px;">
               <span style="font-size:11px; color:var(--text-muted);">${pct}%</span>
-              <span class="num c-amber blur-private" style="font-weight:700;">${CurrencyEngine.format(amt, hc)}</span>
+              <span class="num c-amber blur-private" style="font-weight:800;">${CurrencyEngine.format(amt, hc)}</span>
             </div>
           </div>`;
         }).join('');
@@ -1093,7 +1134,7 @@ class FookApp {
     const incBreakdown = document.getElementById('tax-income-breakdown');
     if (incBreakdown) {
       const sorted = Object.entries(incomeByCategory).sort((a,b) => b[1]-a[1]);
-      if (!sorted.length) { incBreakdown.innerHTML = '<p class="c-muted" style="font-size:12px;">Log income to see source breakdown.</p>'; }
+      if (!sorted.length) { incBreakdown.innerHTML = '<p class="c-muted" style="font-size:12px;">Log income to see category source breakdown.</p>'; }
       else {
         const total = sorted.reduce((s,[,v]) => s+v, 0);
         incBreakdown.innerHTML = sorted.map(([cat, amt], i) => {
@@ -1104,7 +1145,7 @@ class FookApp {
               <span style="color:var(--text-primary); font-weight:600;">${cat}</span>
               <div style="display:flex; align-items:center; gap:8px;">
                 <span style="color:var(--text-muted); font-size:11px;">${pct}%</span>
-                <span class="num blur-private" style="font-weight:700; color:${color};">${CurrencyEngine.format(amt, hc)}</span>
+                <span class="num blur-private" style="font-weight:800; color:${color};">${CurrencyEngine.format(amt, hc)}</span>
               </div>
             </div>
             <div class="progress-track"><div class="progress-fill" style="width:${pct}%; background:${color};"></div></div>
@@ -1115,7 +1156,7 @@ class FookApp {
   }
 
   // ──────────────────────────────────────────
-  // EXPORTS
+  // EXPORTS & BACKUPS
   // ──────────────────────────────────────────
   exportCSV() {
     const hc = this.state.settings.homeCurrency;
@@ -1125,10 +1166,12 @@ class FookApp {
       csv += `"${t.id}","${t.date}","${t.type}","${t.category}",${t.amount},"${t.currency}",${hv},"${hc}","${(t.notes||'').replace(/"/g,'""')}","${(t.client||'').replace(/"/g,'""')}",${t.isRecurring?'YES':'NO'},${t.isTaxDeductible?'YES':'NO'}\n`;
     });
     this.downloadBlob(csv, `fook_ledger_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+    this.toast('📁 CSV ledger exported', 'green');
   }
 
   exportJSON() {
     this.downloadBlob(JSON.stringify(this.state, null, 2), `fook_backup_${new Date().toISOString().split('T')[0]}.json`, 'application/json');
+    this.toast('💾 Full JSON backup downloaded', 'green');
   }
 
   downloadBlob(content, filename, mime) {
@@ -1140,19 +1183,10 @@ class FookApp {
     setTimeout(() => { a.remove(); URL.revokeObjectURL(a.href); }, 200);
   }
 
-  // ──────────────────────────────────────────
-  // UTILITY
-  // ──────────────────────────────────────────
   setEl(id, text) {
     const el = document.getElementById(id);
     if (el) el.textContent = text;
   }
-}
-
-// Helper: estimate historical mean excluding a specific date
-function histAmtsFrom(histInHome, excludeDate) {
-  const others = histInHome.filter(h => h.date !== excludeDate).map(h => h.amount);
-  return others.length ? others.reduce((a,b)=>a+b,0)/others.length : 0;
 }
 
 // ═══════════════════════════════════════════
@@ -1160,7 +1194,6 @@ function histAmtsFrom(histInHome, excludeDate) {
 // ═══════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   window.fookApp = new FookApp();
-  // Apply privacy on load if enabled
   if (window.fookApp.state.settings.privacyMode) {
     document.body.classList.add('privacy-active');
   }
