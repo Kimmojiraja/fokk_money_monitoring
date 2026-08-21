@@ -243,6 +243,46 @@ class FookApp {
     document.getElementById('open-share-modal-btn')?.addEventListener('click', openShare);
     document.getElementById('sidebar-share-btn')?.addEventListener('click', openShare);
 
+    // PWA Installation Handlers
+    this.deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      this.deferredPrompt = e;
+      const btn = document.getElementById('pwa-install-btn');
+      if (btn) btn.style.display = 'inline-flex';
+    });
+
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+      const badge = document.getElementById('pWA-installed-badge');
+      if (badge) badge.style.display = 'block';
+      const btn = document.getElementById('pwa-install-btn');
+      if (btn) btn.style.display = 'none';
+    }
+
+    document.getElementById('pwa-install-btn')?.addEventListener('click', async () => {
+      if (this.deferredPrompt) {
+        this.deferredPrompt.prompt();
+        const { outcome } = await this.deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          this.toast('fook installed to device successfully!', 'green');
+        }
+        this.deferredPrompt = null;
+      } else {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+          const iosGuide = document.getElementById('pwa-ios-instructions');
+          if (iosGuide) iosGuide.style.display = iosGuide.style.display === 'none' ? 'block' : 'none';
+        } else {
+          this.toast('To install: click your browser menu (⋮) -> Install App / Add to Home Screen', 'cyan');
+        }
+      }
+    });
+
+    document.getElementById('pwa-ios-help-btn')?.addEventListener('click', () => {
+      const iosGuide = document.getElementById('pwa-ios-instructions');
+      if (iosGuide) iosGuide.style.display = iosGuide.style.display === 'none' ? 'block' : 'none';
+    });
+
     document.getElementById('copy-share-link-btn')?.addEventListener('click', () => {
       const text = `fook — Offline-first variable income budgeting for freelancers.\nhttps://github.com/Kimmojiraja/fokk_money_monitoring`;
       navigator.clipboard.writeText(text).then(() => {

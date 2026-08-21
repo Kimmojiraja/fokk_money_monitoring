@@ -775,6 +775,37 @@
         </div>
       </div>
 
+      <!-- PWA Installation -->
+      <hr style="border-color:var(--border);">
+      <div>
+        <p class="section-title" style="margin-bottom:6px;">Web Application Installation (PWA)</p>
+        <p style="font-size:11.5px; color:var(--text-secondary); margin-bottom:10px;">Install fook to your mobile device or desktop for 1-tap launcher access and offline caching.</p>
+        
+        <div id="pWA-installed-badge" style="display:none; padding:8px 12px; background:rgba(129, 201, 149, 0.12); border:1px solid rgba(129, 201, 149, 0.3); margin-bottom:8px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span style="font-size:12px; font-weight:700; color:var(--accent-green);">App Installed on this Device</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button id="pwa-install-btn" class="btn btn-primary btn-sm" style="gap:6px;">
+            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Install Web Application
+          </button>
+          <button id="pwa-ios-help-btn" class="btn btn-ghost btn-sm" style="font-size:11.5px;">
+            iOS Installation Guide
+          </button>
+        </div>
+
+        <div id="pwa-ios-instructions" style="display:none; margin-top:8px; padding:10px; background:var(--bg-input); border:1px solid var(--border); font-size:11.5px; color:var(--text-secondary); line-height:1.4;">
+          <strong>On iPhone / iPad (Safari):</strong><br>
+          1. Tap the <strong>Share</strong> button at the bottom of Safari (<span style="font-family:'JetBrains Mono';">⎋</span>).<br>
+          2. Scroll down and tap <strong>"Add to Home Screen"</strong>.<br>
+          3. Tap <strong>Add</strong> in top right. fook will open as a standalone native app!
+        </div>
+      </div>
+
       <!-- Data Management -->
       <hr style="border-color:var(--border);">
       <div style="display:flex; flex-direction:column; gap:6px;">
@@ -986,11 +1017,18 @@
 </div>
 
 <!-- ════════════════════════════════════════════════════════════
-     SCRIPTS
+     SCRIPTS & SERVICE WORKER
 ════════════════════════════════════════════════════════════ -->
 <script src="currency_matrix.js"></script>
 <script src="i18n.js"></script>
 <script src="ml_engine.js"></script>
 <script src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+</script>
 </body>
 </html>
