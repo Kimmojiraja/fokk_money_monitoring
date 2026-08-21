@@ -1,7 +1,7 @@
 /* ================================================================
-   FOOK — Precision Technical Design System
+   FOOK — Precision Technical Design System (v3.2)
    Google Dark (#131314) & Crisp Light Theme • Sharp Architecture
-   No Emojis • Vector Icons • Linear/Material Sharp Aesthetics
+   Flags in Selects • Slide-out Sidebar • Money Hacks • Live Rates
 ================================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
@@ -28,7 +28,7 @@
 /* ======================== GOOGLE MATTE DARK THEME ======================== */
 html.dark {
   --bg-base:        #131314; /* Google Dark base */
-  --bg-elevated:    #1e1f20; /* Google Surface 1 */
+  --bg-elevated:    #1e1f20; /* Google Surface */
   --bg-card:        #1e1f20; /* Google Card */
   --bg-card-solid:  #1e1f20;
   --bg-hover:       #28292a; /* Google Hover */
@@ -113,7 +113,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Clean background - No loud gradients */
 body::before { display: none; }
 
 /* ======================== SHARP CARD ARCHITECTURE ======================== */
@@ -251,30 +250,57 @@ html.light .btn-primary { color: #ffffff; }
 .quick-chip.chip-expense { border-color: rgba(242, 139, 130, 0.3); color: var(--accent-rose); background: rgba(242, 139, 130, 0.06); }
 .quick-chip.chip-expense:hover { background: rgba(242, 139, 130, 0.12); }
 
-/* ======================== ONBOARDING STEP CARD ======================== */
-.onboarding-card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent-green);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
+/* ======================== SIDEBAR SLIDE-OUT DRAWER ======================== */
+.sidebar-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: var(--bg-overlay);
+  display: none;
+  opacity: 0; transition: opacity 0.2s ease;
 }
-.onboarding-step-num {
-  width: 20px; height: 20px; border-radius: var(--radius-xs);
-  background: var(--accent-green); color: #131314;
-  font-weight: 800; font-size: 11px; font-family: var(--font-mono);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+.sidebar-overlay.active {
+  display: block; opacity: 1;
 }
-html.light .onboarding-step-num { color: #ffffff; }
 
-/* ======================== WHAT-IF SIMULATOR ======================== */
-.simulator-box {
-  background: var(--bg-elevated);
+.sidebar-drawer {
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 310;
+  width: 290px; max-width: 85vw;
+  background: var(--bg-elevated); border-right: 1px solid var(--border);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateX(-100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.sidebar-drawer.active {
+  transform: translateX(0);
+}
+
+.sidebar-nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: var(--radius-xs);
+  font-size: 13px; font-weight: 600; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.12s ease; border: 1px solid transparent;
+  background: transparent; width: 100%; text-align: left;
+}
+.sidebar-nav-item:hover {
+  background: var(--bg-hover); color: var(--text-primary);
+}
+.sidebar-nav-item.active {
+  background: var(--accent-green-glow); color: var(--accent-green);
+  border-color: rgba(129, 201, 149, 0.25);
+}
+
+/* ======================== HACKS ACCORDION / CARDS ======================== */
+.hack-card {
+  background: var(--bg-card);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--accent-violet);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
+  border-left: 3px solid var(--accent-amber);
+  border-radius: var(--radius-xs);
+  padding: 14px 16px;
+  transition: border-color 0.15s ease;
+}
+.hack-card:hover {
+  border-color: var(--border-hover);
 }
 
 /* ======================== PROGRESS & GAUGES ======================== */
@@ -303,7 +329,7 @@ html.light .onboarding-step-num { color: #ffffff; }
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 13.5px;
-  padding: 9px 12px;
+  padding: 8px 12px;
   width: 100%;
   outline: none;
   transition: border-color var(--transition-fast);
@@ -389,7 +415,7 @@ body.privacy-active .blur-private {
   user-select: none; pointer-events: none;
 }
 
-/* ======================== SLIDER (SHARP SQUARE THUMB) ======================== */
+/* ======================== SLIDER ======================== */
 input[type=range] {
   -webkit-appearance: none; height: 3px; border-radius: var(--radius-none);
   background: var(--border); outline: none; width: 100%; cursor: pointer;

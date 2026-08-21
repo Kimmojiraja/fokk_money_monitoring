@@ -29,7 +29,7 @@
 
     /* Desktop Tab Nav */
     .desktop-tab-nav { display: none; }
-    @media (min-width: 768px) { .desktop-tab-nav { display: flex; } }
+    @media (min-width: 900px) { .desktop-tab-nav { display: flex; } }
 
     /* Mobile KPI Carousel */
     .mobile-kpi-scroll {
@@ -49,7 +49,7 @@
     @media (max-width: 600px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
 
     /* Page spacing for bottom nav */
-    .page-content { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+    .page-content { padding-bottom: calc(74px + env(safe-area-inset-bottom)); }
     @media (min-width: 768px) { .page-content { padding-bottom: 28px; } }
 
     /* Ledger Rows */
@@ -97,49 +97,132 @@
 <body class="flex flex-col min-h-screen">
 
 <!-- ════════════════════════════════════════════════════════════
+     SLIDE-OUT SIDEBAR DRAWER & OVERLAY
+════════════════════════════════════════════════════════════ -->
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+<aside id="sidebar-drawer" class="sidebar-drawer">
+  <!-- Sidebar Header & Profile -->
+  <div style="padding:18px 16px; border-bottom:1px solid var(--border); background:var(--bg-card);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div id="user-avatar" style="width:34px; height:34px; border-radius:var(--radius-xs); background:var(--accent-green); color:#131314; font-weight:900; font-family:'JetBrains Mono'; display:flex; align-items:center; justify-content:center; font-size:13px;">
+          R
+        </div>
+        <div>
+          <p id="greeting-username" style="font-size:13.5px; font-weight:800; color:var(--text-primary);">Raja</p>
+          <p id="greeting-time" style="font-size:11px; color:var(--text-muted);">Good evening</p>
+        </div>
+      </div>
+      <button id="sidebar-close-btn" class="btn btn-ghost btn-icon" style="min-width:28px; min-height:28px; padding:4px;">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Quick User Name Edit -->
+    <div style="display:flex; gap:6px;">
+      <input type="text" id="user-name-input" class="fook-input" style="padding:5px 8px; font-size:12px;" placeholder="Your Name (e.g. Raja)" value="Raja">
+      <button id="save-username-btn" class="btn btn-ghost btn-sm" style="font-size:11px; padding:4px 8px;">Save</button>
+    </div>
+  </div>
+
+  <!-- Sidebar Navigation Links -->
+  <div style="padding:12px 10px; flex:1; display:flex; flex-direction:column; gap:3px;">
+    <button class="sidebar-nav-item active" data-tab="dashboard">
+      <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="sidebar-nav-item" data-tab="forecast">
+      <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span>Income Forecast</span>
+    </button>
+    <button class="sidebar-nav-item" data-tab="ledger">
+      <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Ledger &amp; Entries</span>
+    </button>
+    <button class="sidebar-nav-item" data-tab="tax">
+      <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      <span>Tax &amp; Deductions</span>
+    </button>
+    <button class="sidebar-nav-item" data-tab="hacks">
+      <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span>Money Hacks &amp; Alpha</span>
+    </button>
+    <button class="sidebar-nav-item" data-tab="settings">
+      <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span>Settings &amp; Preferences</span>
+    </button>
+    <button id="sidebar-share-btn" class="sidebar-nav-item" style="color:var(--accent-cyan);">
+      <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <span>Share App with Friends</span>
+    </button>
+  </div>
+
+  <!-- Sidebar Footer -->
+  <div style="padding:14px 16px; border-top:1px solid var(--border); font-size:11px; color:var(--text-muted);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+      <span style="font-weight:700; color:var(--accent-green);">100% Offline Mode</span>
+      <span>v3.2</span>
+    </div>
+    <p>Zero cloud sync. Stored on-device.</p>
+  </div>
+</aside>
+
+
+<!-- ════════════════════════════════════════════════════════════
      HEADER
 ════════════════════════════════════════════════════════════ -->
 <header class="sticky top-0 z-40 no-print" style="background:var(--bg-card); border-bottom:1px solid var(--border); padding-top:env(safe-area-inset-top);">
   <div class="max-w-7xl mx-auto px-4 sm:px-5 h-14 flex items-center gap-3">
 
+    <!-- Hamburger Sidebar Button -->
+    <button id="sidebar-open-btn" class="btn btn-ghost btn-icon" title="Open navigation menu" style="padding:6px;">
+      <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+
     <!-- Sharp Minimal Logo -->
-    <div class="flex items-center gap-2.5 flex-shrink-0 cursor-pointer" onclick="window.fookApp.switchTab('dashboard')">
-      <div style="background:var(--accent-green); width:28px; height:28px; border-radius:var(--radius-xs); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-        <span style="font-family:'JetBrains Mono',monospace; font-weight:900; font-size:12px; color:#131314;">FK</span>
+    <div class="flex items-center gap-2 flex-shrink-0 cursor-pointer" onclick="window.fookApp.switchTab('dashboard')">
+      <div style="background:var(--accent-green); width:26px; height:26px; border-radius:var(--radius-xs); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <span style="font-family:'JetBrains Mono',monospace; font-weight:900; font-size:11.5px; color:#131314;">FK</span>
       </div>
       <div>
         <div class="flex items-center gap-1.5">
-          <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:16px; color:var(--text-primary); letter-spacing:-0.02em;">fook</span>
-          <span class="badge badge-green hidden sm:inline-flex" style="font-size:9px; padding:1px 5px;">LOCAL ML</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:15.5px; color:var(--text-primary); letter-spacing:-0.02em;">fook</span>
         </div>
       </div>
     </div>
 
     <!-- Desktop Tab Nav -->
-    <nav class="desktop-tab-nav flex-1 max-w-sm mx-auto">
+    <nav class="desktop-tab-nav flex-1 max-w-lg mx-auto">
       <div style="display:flex; gap:2px; padding:2px; background:var(--bg-input); border-radius:var(--radius-xs); border:1px solid var(--border); width:100%;">
-        <button class="tab-btn active" data-tab="dashboard" style="flex:1; padding:6px 10px; border-radius:var(--radius-xs); font-size:12px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Dashboard</button>
-        <button class="tab-btn" data-tab="forecast" style="flex:1; padding:6px 10px; border-radius:var(--radius-xs); font-size:12px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Forecast</button>
-        <button class="tab-btn" data-tab="ledger" style="flex:1; padding:6px 10px; border-radius:var(--radius-xs); font-size:12px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Ledger</button>
-        <button class="tab-btn" data-tab="tax" style="flex:1; padding:6px 10px; border-radius:var(--radius-xs); font-size:12px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Tax</button>
+        <button class="tab-btn active" data-tab="dashboard" style="flex:1; padding:5px 8px; border-radius:var(--radius-xs); font-size:11.5px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Dashboard</button>
+        <button class="tab-btn" data-tab="forecast" style="flex:1; padding:5px 8px; border-radius:var(--radius-xs); font-size:11.5px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Forecast</button>
+        <button class="tab-btn" data-tab="ledger" style="flex:1; padding:5px 8px; border-radius:var(--radius-xs); font-size:11.5px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Ledger</button>
+        <button class="tab-btn" data-tab="tax" style="flex:1; padding:5px 8px; border-radius:var(--radius-xs); font-size:11.5px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Tax</button>
+        <button class="tab-btn" data-tab="hacks" style="flex:1; padding:5px 8px; border-radius:var(--radius-xs); font-size:11.5px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Hacks</button>
+        <button class="tab-btn" data-tab="settings" style="flex:1; padding:5px 8px; border-radius:var(--radius-xs); font-size:11.5px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:var(--font-sans); color:var(--text-muted);">Settings</button>
       </div>
     </nav>
 
     <!-- Header Controls -->
     <div class="flex items-center gap-1.5 ml-auto">
-      <!-- Currency selector -->
-      <select id="home-currency-select" class="fook-select" style="width:auto; padding:5px 8px; font-size:11.5px; font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--accent-green); background:var(--bg-input); border-color:var(--border); min-width:76px; cursor:pointer;" title="Change display currency"></select>
+      <!-- Live Sync Rates Button -->
+      <button id="live-rate-sync-btn" class="btn btn-ghost btn-icon" title="Sync live exchange rates from open feed" style="color:var(--accent-cyan);">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 11-.57-8.38l5.67-5.67"/></svg>
+      </button>
+
+      <!-- Currency selector with flags -->
+      <select id="home-currency-select" class="fook-select" style="width:auto; padding:5px 8px; font-size:11.5px; font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--accent-green); background:var(--bg-input); border-color:var(--border); min-width:82px; cursor:pointer;" title="Change display currency"></select>
 
       <!-- Theme toggle -->
       <button id="theme-btn" class="btn btn-ghost btn-icon" title="Toggle theme (Shortcut: T)">
-        <svg id="icon-sun" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        <svg id="icon-moon" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="display:none;"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg id="icon-sun" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="icon-moon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="display:none;"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
       </button>
 
       <!-- Privacy mode -->
       <button id="privacy-btn" class="btn btn-ghost btn-icon" title="Privacy blur numbers (Shortcut: P)">
-        <svg id="eye-open" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <svg id="eye-closed" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        <svg id="eye-open" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg id="eye-closed" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
       </button>
 
       <!-- Desktop Log Entry Button -->
@@ -155,59 +238,34 @@
 <!-- ════════════════════════════════════════════════════════════
      MAIN CONTENT
 ════════════════════════════════════════════════════════════ -->
-<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-5 lg:px-6 py-4 space-y-3.5 page-content relative z-10">
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-5 lg:px-6 py-3.5 space-y-3 page-content relative z-10">
 
-  <!-- ── ONBOARDING GUIDE BANNER ── -->
-  <div id="onboarding-banner" class="onboarding-card">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <svg width="15" height="15" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <h2 style="font-size:13.5px; font-weight:700; color:var(--text-primary);">Variable Income Budgeting System</h2>
-      </div>
-      <button id="dismiss-onboarding-btn" class="btn btn-ghost btn-sm" style="font-size:11px; padding:2px 6px; color:var(--text-muted);">Dismiss</button>
+  <!-- Personalized User Welcome Banner -->
+  <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0;">
+    <div>
+      <p id="top-user-greeting" style="font-size:14.5px; font-weight:800; color:var(--text-primary);">Hello, Raja</p>
+      <p id="top-user-subtitle" style="font-size:11px; color:var(--text-muted);">Your variable income operating system is active.</p>
     </div>
-
-    <!-- 3 Steps -->
-    <div class="grid-3" style="gap:10px; margin-bottom:12px;">
-      <div style="display:flex; gap:8px; align-items:flex-start;">
-        <span class="onboarding-step-num">1</span>
-        <div>
-          <p style="font-size:12px; font-weight:700; color:var(--text-primary);">Log Pay As It Arrives</p>
-          <p style="font-size:11px; color:var(--text-secondary); margin-top:1px;">Log multi-currency earnings from freelance milestones & retainers.</p>
-        </div>
-      </div>
-      <div style="display:flex; gap:8px; align-items:flex-start;">
-        <span class="onboarding-step-num">2</span>
-        <div>
-          <p style="font-size:12px; font-weight:700; color:var(--text-primary);">On-Device Forecast</p>
-          <p style="font-size:11px; color:var(--text-secondary); margin-top:1px;">Local ARIMA forecasts conservative, expected, and optimistic targets.</p>
-        </div>
-      </div>
-      <div style="display:flex; gap:8px; align-items:flex-start;">
-        <span class="onboarding-step-num">3</span>
-        <div>
-          <p style="font-size:12px; font-weight:700; color:var(--text-primary);">Safe Spending Ceiling</p>
-          <p style="font-size:11px; color:var(--text-secondary); margin-top:1px;">Ceilings automatically adapt so you maintain a cash runway.</p>
-        </div>
-      </div>
-    </div>
-
-    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-      <button id="quick-demo-btn" class="btn btn-primary btn-sm">
-        Load Realistic Freelancer Data
+    <div style="display:flex; gap:6px;">
+      <button id="open-share-modal-btn" class="btn btn-ghost btn-sm" style="font-size:11px; gap:4px;">
+        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
       </button>
-      <span style="font-size:11px; color:var(--text-muted);">Includes Stripe USD, Upwork milestone, EUR retainer, and expense transactions</span>
+      <button class="btn btn-ghost btn-sm" onclick="window.fookApp.switchTab('hacks')" style="font-size:11px; color:var(--accent-amber); gap:4px;">
+        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Hacks
+      </button>
     </div>
   </div>
 
   <!-- ── NATURAL LANGUAGE INPUT BAR + QUICK CHIPS ── -->
-  <div class="card" style="padding:12px 14px;">
+  <div class="card" style="padding:11px 13px;">
     <div style="display:flex; align-items:center; gap:10px;">
       <div style="color:var(--accent-green); flex-shrink:0;">
-        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       </div>
-      <input type="text" id="nl-input" style="flex:1; background:transparent; border:none; outline:none; font-size:13.5px; color:var(--text-primary); font-family:var(--font-sans); min-width:0;"
-        placeholder="Natural log: '1450 USD from Upwork' or 'spent 45 on food'..." />
+      <input type="text" id="nl-input" style="flex:1; background:transparent; border:none; outline:none; font-size:13px; color:var(--text-primary); font-family:var(--font-sans); min-width:0;"
+        placeholder="Type or speak: '1450 USD from Upwork' or 'spent 45 on food'..." />
       <div id="voice-waves" style="display:none; align-items:center; gap:1px; height:16px; flex-shrink:0;">
         <span class="voice-wave" style="height:6px;"></span><span class="voice-wave"></span><span class="voice-wave"></span><span class="voice-wave" style="height:8px;"></span>
       </div>
@@ -222,9 +280,9 @@
 
     <!-- 1-Tap Quick-Add Suggestions -->
     <div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--border); display:flex; gap:6px; overflow-x:auto; scrollbar-width:none;" class="no-scrollbar">
-      <span style="font-size:10.5px; font-weight:700; color:var(--text-muted); align-self:center; margin-right:2px; text-transform:uppercase; letter-spacing:0.04em;">Preset:</span>
+      <span style="font-size:10px; font-weight:700; color:var(--text-muted); align-self:center; margin-right:2px; text-transform:uppercase; letter-spacing:0.04em;">Quick:</span>
       <button class="quick-chip chip-income" data-quick="+ 1450 USD from Upwork Milestone">+ $1,450 Upwork</button>
-      <button class="quick-chip chip-income" data-quick="+ 650 EUR Client Retainer">+ €650 Retainer</button>
+      <button class="quick-chip chip-income" data-quick="+ 620 EUR Client Retainer">+ €620 Retainer</button>
       <button class="quick-chip chip-expense" data-quick="spent 45 USD on groceries">- $45 Groceries</button>
       <button class="quick-chip chip-expense" data-quick="spent 20 USD on OpenAI">- $20 OpenAI</button>
       <button class="quick-chip chip-expense" data-quick="spent 650 USD on rent">- $650 Rent</button>
@@ -235,15 +293,15 @@
   <!-- ══════════════════════════════════════════════
        TAB 1: DASHBOARD
   ══════════════════════════════════════════════ -->
-  <div id="tab-dashboard" class="tab-panel active space-y-3.5">
+  <div id="tab-dashboard" class="tab-panel active space-y-3">
 
     <!-- DOOM MODE ALERT BANNER -->
-    <div id="doom-banner" style="display:none; padding:12px 16px;" class="card" style="border-left:3px solid var(--accent-rose);">
+    <div id="doom-banner" style="display:none; padding:12px 14px;" class="card" style="border-left:3px solid var(--accent-rose);">
       <div style="display:flex; align-items:flex-start; gap:10px;">
-        <svg width="18" height="18" fill="none" stroke="var(--accent-rose)" viewBox="0 0 24 24" stroke-width="2.5" style="flex-shrink:0; margin-top:1px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg width="16" height="16" fill="none" stroke="var(--accent-rose)" viewBox="0 0 24 24" stroke-width="2.5" style="flex-shrink:0; margin-top:1px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         <div>
-          <p style="font-weight:700; font-size:13px; color:var(--accent-rose);">Spending Velocity Critical</p>
-          <p id="doom-message" style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;"></p>
+          <p style="font-weight:700; font-size:12.5px; color:var(--accent-rose);">Spending Velocity Alert</p>
+          <p id="doom-message" style="font-size:11px; color:var(--text-secondary); margin-top:1px;"></p>
         </div>
       </div>
     </div>
@@ -252,11 +310,11 @@
     <div class="mobile-kpi-scroll">
 
       <!-- Card 1: Safe Spend Ceiling -->
-      <div class="card kpi-snap card-glow-green" style="padding:18px; min-height:190px; display:flex; flex-direction:column; justify-content:space-between;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+      <div class="card kpi-snap card-glow-green" style="padding:16px; min-height:180px; display:flex; flex-direction:column; justify-content:space-between;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
           <div style="flex:1; min-width:0;">
             <p class="section-title">Safe Spend Remaining</p>
-            <p id="hero-safe-amount" class="big-num blur-private" style="margin-top:6px; color:var(--accent-green);">0.00</p>
+            <p id="hero-safe-amount" class="big-num blur-private" style="margin-top:4px; color:var(--accent-green);">0.00</p>
             <span id="hero-pacing-badge" class="badge badge-green" style="margin-top:6px;">
               <span id="badge-dot" style="width:5px;height:5px;background:currentColor;display:inline-block;"></span>
               <span id="badge-text">Normal</span>
@@ -264,20 +322,19 @@
           </div>
 
           <!-- Radial Gauge Ring -->
-          <div style="position:relative; width:74px; height:74px; flex-shrink:0;">
-            <svg width="74" height="74" viewBox="0 0 74 74">
-              <circle cx="37" cy="37" r="30" fill="none" stroke="var(--bg-input)" stroke-width="6"/>
-              <circle id="gauge-ring" cx="37" cy="37" r="30" fill="none" stroke="#81c995" stroke-width="6" stroke-dasharray="188.5" stroke-dashoffset="188.5" transform="rotate(-90 37 37)"/>
+          <div style="position:relative; width:68px; height:68px; flex-shrink:0;">
+            <svg width="68" height="68" viewBox="0 0 68 68">
+              <circle cx="34" cy="34" r="28" fill="none" stroke="var(--bg-input)" stroke-width="5"/>
+              <circle id="gauge-ring" cx="34" cy="34" r="28" fill="none" stroke="#81c995" stroke-width="5" stroke-dasharray="175.9" stroke-dashoffset="175.9" transform="rotate(-90 34 34)"/>
             </svg>
             <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-              <span id="gauge-pct" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800;color:var(--accent-green);">0%</span>
-              <span style="font-size:7.5px;font-weight:700;letter-spacing:0.06em;color:var(--text-muted);">USED</span>
+              <span id="gauge-pct" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:800;color:var(--accent-green);">0%</span>
+              <span style="font-size:7px;font-weight:700;letter-spacing:0.06em;color:var(--text-muted);">USED</span>
             </div>
           </div>
         </div>
 
-        <!-- Sub metrics breakdown -->
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; padding-top:8px; border-top:1px solid var(--border);">
           <div>
             <p class="section-title">Spent</p>
             <p id="hero-spent" class="sm-num blur-private" style="color:var(--accent-rose); margin-top:2px;">0.00</p>
@@ -294,36 +351,35 @@
       </div>
 
       <!-- Card 2: Income Received -->
-      <div class="card kpi-snap" style="padding:18px; min-height:190px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div class="card kpi-snap" style="padding:16px; min-height:180px; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <p class="section-title">Income Received</p>
-            <svg width="15" height="15" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <p class="section-title">Income Logged</p>
+            <svg width="14" height="14" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
           </div>
           <p id="hero-actual-income" class="mid-num c-green blur-private">0.00</p>
-          <div id="hero-predicted-pill" style="margin-top:6px;"></div>
+          <div id="hero-predicted-pill" style="margin-top:4px;"></div>
         </div>
-        <!-- Financial Health Score bar -->
-        <div style="padding:8px 10px; background:var(--bg-hover); border:1px solid var(--border); margin-top:8px;">
+        <div style="padding:6px 8px; background:var(--bg-hover); border:1px solid var(--border); margin-top:6px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="section-title">Health Score</span>
-            <span id="health-score-num" style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:15px; color:var(--accent-green);">100</span>
+            <span id="health-score-num" style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:14px; color:var(--accent-green);">100</span>
           </div>
-          <div class="progress-track" style="margin-top:5px;"><div id="health-bar" class="progress-fill" style="width:100%; background:var(--accent-green);"></div></div>
+          <div class="progress-track" style="margin-top:4px;"><div id="health-bar" class="progress-fill" style="width:100%; background:var(--accent-green);"></div></div>
         </div>
       </div>
 
       <!-- Card 3: Cash Runway -->
-      <div class="card kpi-snap" style="padding:18px; min-height:190px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div class="card kpi-snap" style="padding:16px; min-height:180px; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
             <p class="section-title">Cash Runway</p>
             <span id="runway-badge" class="badge badge-green">Safe</span>
           </div>
           <p id="runway-days" class="mid-num blur-private">—</p>
-          <p style="font-size:11px; color:var(--text-muted); margin-top:3px;">At current burn rate</p>
+          <p style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">At current daily burn rate</p>
         </div>
-        <div style="padding:8px 10px; background:var(--bg-hover); border:1px solid var(--border); margin-top:8px;">
+        <div style="padding:6px 8px; background:var(--bg-hover); border:1px solid var(--border); margin-top:6px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="section-title" style="color:var(--accent-violet);">Safe to Invest</span>
             <span id="safe-invest" class="sm-num blur-private" style="color:var(--accent-violet);">0.00</span>
@@ -331,17 +387,17 @@
         </div>
       </div>
 
-      <!-- Card 4: Income Volatility Index -->
-      <div class="card kpi-snap" style="padding:18px; min-height:190px; display:flex; flex-direction:column; justify-content:space-between;">
+      <!-- Card 4: Volatility -->
+      <div class="card kpi-snap" style="padding:16px; min-height:180px; display:flex; flex-direction:column; justify-content:space-between;">
         <div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
             <p class="section-title">Income Volatility</p>
             <span id="volatility-badge" class="badge badge-neutral">Stable</span>
           </div>
           <p id="volatility-cv" class="mid-num c-amber blur-private">0%</p>
-          <p style="font-size:11px; color:var(--text-muted); margin-top:3px;">Coefficient of Variation (CV)</p>
+          <p style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">Coefficient of Variation</p>
         </div>
-        <div style="margin-top:8px;">
+        <div style="margin-top:6px;">
           <div class="progress-track"><div id="volatility-bar" class="progress-fill" style="width:0%; background:var(--accent-amber);"></div></div>
         </div>
       </div>
@@ -351,35 +407,34 @@
 
     <!-- ── INTERACTIVE "WHAT-IF" SIMULATOR ── -->
     <div class="card simulator-box">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
-        <p style="font-size:13px; font-weight:700; color:var(--text-primary);">What-If Scenario Simulator</p>
-        <span class="badge badge-violet" style="font-size:9.5px;">Live Recalculation</span>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+        <p style="font-size:12.5px; font-weight:700; color:var(--text-primary);">What-If Scenario Simulator</p>
+        <span class="badge badge-violet" style="font-size:9px;">Live Simulation</span>
       </div>
-      <p style="font-size:11.5px; color:var(--text-secondary); margin-bottom:10px;">Simulate incoming milestone payouts or slower periods to preview ceiling impact:</p>
+      <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Simulate incoming client payouts to preview safe ceiling adjustments:</p>
 
-      <div style="display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center; margin-bottom:10px;">
+      <div style="display:grid; grid-template-columns: 1fr auto; gap:8px; align-items:center; margin-bottom:8px;">
         <div>
           <input type="range" id="simulator-slider" min="-2000" max="4000" value="0" step="100" style="width:100%;">
-          <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-top:3px; font-family:'JetBrains Mono';">
+          <div style="display:flex; justify-content:space-between; font-size:9.5px; color:var(--text-muted); margin-top:2px; font-family:'JetBrains Mono';">
             <span>-2,000</span>
             <span>0</span>
             <span>+4,000</span>
           </div>
         </div>
-        <div style="text-align:right; min-width:90px;">
-          <span id="simulator-delta-label" style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px; color:var(--accent-green);">+0</span>
+        <div style="text-align:right; min-width:80px;">
+          <span id="simulator-delta-label" style="font-family:'JetBrains Mono'; font-weight:800; font-size:13.5px; color:var(--accent-green);">+0</span>
         </div>
       </div>
 
-      <!-- Result Preview -->
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; padding:8px 12px; background:var(--bg-input); border:1px solid var(--border);">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; padding:6px 10px; background:var(--bg-input); border:1px solid var(--border);">
         <div>
           <p class="section-title">Simulated Safe Spend</p>
-          <p id="sim-safe-spend" class="num c-green" style="font-size:14px; font-weight:800; margin-top:2px;">0.00</p>
+          <p id="sim-safe-spend" class="num c-green" style="font-size:13.5px; font-weight:800; margin-top:1px;">0.00</p>
         </div>
         <div>
           <p class="section-title">Simulated Daily Allowance</p>
-          <p id="sim-safe-daily" class="num c-cyan" style="font-size:14px; font-weight:800; margin-top:2px;">0.00/day</p>
+          <p id="sim-safe-daily" class="num c-cyan" style="font-size:13.5px; font-weight:800; margin-top:1px;">0.00/day</p>
         </div>
       </div>
     </div>
@@ -387,37 +442,34 @@
 
     <!-- ── SUNDAY HABIT STREAK + REVENUE PARETO ── -->
     <div class="grid-2">
-
       <!-- Sunday Check-in Streak -->
-      <div class="card" style="padding:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <p class="section-title">Weekly Check-in Habit</p>
+      <div class="card" style="padding:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <p class="section-title">Weekly Review Habit</p>
           <span id="streak-count-badge" class="badge badge-amber">0 weeks</span>
         </div>
-        <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px;" id="streak-dots"></div>
-        <p id="streak-message" style="font-size:11.5px; color:var(--text-secondary); line-height:1.4;">Review your safe ceiling weekly to maintain discipline.</p>
-        <button id="checkin-btn" class="btn btn-ghost btn-sm" style="width:100%; margin-top:10px; justify-content:center;">
+        <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:6px;" id="streak-dots"></div>
+        <p id="streak-message" style="font-size:11px; color:var(--text-secondary); line-height:1.4;">Review your safe ceiling weekly to maintain discipline.</p>
+        <button id="checkin-btn" class="btn btn-ghost btn-sm" style="width:100%; margin-top:8px; justify-content:center;">
           Mark Week Complete
         </button>
       </div>
 
-      <!-- Revenue by Source / Client Pareto -->
-      <div class="card" style="padding:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <!-- Revenue Concentration -->
+      <div class="card" style="padding:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <p class="section-title">Revenue Concentration (80/20)</p>
         </div>
-        <div id="pareto-container" class="space-y-2.5"></div>
+        <div id="pareto-container" class="space-y-2"></div>
       </div>
-
     </div>
 
 
     <!-- ── ANOMALIES & PREDICTION OVERRIDE ── -->
     <div class="grid-2">
-
       <!-- Anomaly Alert Card -->
-      <div class="card" style="padding:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <div class="card" style="padding:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <p class="section-title">Anomaly Detector</p>
           <span class="badge badge-neutral" style="font-size:9px;">Z-Score</span>
         </div>
@@ -425,33 +477,32 @@
       </div>
 
       <!-- Manual Forecast Override -->
-      <div class="card" style="padding:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+      <div class="card" style="padding:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
           <p class="section-title">Manual Forecast Override</p>
           <span class="badge badge-violet" style="font-size:9px;">Override</span>
         </div>
-        <p style="font-size:11.5px; color:var(--text-secondary); margin-bottom:8px;">Adjust model output for known seasonal factors:</p>
+        <p style="font-size:11px; color:var(--text-secondary); margin-bottom:6px;">Adjust model output for known seasonal factors:</p>
 
-        <div style="display:flex; justify-content:space-between; font-size:11.5px; margin-bottom:3px;">
+        <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:2px;">
           <span style="color:var(--text-secondary);">Adjustment</span>
           <span id="override-pct-label" style="font-family:'JetBrains Mono'; font-weight:700; color:var(--text-primary);">0%</span>
         </div>
-        <input type="range" id="override-slider" min="-50" max="50" value="0" step="5" style="margin-bottom:6px;">
+        <input type="range" id="override-slider" min="-50" max="50" value="0" step="5" style="margin-bottom:5px;">
 
-        <div style="padding:6px 10px; background:var(--bg-input); border:1px solid var(--border); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:11px; color:var(--text-secondary);">Adjusted Target:</span>
-          <span id="override-result" style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-cyan);" class="blur-private">0.00</span>
+        <div style="padding:5px 8px; background:var(--bg-input); border:1px solid var(--border); margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:10.5px; color:var(--text-secondary);">Adjusted Target:</span>
+          <span id="override-result" style="font-family:'JetBrains Mono'; font-weight:800; font-size:12.5px; color:var(--accent-cyan);" class="blur-private">0.00</span>
         </div>
-        <input type="text" id="override-reason" class="fook-input" style="font-size:11.5px; padding:6px 10px; margin-bottom:6px;" placeholder="Reason (e.g. Contract renewal)...">
+        <input type="text" id="override-reason" class="fook-input" style="font-size:11px; padding:5px 8px; margin-bottom:5px;" placeholder="Reason (e.g. Contract renewal)...">
         <button id="apply-override" class="btn btn-ghost btn-sm" style="width:100%; justify-content:center; color:var(--accent-cyan); border-color:var(--border);">Apply Override</button>
       </div>
-
     </div>
 
 
     <!-- ── ADAPTIVE CATEGORY CEILINGS ── -->
     <div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
         <p class="section-title">Adaptive Category Ceilings</p>
       </div>
       <div id="category-ceilings" class="grid-4"></div>
@@ -463,11 +514,11 @@
   <!-- ══════════════════════════════════════════════
        TAB 2: FORECAST
   ══════════════════════════════════════════════ -->
-  <div id="tab-forecast" class="tab-panel space-y-3.5">
+  <div id="tab-forecast" class="tab-panel space-y-3">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
       <div>
         <p class="section-title">3-Month On-Device Income Forecast</p>
-        <p style="font-size:11.5px; color:var(--text-secondary); margin-top:1px;">Confidence interval projections using double exponential smoothing</p>
+        <p style="font-size:11px; color:var(--text-secondary); margin-top:1px;">Confidence interval projections using double exponential smoothing</p>
       </div>
       <span id="forecast-confidence-badge" class="badge badge-cyan">— Confidence</span>
     </div>
@@ -476,12 +527,12 @@
     <div id="forecast-cards" class="grid-3"></div>
 
     <!-- Accuracy Tracker -->
-    <div class="card" style="padding:16px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+    <div class="card" style="padding:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
         <p class="section-title">Historical Log Accuracy</p>
         <span class="badge badge-neutral" style="font-size:9px;">Actuals</span>
       </div>
-      <div id="accuracy-tracker" class="space-y-2"></div>
+      <div id="accuracy-tracker" class="space-y-1.5"></div>
     </div>
   </div><!-- /tab-forecast -->
 
@@ -489,9 +540,9 @@
   <!-- ══════════════════════════════════════════════
        TAB 3: LEDGER
   ══════════════════════════════════════════════ -->
-  <div id="tab-ledger" class="tab-panel space-y-3.5">
+  <div id="tab-ledger" class="tab-panel space-y-3">
     <!-- Filter Pills -->
-    <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; scrollbar-width:none;" class="no-scrollbar">
+    <div style="display:flex; gap:5px; overflow-x:auto; padding-bottom:2px; scrollbar-width:none;" class="no-scrollbar">
       <button class="filter-pill active" data-filter="all">All Entries</button>
       <button class="filter-pill" data-filter="income" style="color:var(--accent-green);">Income</button>
       <button class="filter-pill" data-filter="expense" style="color:var(--accent-rose);">Expenses</button>
@@ -500,17 +551,17 @@
     </div>
 
     <!-- Search + Export -->
-    <div style="display:flex; gap:8px; align-items:center;">
+    <div style="display:flex; gap:6px; align-items:center;">
       <div style="flex:1; position:relative;">
-        <svg width="13" height="13" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24" stroke-width="2" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); pointer-events:none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="ledger-search" class="fook-input" style="padding-left:32px; font-size:12.5px;" placeholder="Search transactions...">
+        <svg width="12" height="12" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24" stroke-width="2" style="position:absolute; left:9px; top:50%; transform:translateY(-50%); pointer-events:none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="ledger-search" class="fook-input" style="padding-left:28px; font-size:12px;" placeholder="Search transactions...">
       </div>
       <button onclick="window.fookApp.exportCSV()" class="btn btn-ghost btn-sm" style="flex-shrink:0;">Export CSV</button>
       <button onclick="window.fookApp.exportJSON()" class="btn btn-ghost btn-sm" style="flex-shrink:0;">Backup JSON</button>
     </div>
 
     <!-- Mobile Card List -->
-    <div id="ledger-mobile-list" class="space-y-2 sm:hidden"></div>
+    <div id="ledger-mobile-list" class="space-y-1.5 sm:hidden"></div>
 
     <!-- Desktop Data Table -->
     <div class="card hidden sm:block" style="overflow:hidden; padding:0;">
@@ -523,7 +574,7 @@
               <th>Description / Client</th>
               <th style="text-align:right;">Original</th>
               <th style="text-align:right;">In Home Currency</th>
-              <th style="text-align:right; width:45px;"></th>
+              <th style="text-align:right; width:40px;"></th>
             </tr>
           </thead>
           <tbody id="ledger-tbody"></tbody>
@@ -536,11 +587,11 @@
   <!-- ══════════════════════════════════════════════
        TAB 4: TAX
   ══════════════════════════════════════════════ -->
-  <div id="tab-tax" class="tab-panel space-y-3.5">
+  <div id="tab-tax" class="tab-panel space-y-3">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
       <div>
         <p class="section-title">Tax &amp; Accounting Summary</p>
-        <p style="font-size:11.5px; color:var(--text-secondary); margin-top:1px;">Categorized report for filing records</p>
+        <p style="font-size:11px; color:var(--text-secondary); margin-top:1px;">Categorized report for filing records</p>
       </div>
       <div style="display:flex; gap:6px;">
         <button onclick="window.fookApp.exportCSV()" class="btn btn-ghost btn-sm">Export CSV</button>
@@ -549,50 +600,141 @@
     </div>
 
     <div class="grid-3">
-      <div class="card" style="padding:16px;">
-        <p class="section-title" style="margin-bottom:4px;">Gross Income</p>
+      <div class="card" style="padding:14px;">
+        <p class="section-title" style="margin-bottom:3px;">Gross Income</p>
         <p id="tax-gross" class="mid-num c-green blur-private">0.00</p>
-        <p style="font-size:10.5px; color:var(--text-muted); margin-top:3px;">All income logged</p>
+        <p style="font-size:10px; color:var(--text-muted); margin-top:2px;">All income logged</p>
       </div>
-      <div class="card" style="padding:16px;">
-        <p class="section-title" style="margin-bottom:4px;">Deductible Expenses</p>
+      <div class="card" style="padding:14px;">
+        <p class="section-title" style="margin-bottom:3px;">Deductible Expenses</p>
         <p id="tax-deductions" class="mid-num c-amber blur-private">0.00</p>
-        <p style="font-size:10.5px; color:var(--text-muted); margin-top:3px;">Marked tax-deductible</p>
+        <p style="font-size:10px; color:var(--text-muted); margin-top:2px;">Marked tax-deductible</p>
       </div>
-      <div class="card card-glow-green" style="padding:16px;">
-        <p class="section-title" style="margin-bottom:4px;">Net Taxable Base</p>
+      <div class="card card-glow-green" style="padding:14px;">
+        <p class="section-title" style="margin-bottom:3px;">Net Taxable Base</p>
         <p id="tax-net" class="mid-num c-green blur-private">0.00</p>
-        <p style="font-size:10.5px; color:var(--text-muted); margin-top:3px;">Gross minus deductible</p>
+        <p style="font-size:10px; color:var(--text-muted); margin-top:2px;">Gross minus deductible</p>
       </div>
     </div>
 
-    <div class="card" style="padding:16px;">
-      <p class="section-title" style="margin-bottom:10px;">Deductible Expenses by Category</p>
+    <div class="card" style="padding:14px;">
+      <p class="section-title" style="margin-bottom:8px;">Deductible Expenses by Category</p>
       <div id="tax-deductible-breakdown"></div>
     </div>
 
-    <div class="card" style="padding:16px;">
-      <p class="section-title" style="margin-bottom:10px;">Income by Category</p>
+    <div class="card" style="padding:14px;">
+      <p class="section-title" style="margin-bottom:8px;">Income by Category</p>
       <div id="tax-income-breakdown"></div>
     </div>
   </div><!-- /tab-tax -->
 
 
   <!-- ══════════════════════════════════════════════
-       TAB 5: SETTINGS
+       TAB 5: MONEY HACKS & STRATEGIES
   ══════════════════════════════════════════════ -->
-  <div id="tab-settings" class="tab-panel space-y-3.5">
+  <div id="tab-hacks" class="tab-panel space-y-3">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div>
+        <p class="section-title">Freelancer Financial Alpha</p>
+        <p style="font-size:11px; color:var(--text-secondary); margin-top:1px;">Actionable tactics &amp; rules for unpredictable income earners</p>
+      </div>
+      <span class="badge badge-amber">6 Battle-Tested Hacks</span>
+    </div>
+
+    <!-- Hack 1: 3-Bucket Rule -->
+    <div class="hack-card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+        <p style="font-size:13px; font-weight:800; color:var(--text-primary);">1. The 50/30/20 Irregular Income Protocol</p>
+        <span class="badge badge-green">Rule #1</span>
+      </div>
+      <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.4;">When a big invoice hits, immediately split before spending:</p>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:8px;">
+        <div style="padding:6px; background:var(--bg-input); border:1px solid var(--border);">
+          <p class="section-title" style="color:var(--accent-green);">50% Base Buffer</p>
+          <p style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">Rent, groceries &amp; fixed survival costs</p>
+        </div>
+        <div style="padding:6px; background:var(--bg-input); border:1px solid var(--border);">
+          <p class="section-title" style="color:var(--accent-amber);">30% Tax &amp; Dry Month</p>
+          <p style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">Untouchable vault for taxes &amp; droughts</p>
+        </div>
+        <div style="padding:6px; background:var(--bg-input); border:1px solid var(--border);">
+          <p class="section-title" style="color:var(--accent-violet);">20% Reinvestment</p>
+          <p style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">Hardware, software, skills &amp; index funds</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hack 2: Reverse Runway -->
+    <div class="hack-card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+        <p style="font-size:13px; font-weight:800; color:var(--text-primary);">2. Reverse Emergency Fund (The "Floor Formula")</p>
+        <span class="badge badge-cyan">Defense</span>
+      </div>
+      <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.4;">Traditional apps say "save 6 months salary". For freelancers, calculate your <strong>Floor Number</strong>: the absolute minimum needed per month if you make $0. Multiply by 4. That is your true freedom number.</p>
+    </div>
+
+    <!-- Hack 3: Retainer Conversion Pitch -->
+    <div class="hack-card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+        <p style="font-size:13px; font-weight:800; color:var(--text-primary);">3. The 20% Retainer Discount Pitch</p>
+        <span class="badge badge-violet">Revenue</span>
+      </div>
+      <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.4;">Turn one-off project clients into recurring revenue. Offer them a 15–20% discount if they lock in a monthly retainer (e.g. 10 hours guaranteed/month). One $650 retainer stabilizes your entire month.</p>
+    </div>
+
+    <!-- Hack 4: Multi-Currency Arbitrage -->
+    <div class="hack-card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+        <p style="font-size:13px; font-weight:800; color:var(--text-primary);">4. Invoice in Hard Currencies (USD/EUR)</p>
+        <span class="badge badge-green">Arbitrage</span>
+      </div>
+      <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.4;">If you are in emerging markets (NGN, KES, INR, BRL, PHP), always quote in USD or EUR. When local currencies fluctuate, your purchasing power increases automatically.</p>
+    </div>
+
+    <!-- Hack 5: Tax Deduction Protocol -->
+    <div class="hack-card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+        <p style="font-size:13px; font-weight:800; color:var(--text-primary);">5. Micro-Expense Write-Off Checklist</p>
+        <span class="badge badge-amber">Taxes</span>
+      </div>
+      <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.4;">Never forget to log: 50% of your home fiber internet, ChatGPT/GitHub Copilot subscriptions, Figma licenses, domain renewals, co-working day passes, and tech hardware depreciation.</p>
+    </div>
+
+    <!-- Hack 6: Spending Velocity Freeze -->
+    <div class="hack-card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+        <p style="font-size:13px; font-weight:800; color:var(--text-primary);">6. The 48-Hour Velocity Circuit Breaker</p>
+        <span class="badge badge-rose">Discipline</span>
+      </div>
+      <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.4;">When your safe spending ceiling drops below $20/day, activate an automatic 48-hour freeze on all discretionary spending. This stops budget bleeding before it becomes critical.</p>
+    </div>
+  </div><!-- /tab-hacks -->
+
+
+  <!-- ══════════════════════════════════════════════
+       TAB 6: SETTINGS & HOW IT WORKS
+  ══════════════════════════════════════════════ -->
+  <div id="tab-settings" class="tab-panel space-y-3">
     <p class="section-title">Application Settings</p>
-    <div class="card" style="padding:18px; display:flex; flex-direction:column; gap:16px;">
+    <div class="card" style="padding:16px; display:flex; flex-direction:column; gap:14px;">
+      <!-- User Name -->
+      <div>
+        <label class="section-title" style="display:block; margin-bottom:4px;">Display Name</label>
+        <div style="display:flex; gap:6px;">
+          <input type="text" id="settings-username-field" class="fook-input" style="max-width:260px;" placeholder="Your Name" value="Raja">
+          <button id="settings-save-name-btn" class="btn btn-ghost btn-sm">Update</button>
+        </div>
+      </div>
+
       <!-- Currency -->
       <div>
-        <label class="section-title" style="display:block; margin-bottom:6px;">Display Currency</label>
+        <label class="section-title" style="display:block; margin-bottom:4px;">Display Currency</label>
         <select id="settings-currency-select" class="fook-select" style="cursor:pointer;"></select>
       </div>
 
       <!-- Language -->
       <div>
-        <label class="section-title" style="display:block; margin-bottom:6px;">Language</label>
+        <label class="section-title" style="display:block; margin-bottom:4px;">Language</label>
         <select id="language-select" class="fook-select" style="cursor:pointer;">
           <option value="en">English</option>
           <option value="es">Español</option>
@@ -609,18 +751,78 @@
           <span id="safe-rate-label" style="font-family:'JetBrains Mono'; font-weight:800; font-size:13.5px; color:var(--accent-green);">70%</span>
         </div>
         <input type="range" id="safe-rate-slider" min="40" max="90" value="70" step="5">
-        <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">Percentage of predicted income allocated to spending allowance</p>
+        <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">Percentage of predicted income allocated to monthly spending ceiling</p>
+      </div>
+
+      <!-- Notification Settings -->
+      <hr style="border-color:var(--border);">
+      <div>
+        <p class="section-title" style="margin-bottom:8px;">Notifications &amp; Reminders</p>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label class="toggle-wrap">
+            <div class="toggle-track on" id="toggle-notif-sunday"><div class="toggle-thumb"></div></div>
+            <input type="checkbox" id="check-notif-sunday" checked style="display:none;">
+            <span style="font-size:12px; color:var(--text-secondary);">Sunday Weekly Check-in Reminder</span>
+          </label>
+          <label class="toggle-wrap">
+            <div class="toggle-track on" id="toggle-notif-velocity"><div class="toggle-thumb"></div></div>
+            <input type="checkbox" id="check-notif-velocity" checked style="display:none;">
+            <span style="font-size:12px; color:var(--text-secondary);">High Spending Velocity Alerts (Doom Mode)</span>
+          </label>
+          <button id="request-notif-perm-btn" class="btn btn-ghost btn-sm" style="margin-top:4px; max-width:240px;">
+            Enable Browser Push Notifications
+          </button>
+        </div>
       </div>
 
       <!-- Data Management -->
       <hr style="border-color:var(--border);">
-      <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; flex-direction:column; gap:6px;">
         <button id="load-demo-btn" class="btn btn-ghost" style="justify-content:center;">
-          Load Sample Freelancer Ledger
+          Load Baseline Freelancer Ledger
         </button>
         <button id="clean-slate-btn" class="btn btn-ghost" style="justify-content:center; color:var(--accent-rose); border-color:var(--border);">
           Clear All Local Data
         </button>
+      </div>
+    </div>
+
+    <!-- ── HOW IT WORKS SECTION (Comprehensive & Clean) ── -->
+    <div class="card" style="padding:18px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--border);">
+        <svg width="16" height="16" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <h3 style="font-size:14px; font-weight:800; color:var(--text-primary);">How fook Operates (Architecture &amp; Math)</h3>
+      </div>
+
+      <div class="space-y-3" style="font-size:12px; color:var(--text-secondary); line-height:1.5;">
+        <div>
+          <p style="font-weight:700; color:var(--text-primary); margin-bottom:2px;">1. The Variable Income Problem</p>
+          <p>Traditional budgeting software assumes a rigid monthly salary. Freelancers earn irregularly: $4,500 one month, $1,200 the next. Fixed budgeting fails because it forces spending decisions based on past income rather than forward cashflow.</p>
+        </div>
+
+        <div>
+          <p style="font-weight:700; color:var(--text-primary); margin-bottom:2px;">2. Adaptive Safe Spend Formula</p>
+          <p style="font-family:'JetBrains Mono'; font-size:11px; background:var(--bg-input); padding:6px 8px; border:1px solid var(--border); margin:4px 0; color:var(--text-primary);">
+            safe_ceiling = (expected_income × safe_rate) - fixed_commitments<br>
+            safe_daily_allowance = (safe_ceiling - spent_so_far) / days_remaining
+          </p>
+          <p>As you log income or expenses, your safe daily ceiling recalculates dynamically so you never face sudden cash droughts.</p>
+        </div>
+
+        <div>
+          <p style="font-weight:700; color:var(--text-primary); margin-bottom:2px;">3. On-Device Holt-Winters ARIMA Forecasting</p>
+          <p>The mathematical forecasting engine runs 100% locally in your browser using double exponential smoothing. It outputs probabilistic ranges (Conservative P20, Expected Target, Optimistic P80) rather than a false single number.</p>
+        </div>
+
+        <div>
+          <p style="font-weight:700; color:var(--text-primary); margin-bottom:2px;">4. Multi-Currency Offline Matrix &amp; Live Sync</p>
+          <p>Supports 50+ world currencies (USD, EUR, KES, INR, NGN, BRL, PHP) with zero required network calls. Optional live exchange rate synchronization is available via the header sync button.</p>
+        </div>
+
+        <div>
+          <p style="font-weight:700; color:var(--text-primary); margin-bottom:2px;">5. Zero-Cloud Privacy Guarantee</p>
+          <p>All data remains on your local hardware in encrypted browser storage. No trackers, no third-party telemetry, no bank credentials requested.</p>
+        </div>
       </div>
     </div>
   </div><!-- /tab-settings -->
@@ -629,7 +831,7 @@
 
 
 <!-- ════════════════════════════════════════════════════════════
-     MOBILE BOTTOM NAVIGATION (Fixed, Sharp)
+     MOBILE BOTTOM NAVIGATION (5 Tabs: Home, Forecast, +Log, Ledger, Hacks)
 ════════════════════════════════════════════════════════════ -->
 <nav class="bottom-nav no-print">
   <button class="bottom-nav-item active" data-tab="dashboard">
@@ -651,9 +853,10 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     <span>Ledger</span>
   </button>
-  <button class="bottom-nav-item" data-tab="settings">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-    <span>Config</span>
+  <!-- 5th Tab: Hacks instead of Settings -->
+  <button class="bottom-nav-item" data-tab="hacks">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <span>Hacks</span>
   </button>
 </nav>
 
@@ -662,18 +865,49 @@
 
 
 <!-- ════════════════════════════════════════════════════════════
-     MODAL: ADD ENTRY (Sharp Dialog / Sheet)
+     MODAL: APP SHARE
+════════════════════════════════════════════════════════════ -->
+<div id="share-modal" class="modal-backdrop">
+  <div class="modal-sheet" style="max-width:440px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--border);">
+      <h3 style="font-size:14.5px; font-weight:700; color:var(--text-primary);">Share fook with Freelancers</h3>
+      <button class="btn btn-ghost btn-icon modal-close-btn" data-modal="share-modal">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px; line-height:1.4;">
+      Help contractors, digital nomads, and freelancers master their irregular income budgeting:
+    </p>
+    <div style="padding:10px; background:var(--bg-input); border:1px solid var(--border); margin-bottom:12px;">
+      <p id="share-preview-text" style="font-size:12px; font-family:'JetBrains Mono'; color:var(--text-primary); word-break:break-all;">
+        fook — 100% offline variable income budgeting for freelancers. Zero cloud, on-device ML.
+      </p>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button id="copy-share-link-btn" class="btn btn-primary" style="flex:1; justify-content:center;">
+        Copy Link &amp; Text
+      </button>
+      <button id="native-share-btn" class="btn btn-ghost" style="flex:1; justify-content:center;">
+        Native Share
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     MODAL: ADD ENTRY (Sharp Dialog)
 ════════════════════════════════════════════════════════════ -->
 <div id="transaction-modal" class="modal-backdrop">
   <div class="modal-sheet">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);">
-      <h3 style="font-size:15px; font-weight:700; color:var(--text-primary);">Record Transaction</h3>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border);">
+      <h3 style="font-size:14.5px; font-weight:700; color:var(--text-primary);">Record Transaction</h3>
       <button class="btn btn-ghost btn-icon modal-close-btn" data-modal="transaction-modal">
         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
 
-    <form id="transaction-form" style="display:flex; flex-direction:column; gap:12px;">
+    <form id="transaction-form" style="display:flex; flex-direction:column; gap:11px;">
       <!-- Type Switcher -->
       <div class="type-tabs">
         <div class="type-tab income active" id="type-income-tab">+ Income</div>
@@ -685,11 +919,11 @@
       <div style="display:grid; grid-template-columns: 1fr 110px; gap:8px;">
         <div>
           <label class="section-title" style="display:block; margin-bottom:4px;">Amount</label>
-          <input type="number" step="any" name="amount" required class="fook-input" placeholder="0.00" style="font-family:'JetBrains Mono'; font-size:18px; font-weight:800; padding:10px 12px;">
+          <input type="number" step="any" name="amount" required class="fook-input" placeholder="0.00" style="font-family:'JetBrains Mono'; font-size:17px; font-weight:800; padding:9px 11px;">
         </div>
         <div>
           <label class="section-title" style="display:block; margin-bottom:4px;">Currency</label>
-          <select name="currency" id="modal-currency-select" class="fook-select" style="padding:10px 8px; cursor:pointer;"></select>
+          <select name="currency" id="modal-currency-select" class="fook-select" style="padding:9px 8px; cursor:pointer;"></select>
         </div>
       </div>
 
@@ -726,7 +960,7 @@
       <!-- Description / Client -->
       <div>
         <label class="section-title" style="display:block; margin-bottom:4px;">Description / Client Name</label>
-        <input type="text" name="notes" class="fook-input" placeholder="e.g. Acme Corp Milestone, OpenAI API, Rent...">
+        <input type="text" name="notes" class="fook-input" placeholder="e.g. Acme Corp Milestone, OpenAI API, Studio Rent...">
       </div>
 
       <!-- Toggles -->
@@ -734,17 +968,17 @@
         <label class="toggle-wrap">
           <div class="toggle-track" id="toggle-recurring"><div class="toggle-thumb"></div></div>
           <input type="checkbox" name="isRecurring" id="check-recurring" style="display:none;">
-          <span style="font-size:12px; color:var(--text-secondary);">Monthly Recurring</span>
+          <span style="font-size:11.5px; color:var(--text-secondary);">Monthly Recurring</span>
         </label>
         <label class="toggle-wrap">
           <div class="toggle-track" id="toggle-tax"><div class="toggle-thumb"></div></div>
           <input type="checkbox" name="isTaxDeductible" id="check-taxded" style="display:none;">
-          <span style="font-size:12px; color:var(--text-secondary);">Tax Deductible</span>
+          <span style="font-size:11.5px; color:var(--text-secondary);">Tax Deductible</span>
         </label>
       </div>
 
       <!-- Submit -->
-      <button type="submit" class="btn btn-primary" style="padding:11px; font-size:14px; justify-content:center; margin-top:4px;">
+      <button type="submit" class="btn btn-primary" style="padding:10px; font-size:13.5px; justify-content:center; margin-top:2px;">
         Save Entry
       </button>
     </form>

@@ -1,7 +1,14 @@
 /**
- * FOOK v3.0 — Precision Variable Income OS
- * Clean Google Matte Dark / Light Theme • Sharp Architecture
- * 100% Vector Icons • Realistic Financial Numbers & Multi-Currency Engine
+ * FOOK v3.2 — Precision Variable Income OS
+ * Full application controller:
+ *  - User Name personalization & dynamic time-based greetings
+ *  - Slide-out Sidebar Navigation Drawer
+ *  - 5th Mobile Tab: Money Saving Hacks & Financial Alpha
+ *  - Restored Country Flags in Currency Selectors
+ *  - Live Exchange Rate Sync with fallback offline matrix
+ *  - How It Works guide & Notification settings
+ *  - Native App Share modal & clipboard fallback
+ *  - On-device Holt-Winters ARIMA forecasting & Safe Spend engine
  */
 
 // ═══════════════════════════════════════════
@@ -9,6 +16,7 @@
 // ═══════════════════════════════════════════
 const DEFAULT_DEMO = {
   settings: {
+    userName: 'Raja',
     homeCurrency: 'USD',
     language: 'en',
     privacyMode: false,
@@ -17,6 +25,8 @@ const DEFAULT_DEMO = {
     monthlyFixedCommitments: 850,
     overrideAdjustment: 0,
     overrideReason: '',
+    notifSunday: true,
+    notifVelocity: true,
     onboardingDismissed: false
   },
   streak: { weeks: [true, true, true, false, true, true, false, true], currentWeekDone: false },
@@ -77,6 +87,7 @@ class FookApp {
     this.initCurrencySelectors();
     this.bindStaticEvents();
     this.initSpeech();
+    this.updateUserGreeting();
     this.render();
   }
 
@@ -96,6 +107,39 @@ class FookApp {
 
   save() {
     localStorage.setItem('fook_v2_state', JSON.stringify(this.state));
+  }
+
+  // ──────────────────────────────────────────
+  // USER PERSONALIZATION & GREETINGS
+  // ──────────────────────────────────────────
+  updateUserGreeting() {
+    const name = this.state.settings.userName || 'Raja';
+    const hour = new Date().getHours();
+    let timeStr = 'Good evening';
+    if (hour < 12) timeStr = 'Good morning';
+    else if (hour < 17) timeStr = 'Good afternoon';
+
+    this.setEl('top-user-greeting', `${timeStr}, ${name}`);
+    this.setEl('greeting-username', name);
+    this.setEl('greeting-time', timeStr);
+    
+    const avatar = document.getElementById('user-avatar');
+    if (avatar) avatar.textContent = (name.trim()[0] || 'R').toUpperCase();
+
+    const userInput = document.getElementById('user-name-input');
+    if (userInput) userInput.value = name;
+
+    const setInput = document.getElementById('settings-username-field');
+    if (setInput) setInput.value = name;
+  }
+
+  saveUserName(newName) {
+    const trimmed = (newName || '').trim();
+    if (!trimmed) return;
+    this.state.settings.userName = trimmed;
+    this.save();
+    this.updateUserGreeting();
+    this.toast(`Name updated to ${trimmed}`, 'green');
   }
 
   // ──────────────────────────────────────────
@@ -127,13 +171,13 @@ class FookApp {
   }
 
   // ──────────────────────────────────────────
-  // CURRENCY SELECTORS
+  // CURRENCY SELECTORS (WITH FLAGS RESTORED)
   // ──────────────────────────────────────────
   initCurrencySelectors() {
     const currencies = CurrencyEngine.getCurrenciesList();
     const hc = this.state.settings.homeCurrency;
-    const hdrOpts = currencies.map(c => `<option value="${c.code}" ${c.code === hc ? 'selected' : ''}>${c.code}</option>`).join('');
-    const fullOpts = currencies.map(c => `<option value="${c.code}" ${c.code === hc ? 'selected' : ''}>${c.code} – ${c.name}</option>`).join('');
+    const hdrOpts = currencies.map(c => `<option value="${c.code}" ${c.code === hc ? 'selected' : ''}>${c.flag} ${c.code}</option>`).join('');
+    const fullOpts = currencies.map(c => `<option value="${c.code}" ${c.code === hc ? 'selected' : ''}>${c.flag} ${c.code} – ${c.name}</option>`).join('');
 
     ['home-currency-select', 'settings-currency-select'].forEach(id => {
       const el = document.getElementById(id);
@@ -144,12 +188,80 @@ class FookApp {
   }
 
   // ──────────────────────────────────────────
+  // SIDEBAR NAVIGATION
+  // ──────────────────────────────────────────
+  openSidebar() {
+    document.getElementById('sidebar-drawer')?.classList.add('active');
+    document.getElementById('sidebar-overlay')?.classList.add('active');
+  }
+
+  closeSidebar() {
+    document.getElementById('sidebar-drawer')?.classList.remove('active');
+    document.getElementById('sidebar-overlay')?.classList.remove('active');
+  }
+
+  // ──────────────────────────────────────────
   // STATIC EVENT BINDINGS
   // ──────────────────────────────────────────
   bindStaticEvents() {
+    // Sidebar Drawer Toggles
+    document.getElementById('sidebar-open-btn')?.addEventListener('click', () => this.openSidebar());
+    document.getElementById('sidebar-close-btn')?.addEventListener('click', () => this.closeSidebar());
+    document.getElementById('sidebar-overlay')?.addEventListener('click', () => this.closeSidebar());
+
+    // User Name Saves
+    document.getElementById('save-username-btn')?.addEventListener('click', () => {
+      const val = document.getElementById('user-name-input')?.value;
+      this.saveUserName(val);
+    });
+    document.getElementById('settings-save-name-btn')?.addEventListener('click', () => {
+      const val = document.getElementById('settings-username-field')?.value;
+      this.saveUserName(val);
+    });
+
     // Theme & Privacy
     document.getElementById('theme-btn')?.addEventListener('click', () => this.toggleTheme());
     document.getElementById('privacy-btn')?.addEventListener('click', () => this.togglePrivacy());
+
+    // Live Currency Sync Button
+    document.getElementById('live-rate-sync-btn')?.addEventListener('click', async () => {
+      this.toast('Fetching live exchange rates...', 'cyan');
+      const res = await CurrencyEngine.syncLiveRates();
+      if (res.success) {
+        this.toast(`Synced ${res.count} live currency exchange rates`, 'green');
+        this.render();
+      } else {
+        this.toast(`Using offline matrix (Rate sync: ${res.error})`, 'amber');
+      }
+    });
+
+    // App Share Modals
+    const openShare = () => {
+      this.closeSidebar();
+      this.openModal('share-modal');
+    };
+    document.getElementById('open-share-modal-btn')?.addEventListener('click', openShare);
+    document.getElementById('sidebar-share-btn')?.addEventListener('click', openShare);
+
+    document.getElementById('copy-share-link-btn')?.addEventListener('click', () => {
+      const text = `fook — Offline-first variable income budgeting for freelancers.\nhttps://github.com/Kimmojiraja/fokk_money_monitoring`;
+      navigator.clipboard.writeText(text).then(() => {
+        this.toast('Share text copied to clipboard', 'green');
+        this.closeModal('share-modal');
+      });
+    });
+
+    document.getElementById('native-share-btn')?.addEventListener('click', () => {
+      if (navigator.share) {
+        navigator.share({
+          title: 'fook — Variable Income Budgeting',
+          text: 'Offline-first variable income budgeting for freelancers with on-device forecasting.',
+          url: window.location.href
+        }).catch(() => {});
+      } else {
+        document.getElementById('copy-share-link-btn')?.click();
+      }
+    });
 
     // Onboarding Banner Dismiss
     document.getElementById('dismiss-onboarding-btn')?.addEventListener('click', () => {
@@ -164,8 +276,9 @@ class FookApp {
       this.state = JSON.parse(JSON.stringify(DEFAULT_DEMO));
       this.save();
       this.initCurrencySelectors();
+      this.updateUserGreeting();
       this.render();
-      this.toast('Freelancer baseline data loaded', 'green');
+      this.toast('Freelancer baseline ledger loaded', 'green');
     };
     document.getElementById('quick-demo-btn')?.addEventListener('click', loadDemo);
     document.getElementById('load-demo-btn')?.addEventListener('click', loadDemo);
@@ -182,12 +295,18 @@ class FookApp {
       }
     });
 
-    // Desktop & Mobile Tab Switching
+    // Desktop, Mobile, and Sidebar Tab Switching
     document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
       btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
     });
     document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(btn => {
       btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
+    });
+    document.querySelectorAll('.sidebar-nav-item[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.switchTab(btn.dataset.tab);
+        this.closeSidebar();
+      });
     });
 
     // Quick-Add 1-Tap Chips
@@ -305,6 +424,22 @@ class FookApp {
     // Sunday Habit Streak
     document.getElementById('checkin-btn')?.addEventListener('click', () => this.markWeekDone());
 
+    // Push Notification Permission
+    document.getElementById('request-notif-perm-btn')?.addEventListener('click', () => {
+      if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            this.toast('Push notifications enabled for Sunday reviews', 'green');
+            new Notification('fook OS', { body: 'Weekly variable income check-in reminders are active.' });
+          } else {
+            this.toast('Notifications permission was not granted', 'amber');
+          }
+        });
+      } else {
+        this.toast('Browser notifications not supported', 'amber');
+      }
+    });
+
     // Keyboard Shortcuts
     document.addEventListener('keydown', (e) => {
       if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
@@ -341,6 +476,11 @@ class FookApp {
 
     // Mobile Bottom Nav styling
     document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(b => {
+      b.classList.toggle('active', b.dataset.tab === tabId);
+    });
+
+    // Sidebar Nav styling
+    document.querySelectorAll('.sidebar-nav-item[data-tab]').forEach(b => {
       b.classList.toggle('active', b.dataset.tab === tabId);
     });
 
@@ -598,7 +738,7 @@ class FookApp {
   }
 
   // ──────────────────────────────────────────
-  // TOAST NOTIFICATIONS (Sharp, Clean)
+  // TOAST NOTIFICATIONS (Sharp)
   // ──────────────────────────────────────────
   toast(msg, type = 'green') {
     const colorMap = { green: 'var(--accent-green)', cyan: 'var(--accent-cyan)', amber: 'var(--accent-amber)', rose: 'var(--accent-rose)' };
@@ -687,12 +827,12 @@ class FookApp {
       predPill.innerHTML = `<span class="badge badge-cyan" style="font-size:10.5px; font-family:'JetBrains Mono';">Expected: ${CurrencyEngine.format(p0.conservative, hc, 0)} – ${CurrencyEngine.format(p0.optimistic, hc, 0)}</span>`;
     }
 
-    // Radial Gauge Ring (Circumference 188.5)
+    // Radial Gauge Ring
     const gauge = document.getElementById('gauge-ring');
     const gaugePct = document.getElementById('gauge-pct');
     if (gauge && gaugePct) {
       const pct = Math.min(100, Math.round(pacingPct * 100));
-      const C = 188.5;
+      const C = 175.9;
       gauge.style.strokeDashoffset = C - (pct / 100) * C;
       gaugePct.textContent = `${pct}%`;
       const color = pct > 90 ? 'var(--accent-rose)' : pct > 70 ? 'var(--accent-amber)' : 'var(--accent-green)';
@@ -751,12 +891,6 @@ class FookApp {
     }
     this.setEl('safe-invest', CurrencyEngine.format(safeToInvest, hc, 0));
 
-    // Onboarding Banner visibility
-    const obBanner = document.getElementById('onboarding-banner');
-    if (obBanner && this.state.settings.onboardingDismissed) {
-      obBanner.style.display = 'none';
-    }
-
     // Render Subcomponents
     this.updateSimulatorPreview();
     this.renderStreak();
@@ -788,8 +922,9 @@ class FookApp {
     this.setEl('streak-count-badge', `${streakCount} week${streakCount !== 1 ? 's' : ''}`);
     const msgEl = document.getElementById('streak-message');
     if (msgEl) {
-      if (streakCount >= 6) msgEl.textContent = `${streakCount}-week streak active. Healthy cashflow discipline.`;
-      else if (streakCount >= 3) msgEl.textContent = `${streakCount} weeks consistent. Stable reserve tracking.`;
+      const name = this.state.settings.userName || 'Raja';
+      if (streakCount >= 6) msgEl.textContent = `${name}, your ${streakCount}-week streak is active. Excellent discipline!`;
+      else if (streakCount >= 3) msgEl.textContent = `${name}, ${streakCount} weeks consistent. Stable reserve tracking.`;
       else if (this.state.streak.currentWeekDone) msgEl.textContent = `Weekly check-in complete. Next review on Sunday.`;
       else msgEl.textContent = `Check your safe spending ceiling this Sunday to maintain habit.`;
     }
