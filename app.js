@@ -585,6 +585,47 @@ class FookApp {
     }
   }
 
+  handlePWAInstall() {
+    if (this.deferredPrompt) {
+      this.deferredPrompt.prompt();
+      this.deferredPrompt.userChoice.then(({ outcome }) => {
+        if (outcome === 'accepted') {
+          this.toast('fook installed to device successfully!', 'green');
+          const badge = document.getElementById('pWA-installed-badge');
+          if (badge) badge.style.display = 'block';
+        }
+        this.deferredPrompt = null;
+      });
+    } else {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const platform = isIOS ? 'ios' : isAndroid ? 'android' : 'desktop';
+      this.switchSettingsPWAGuide(platform);
+      this.toast(
+        isIOS ? 'Safari: Tap Share icon ⎋ -> Add to Home Screen' :
+        isAndroid ? 'Chrome: Tap 3 dots (⋮) -> Install App' :
+        'Desktop: Click the install icon (⊕) in address bar',
+        'cyan'
+      );
+    }
+  }
+
+  switchSettingsPWAGuide(platform) {
+    document.querySelectorAll('.settings-pwa-tab').forEach(btn => {
+      const isActive = btn.dataset.guide === platform;
+      btn.classList.toggle('active', isActive);
+      btn.style.borderColor = isActive ? 'var(--accent-green)' : 'var(--border)';
+      btn.style.background = isActive ? 'rgba(129,201,149,0.1)' : 'transparent';
+      btn.style.color = isActive ? 'var(--accent-green)' : 'var(--text-muted)';
+    });
+    document.querySelectorAll('.settings-guide-content').forEach(box => {
+      box.style.display = 'none';
+    });
+    const target = document.getElementById(`settings-guide-android`);
+    const activeBox = document.getElementById(`settings-guide-${platform}`);
+    if (activeBox) activeBox.style.display = 'block';
+  }
+
   switchInstallGuide(platform) {
     document.querySelectorAll('.install-tab-btn').forEach(btn => {
       const isActive = btn.dataset.platform === platform;

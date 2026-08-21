@@ -778,31 +778,52 @@
       <!-- PWA Installation -->
       <hr style="border-color:var(--border);">
       <div>
-        <p class="section-title" style="margin-bottom:6px;">Web Application Installation (PWA)</p>
-        <p style="font-size:11.5px; color:var(--text-secondary); margin-bottom:10px;">Install fook to your mobile device or desktop for 1-tap launcher access and offline caching.</p>
-        
-        <div id="pWA-installed-badge" style="display:none; padding:8px 12px; background:rgba(129, 201, 149, 0.12); border:1px solid rgba(129, 201, 149, 0.3); margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+          <div>
+            <p class="section-title">Web Application Installation (PWA)</p>
+            <p style="font-size:11.5px; color:var(--text-secondary); margin-top:2px;">Install fook to your mobile device for 1-tap launcher access and offline caching.</p>
+          </div>
+          <span id="pwa-status-badge" class="badge badge-cyan" style="font-size:9.5px;">Ready to Install</span>
+        </div>
+
+        <div id="pWA-installed-badge" style="display:none; padding:8px 12px; background:rgba(129, 201, 149, 0.12); border:1px solid rgba(129, 201, 149, 0.3); margin-bottom:10px;">
           <div style="display:flex; align-items:center; gap:6px;">
             <svg width="14" height="14" fill="none" stroke="var(--accent-green)" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span style="font-size:12px; font-weight:700; color:var(--accent-green);">App Installed on this Device</span>
+            <span style="font-size:12px; font-weight:700; color:var(--accent-green);">App is Running in Standalone Installed Mode</span>
           </div>
         </div>
 
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button id="pwa-install-btn" class="btn btn-primary btn-sm" style="gap:6px;">
-            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-            Install Web Application
-          </button>
-          <button id="pwa-ios-help-btn" class="btn btn-ghost btn-sm" style="font-size:11.5px;">
-            iOS Installation Guide
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+          <button id="pwa-install-btn" onclick="window.fookApp.handlePWAInstall()" class="btn btn-primary" style="gap:6px; flex:1; justify-content:center;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Install to Device Now
           </button>
         </div>
 
-        <div id="pwa-ios-instructions" style="display:none; margin-top:8px; padding:10px; background:var(--bg-input); border:1px solid var(--border); font-size:11.5px; color:var(--text-secondary); line-height:1.4;">
-          <strong>On iPhone / iPad (Safari):</strong><br>
-          1. Tap the <strong>Share</strong> button at the bottom of Safari (<span style="font-family:'JetBrains Mono';">⎋</span>).<br>
-          2. Scroll down and tap <strong>"Add to Home Screen"</strong>.<br>
-          3. Tap <strong>Add</strong> in top right. fook will open as a standalone native app!
+        <!-- Inline Platform Instructions -->
+        <div style="border:1px solid var(--border); background:var(--bg-input); padding:10px;">
+          <div style="display:flex; gap:4px; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:6px;">
+            <button class="settings-pwa-tab active" data-guide="android" onclick="window.fookApp.switchSettingsPWAGuide('android')" style="padding:4px 8px; font-size:11px; font-weight:700; border:1px solid var(--accent-green); background:rgba(129,201,149,0.1); color:var(--accent-green); cursor:pointer;">Android (Chrome/Brave)</button>
+            <button class="settings-pwa-tab" data-guide="ios" onclick="window.fookApp.switchSettingsPWAGuide('ios')" style="padding:4px 8px; font-size:11px; font-weight:700; border:1px solid var(--border); background:transparent; color:var(--text-muted); cursor:pointer;">iPhone (Safari)</button>
+            <button class="settings-pwa-tab" data-guide="desktop" onclick="window.fookApp.switchSettingsPWAGuide('desktop')" style="padding:4px 8px; font-size:11px; font-weight:700; border:1px solid var(--border); background:transparent; color:var(--text-muted); cursor:pointer;">Desktop PC/Mac</button>
+          </div>
+
+          <div id="settings-guide-android" class="settings-guide-content" style="font-size:11.5px; color:var(--text-secondary); line-height:1.5;">
+            <strong>Step 1:</strong> Tap your browser's <strong>three dots menu (⋮)</strong> in the top-right corner.<br>
+            <strong>Step 2:</strong> Tap <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong>.<br>
+            <strong>Step 3:</strong> Tap <strong>Install</strong>. fook will appear on your phone home screen!
+          </div>
+
+          <div id="settings-guide-ios" class="settings-guide-content" style="display:none; font-size:11.5px; color:var(--text-secondary); line-height:1.5;">
+            <strong>Step 1:</strong> In Safari, tap the <strong>Share button</strong> at bottom toolbar (<span style="font-family:'JetBrains Mono';">⎋</span>).<br>
+            <strong>Step 2:</strong> Scroll down and select <strong>"Add to Home Screen"</strong>.<br>
+            <strong>Step 3:</strong> Tap <strong>Add</strong> in top-right. The fook icon will be added to your iPhone home screen!
+          </div>
+
+          <div id="settings-guide-desktop" class="settings-guide-content" style="display:none; font-size:11.5px; color:var(--text-secondary); line-height:1.5;">
+            <strong>Step 1:</strong> Click the <strong>Install icon (⊕)</strong> on the right side of the browser URL bar.<br>
+            <strong>Step 2:</strong> Click <strong>Install</strong> to run fook in its own dedicated window.
+          </div>
         </div>
       </div>
 
